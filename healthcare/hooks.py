@@ -72,6 +72,13 @@ jinja = {
 # before_install = "healthcare.install.before_install"
 after_install = "healthcare.hooks.run_after_install"
 
+fixtures = [
+	{"dt": "Custom Field"},
+	{"dt": "Client Script"},
+	{"dt": "Print Format", "filters": [["module", "=", "Healthcare"]]},
+	{"dt": "DocType", "filters": [["module", "=", "Healthcare"]]},
+]
+
 # Uninstallation
 # ------------
 
@@ -232,6 +239,7 @@ global_search_doctypes = {
 		{"doctype": "Patient", "index": 1},
 		{"doctype": "Medical Department", "index": 2},
 		{"doctype": "Vital Signs", "index": 3},
+		{"doctype": "Triage Visit", "index": 26},
 		{"doctype": "Healthcare Practitioner", "index": 4},
 		{"doctype": "Patient Appointment", "index": 5},
 		{"doctype": "Healthcare Service Unit", "index": 6},
@@ -319,3 +327,7 @@ def run_after_install():
 
 	install_rwanda_patient_registration()
 	install_rwanda_opd()
+
+	from healthcare.healthcare.triage_visit_setup import install_triage_visit
+
+	install_triage_visit()

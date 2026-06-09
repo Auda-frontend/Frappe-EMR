@@ -1,0 +1,22 @@
+{
+ "align_labels_right": 0,
+ "creation": "2026-06-08 12:00:00.000000",
+ "custom_format": 1,
+ "disabled": 0,
+ "doc_type": "Triage Visit",
+ "docstatus": 0,
+ "doctype": "Print Format",
+ "font": "Default",
+ "html": "<style>\n  body { font-family: Arial, sans-serif; font-size: 11px; }\n  h2 { text-align: center; font-size: 14px; text-transform: uppercase; }\n  table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }\n  td, th { border: 1px solid #333; padding: 4px 6px; }\n  .triage-red    { background: #c0392b; color: #fff; font-weight: bold; padding: 4px 10px; }\n  .triage-orange { background: #e67e22; color: #fff; font-weight: bold; padding: 4px 10px; }\n  .triage-yellow { background: #f1c40f; color: #333; font-weight: bold; padding: 4px 10px; }\n  .triage-green  { background: #27ae60; color: #fff; font-weight: bold; padding: 4px 10px; }\n</style>\n\n{% if doc.is_maternity %}\n  <h2>Maternity Triage Form</h2>\n{% elif doc.is_child %}\n  <h2>Child Triage Form (3\u201312 Years)</h2>\n{% else %}\n  <h2>Adult Triage Form (Over 12 Years)</h2>\n{% endif %}\n\n<table>\n  <tr>\n    <td><b>Patient:</b> {{ doc.patient_name }}</td>\n    <td><b>Age:</b> {{ doc.patient_age }}</td>\n    <td><b>Date:</b> {{ doc.arrival_date }}</td>\n    <td><b>Arrival time:</b> {{ doc.arrival_time }}</td>\n  </tr>\n  <tr>\n    <td colspan=\"2\"><b>Chief Complaint:</b> {{ doc.rw_chief_complaint }}</td>\n    <td colspan=\"2\"><b>MRN:</b> {{ doc.medical_record_number }}</td>\n  </tr>\n</table>\n\n<table>\n  <tr><th colspan=\"4\">Emergency Signs</th></tr>\n  <tr>\n    <td>Airway/Breathing: {{ '\u2714' if doc.emergency_airway else '\u2610' }}</td>\n    <td>Circulation: {{ '\u2714' if doc.emergency_circulation else '\u2610' }}</td>\n    <td>Lethargic+Pulse: {{ '\u2714' if doc.emergency_lethargic else '\u2610' }}</td>\n    <td>Convulsion: {{ '\u2714' if doc.emergency_convulsion else '\u2610' }}</td>\n  </tr>\n  <tr>\n    <td>Coma: {{ '\u2714' if doc.emergency_coma else '\u2610' }}</td>\n    <td>Severe Dehydration: {{ '\u2714' if doc.emergency_dehydration else '\u2610' }}</td>\n    <td>Hypoglycemia: {{ '\u2714' if doc.emergency_hypoglycemia else '\u2610' }}</td>\n    <td>Purpuric Rash: {{ '\u2714' if doc.emergency_purpuric_rash else '\u2610' }}</td>\n  </tr>\n  {% if doc.is_maternity %}\n  <tr>\n    <td>Prolapsed Cord: {{ '\u2714' if doc.emergency_prolapsed_cord else '\u2610' }}</td>\n    <td>No Fetal Movement: {{ '\u2714' if doc.emergency_no_fetal_movement else '\u2610' }}</td>\n    <td>Abnormal CTG: {{ '\u2714' if doc.emergency_abnormal_ctg else '\u2610' }}</td>\n    <td>Imminent Birth: {{ '\u2714' if doc.emergency_imminent_birth else '\u2610' }}</td>\n  </tr>\n  {% endif %}\n</table>\n\n<table>\n  <tr><th colspan=\"6\">TEWS Score</th></tr>\n  <tr>\n    <td><b>RR:</b> {{ doc.respiratory_rate }}</td>\n    <td><b>HR:</b> {{ doc.pulse }}</td>\n    {% if not doc.is_child %}<td><b>SBP:</b> {{ doc.bp_systolic }}</td>{% endif %}\n    <td><b>Temp:</b> {{ doc.temperature }}</td>\n    <td><b>AVPU:</b> {{ doc.tews_avpu }}</td>\n    <td><b>Trauma:</b> {{ doc.tews_trauma }}</td>\n  </tr>\n  <tr>\n    <td colspan=\"3\"><b>Total TEWS:</b> {{ doc.tews_total }}</td>\n    <td><b>SpO2:</b> {{ doc.rw_spo2 }}%</td>\n    <td><b>Pain:</b> {{ doc.rw_pain_score }}/10</td>\n    <td>\n      <span class=\"triage-{{ (doc.rw_triage_category or '').lower() }}\">\n        {{ doc.rw_triage_category }}\n      </span>\n    </td>\n  </tr>\n</table>\n\n<table>\n  <tr><th colspan=\"3\">Vital Signs</th></tr>\n  <tr>\n    <td><b>BP:</b> {{ doc.bp_systolic }}/{{ doc.bp_diastolic }}</td>\n    <td><b>Height:</b> {{ doc.height }} m</td>\n    <td><b>Weight:</b> {{ doc.weight }} kg</td>\n  </tr>\n  <tr>\n    <td><b>BMI:</b> {{ doc.bmi }}</td>\n    <td><b>MUAC:</b> {{ doc.rw_muac }} cm</td>\n    <td><b>Oriented:</b> {{ 'Yes' if doc.rw_oriented else 'No' }}</td>\n  </tr>\n</table>\n\n<table>\n  <tr>\n    <td><b>Nurse:</b> {{ doc.nurse_name }}</td>\n    <td><b>Triage finish time:</b> {{ doc.triage_finish_time }}</td>\n  </tr>\n  <tr>\n    <td><b>Doctor:</b> {{ doc.doctor_name }}</td>\n    <td><b>Attended at:</b> {{ doc.doctor_attended_at }}</td>\n  </tr>\n</table>\n",
+ "idx": 0,
+ "line_breaks": 0,
+ "modified": "2026-06-08 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Triage Form",
+ "owner": "Administrator",
+ "print_format_builder": 0,
+ "print_format_type": "Jinja",
+ "show_section_headings": 0,
+ "standard": "Yes"
+}

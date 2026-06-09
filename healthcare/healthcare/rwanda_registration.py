@@ -2,6 +2,8 @@
 # Rwanda national registration: patient identifiers, residence, insurance (single form flow).
 # Integrated into the healthcare app (no separate bench app).
 
+import json
+
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
@@ -16,7 +18,36 @@ OBSOLETE_PATIENT_CUSTOM_FIELDS = (
 	"rw_col_reg_2",
 	"rw_insurance_section",
 	"rw_insurance_coverage",
+	"rw_col_identification",
+	# Former tab breaks / nested relative sections (single-page layout)
+	"rw_tab_father",
+	"rw_tab_mother",
+	"rw_tab_guardian",
+	"rw_sb_contact",
+	"rw_sb_social",
+	"rw_father_sb_personal",
+	"rw_father_sb_contact",
+	"rw_mother_sb_personal",
+	"rw_mother_sb_contact",
+	"rw_guardian_sb_personal",
+	"rw_guardian_sb_contact",
+	# Replaced by simpler single-page sections
+	"rw_sb_administrative",
+	"rw_sb_medical",
+	"rw_sb_contact_social",
+	"rw_sb_medical_contact",
+	# Guardian section removed from registration form
+	"rw_sb_guardian",
+	"rw_guardian_id_type",
+	"rw_guardian_id_number",
+	"rw_guardian_names",
+	"rw_guardian_religion",
+	"rw_guardian_col_contact",
+	"rw_guardian_phone",
+	"rw_guardian_occupation",
 )
+
+RELATIVE_UNKNOWN_ROLE_TAGS = {"father": "F", "mother": "M"}
 
 
 def install_rwanda_patient_registration():
@@ -25,11 +56,16 @@ def install_rwanda_patient_registration():
 	remove_patient_insurance_coverage_doctype_if_unused()
 	create_custom_fields(get_rwanda_patient_custom_fields(), update=True)
 	hide_patient_customer_details_on_form()
+	hide_patient_registration_clutter()
+	hide_patient_medical_history_on_registration()
 	apply_patient_registration_labels()
+	apply_patient_ebuzima_field_order()
 	apply_triage_labels()
 	ensure_rwanda_mpi_role()
 	extend_patient_quick_search_fields()
 	extend_patient_list_filters()
+	frappe.db.commit()
+	frappe.clear_cache(doctype="Patient")
 	frappe.clear_cache()
 
 
@@ -110,10 +146,105 @@ def set_patient_field_hidden(fieldname, hidden=1):
 	)
 
 
+# Core Patient fields hidden on the eBuzima-style registration form.
+PATIENT_REGISTRATION_HIDDEN_FIELDS = (
+	"naming_series",
+	"uid",
+	"status",
+	"inpatient_record",
+	"inpatient_status",
+	"image",
+	"column_break_14",
+	"column_break_25",
+	"invite_user",
+	"user_id",
+	"more_info",
+	"patient_details",
+	"dashboard_tab",
+	"address_and_contact_tab",
+	"address_contacts",
+	"address_html",
+	"column_break_22",
+	"contact_html",
+	"sb_relation",
+	"patient_relation",
+	"medical_history_tab",
+	"allergy_medical_and_surgical_history",
+	"allergies",
+	"medication",
+	"column_break_20",
+	"medical_history",
+	"surgical_history",
+	"risk_factors",
+	"tobacco_past_use",
+	"tobacco_current_use",
+	"alcohol_past_use",
+	"alcohol_current_use",
+	"column_break_32",
+	"surrounding_factors",
+	"other_risk_factors",
+	"rw_col_addr",
+	"rw_residence_province",
+	"rw_residence_district",
+	"rw_residence_sector",
+	"rw_mark_special_case",
+	"rw_insurance_valid_to",
+	"rw_rssb_last_verified_on",
+	"rw_rssb_validation_notes",
+	"rw_upid_is_temporary",
+	"rw_upid_source",
+)
+
+PATIENT_MEDICAL_HISTORY_FIELDS = (
+	"medical_history_tab",
+	"allergy_medical_and_surgical_history",
+	"allergies",
+	"medication",
+	"column_break_20",
+	"medical_history",
+	"surgical_history",
+	"risk_factors",
+	"tobacco_past_use",
+	"tobacco_current_use",
+	"alcohol_past_use",
+	"alcohol_current_use",
+	"column_break_32",
+	"surrounding_factors",
+	"other_risk_factors",
+)
+
+UNKNOWN_ID_PREFIX = "RW-UNK-"
+
+
+def hide_patient_registration_clutter():
+	for fieldname in PATIENT_REGISTRATION_HIDDEN_FIELDS:
+		set_patient_field_hidden(fieldname, hidden=1)
+	for fieldname in ("marital_status", "report_preference"):
+		set_patient_field_hidden(fieldname, hidden=0)
+
+
+def hide_patient_medical_history_on_registration():
+	"""Ensure medical history tab and all related fields stay hidden on Patient registration."""
+	for fieldname in PATIENT_MEDICAL_HISTORY_FIELDS:
+		set_patient_field_hidden(fieldname, hidden=1)
+
+
 def apply_patient_registration_labels():
-	"""Desk labels aligned with Rwanda registration workflow."""
-	set_patient_field_property("uid", "label", "Identification Number (UID / NIN / Passport)")
-	set_patient_field_property("sb_relation", "label", "Next of kin & guardians")
+	"""Desk labels aligned with eBuzima-style registration."""
+	set_patient_field_property("basic_info", "label", "Patient Registration")
+	set_patient_field_property("first_name", "label", "First Name")
+	set_patient_field_property("middle_name", "label", "Middle Name (optional)")
+	set_patient_field_property("last_name", "label", "Last Name")
+	set_patient_field_property("sex", "label", "Gender")
+	set_patient_field_property("mobile", "label", "Mobile")
+	set_patient_field_property("phone", "label", "Phone")
+	set_patient_field_property("dob", "label", "Date of Birth")
+	set_patient_field_property("age_html", "label", "Age")
+	set_patient_field_property("blood_group", "label", "Blood Group")
+	set_patient_field_property("occupation", "label", "Occupation")
+	set_patient_field_property("rw_sb_identification", "label", "Identification")
+	set_patient_field_property("rw_col_identification", "label", "UPID & registry")
+	set_patient_field_property("rw_record_status", "label", "Status")
 
 
 def set_patient_field_property(fieldname, property_name, value):
@@ -237,16 +368,27 @@ def extend_patient_quick_search_fields():
 		)
 
 
+def get_rwanda_identification_type_options():
+	return "\n".join(
+		["UNKNOWN", "NID", "UPID", "NID_APPLICATION_NUMBER", "PASSPORT", "REFUGEE_ID"]
+	)
+
+
 def get_rwanda_insurance_provider_options():
 	return "\n".join(
 		[
 			"",
+			"Africa",
 			"CBHI (Mutuelle de sante)",
 			"CBHI (Mutuelle de sante) (INDIGENT) 100%",
 			"CBHI (Mutuelle de sante) 100%",
 			"CBHI (Mutuelle de sante) 90%",
+			"East Africa",
 			"EDEN CARE 100%",
 			"EDEN CARE 85%",
+			"GBV",
+			"MMI_NEANT 100%",
+			"PRIME INSURANCE 100%",
 			"RSSB (RAMA) 85%",
 			"RSSB Mutuelle",
 			"Private commercial",
@@ -256,223 +398,534 @@ def get_rwanda_insurance_provider_options():
 	)
 
 
+def get_rwanda_religion_options():
+	return "\nChristian\nMuslim\nOther\nPrefer not to say"
+
+
+def _relative_section_fields(prefix, label, insert_after):
+	"""Father / Mother — collapsible section on the main registration form."""
+	id_type = get_rwanda_identification_type_options()
+	return [
+		{
+			"fieldname": f"rw_sb_{prefix}",
+			"fieldtype": "Section Break",
+			"label": label,
+			"collapsible": 1,
+			"css_class": f"rw-patient-{prefix}-section",
+			"insert_after": insert_after,
+		},
+		{
+			"fieldname": f"rw_{prefix}_id_type",
+			"fieldtype": "Select",
+			"label": "Identification Type",
+			"options": id_type,
+			"default": "UNKNOWN",
+			"insert_after": f"rw_sb_{prefix}",
+		},
+		{
+			"fieldname": f"rw_{prefix}_id_number",
+			"fieldtype": "Data",
+			"label": "Identification Number",
+			"insert_after": f"rw_{prefix}_id_type",
+		},
+		{
+			"fieldname": f"rw_{prefix}_names",
+			"fieldtype": "Data",
+			"label": "Names",
+			"insert_after": f"rw_{prefix}_id_number",
+		},
+		{
+			"fieldname": f"rw_{prefix}_religion",
+			"fieldtype": "Select",
+			"label": "Religion",
+			"options": get_rwanda_religion_options(),
+			"insert_after": f"rw_{prefix}_names",
+		},
+		{
+			"fieldname": f"rw_{prefix}_col_contact",
+			"fieldtype": "Column Break",
+			"insert_after": f"rw_{prefix}_religion",
+		},
+		{
+			"fieldname": f"rw_{prefix}_phone",
+			"fieldtype": "Data",
+			"label": "Phone",
+			"options": "Phone",
+			"insert_after": f"rw_{prefix}_col_contact",
+		},
+		{
+			"fieldname": f"rw_{prefix}_occupation",
+			"fieldtype": "Data",
+			"label": "Occupation",
+			"insert_after": f"rw_{prefix}_phone",
+		},
+	]
+
+
 def get_rwanda_patient_custom_fields():
-	"""Unified patient registration form (eBuzima-aligned, no extra section titles)."""
-	return {
-		"Patient": [
-			{
-				"fieldname": "rw_reg_search_help",
-				"fieldtype": "HTML",
-				"label": "Registration",
-				"insert_after": "uid",
-				"options": (
-					'<div class="text-muted small">'
-					"Before saving, use <b>Find Existing Patient</b> (UPID, name, NIN, phone, insurance number)."
-					"</div>"
-				),
-			},
-			{
-				"fieldname": "rw_identification_type",
-				"fieldtype": "Select",
-				"label": "Identification type",
-				"options": "UNKNOWN\nNIDA / NIN\nPassport\nForeign ID\nRefugee ID",
-				"default": "UNKNOWN",
-				"insert_after": "rw_reg_search_help",
-				"in_standard_filter": 1,
-			},
-			{
-				"fieldname": "rw_national_id",
-				"fieldtype": "Data",
-				"label": "National ID (NIN)",
-				"description": "National Identification Number — cannot be changed after save except by MPI administrators.",
-				"insert_after": "rw_identification_type",
-				"in_standard_filter": 1,
-				"in_list_view": 1,
-			},
-			{
-				"fieldname": "rw_upid",
-				"fieldtype": "Data",
-				"label": "UPID",
-				"description": "Unique patient identifier (client registry / HIE)",
-				"insert_after": "rw_national_id",
-				"in_standard_filter": 1,
-				"in_list_view": 1,
-			},
-			{
-				"fieldname": "rw_upid_is_temporary",
-				"fieldtype": "Check",
-				"label": "Temporary UPID",
-				"default": "0",
-				"insert_after": "rw_upid",
-			},
-			{
-				"fieldname": "rw_upid_source",
-				"fieldtype": "Select",
-				"label": "UPID source",
-				"options": "HIE Client Registry\nLocal Temporary\nManual Assignment",
-				"insert_after": "rw_upid_is_temporary",
-			},
-			{
-				"fieldname": "rw_nationality",
-				"fieldtype": "Select",
-				"label": "Nationality",
-				"options": "Rwanda\nOther",
-				"default": "Rwanda",
-				"insert_after": "rw_upid_source",
-			},
-			{
-				"fieldname": "rw_tracnet_id",
-				"fieldtype": "Data",
-				"label": "TRACnet ID",
-				"insert_after": "rw_nationality",
-			},
-			{
-				"fieldname": "rw_col_addr",
-				"fieldtype": "Column Break",
-				"insert_after": "rw_tracnet_id",
-			},
-			{
-				"fieldname": "rw_residence_province",
-				"fieldtype": "Data",
-				"label": "Residence province",
-				"insert_after": "rw_col_addr",
-			},
-			{
-				"fieldname": "rw_residence_district",
-				"fieldtype": "Data",
-				"label": "Residence district",
-				"insert_after": "rw_residence_province",
-			},
-			{
-				"fieldname": "rw_residence_sector",
-				"fieldtype": "Data",
-				"label": "Residence sector",
-				"insert_after": "rw_residence_district",
-			},
-			{
-				"fieldname": "rw_education_level",
-				"fieldtype": "Select",
-				"label": "Level of education",
-				"options": "\nNone\nPrimary\nSecondary\nTVET\nUniversity\nOther",
-				"insert_after": "marital_status",
-			},
-			{
-				"fieldname": "rw_religion",
-				"fieldtype": "Select",
-				"label": "Religion",
-				"options": "\nChristian\nMuslim\nOther\nPrefer not to say",
-				"insert_after": "rw_education_level",
-			},
-			{
-				"fieldname": "rw_patient_insured",
-				"fieldtype": "Select",
-				"label": "Patient insured?",
-				"options": "No\nYes",
-				"default": "No",
-				"reqd": 1,
-				"insert_after": "rw_religion",
-				"in_standard_filter": 1,
-			},
-			{
-				"fieldname": "rw_insurance_type",
-				"fieldtype": "Select",
-				"label": "Insurance provider",
-				"options": get_rwanda_insurance_provider_options(),
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"insert_after": "rw_patient_insured",
-				"in_standard_filter": 1,
-			},
-			{
-				"fieldname": "rw_mark_special_case",
-				"fieldtype": "Check",
-				"label": "Mark as special case",
-				"default": "0",
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"insert_after": "rw_insurance_type",
-			},
-			{
-				"fieldname": "rw_insurance_member_number",
-				"fieldtype": "Data",
-				"label": "Insurance member / policy number",
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"insert_after": "rw_mark_special_case",
-				"in_standard_filter": 1,
-			},
-			{
-				"fieldname": "rw_insurance_valid_to",
-				"fieldtype": "Date",
-				"label": "Insurance valid to",
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"insert_after": "rw_insurance_member_number",
-			},
-			{
-				"fieldname": "rw_is_main_insurer",
-				"fieldtype": "Check",
-				"label": "Patient is main insurer",
-				"default": "1",
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"insert_after": "rw_insurance_valid_to",
-			},
-			{
-				"fieldname": "rw_main_insured_name",
-				"fieldtype": "Data",
-				"label": "Main insured name",
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
-				"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
-				"insert_after": "rw_is_main_insurer",
-			},
-			{
-				"fieldname": "rw_main_insured_insurance_number",
-				"fieldtype": "Data",
-				"label": "Main insured insurance number",
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
-				"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
-				"insert_after": "rw_main_insured_name",
-			},
-			{
-				"fieldname": "rw_rssb_last_verified_on",
-				"fieldtype": "Datetime",
-				"label": "Insurance last verified",
-				"read_only": 1,
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"insert_after": "rw_main_insured_insurance_number",
-			},
-			{
-				"fieldname": "rw_rssb_validation_notes",
-				"fieldtype": "Small Text",
-				"label": "Insurance verification notes",
-				"read_only": 1,
-				"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-				"insert_after": "rw_rssb_last_verified_on",
-			},
-			{
-				"fieldname": "rw_record_status",
-				"fieldtype": "Select",
-				"label": "Registration status",
-				"options": "Active\nInactive",
-				"default": "Active",
-				"insert_after": "rw_rssb_validation_notes",
-				"in_standard_filter": 1,
-				"in_list_view": 1,
-			},
-			{
-				"fieldname": "rw_inactive_reason",
-				"fieldtype": "Small Text",
-				"label": "Inactive reason",
-				"depends_on": 'eval:doc.rw_record_status=="Inactive"',
-				"mandatory_depends_on": 'eval:doc.rw_record_status=="Inactive"',
-				"insert_after": "rw_record_status",
-			},
-		],
+	"""Single-page registration: names → ID → insurance (grouped) → medical/contact → relatives."""
+	fields = [
+		{
+			"fieldname": "rw_reg_search_help",
+			"fieldtype": "HTML",
+			"label": "Registration",
+			"insert_after": "basic_info",
+			"options": (
+				'<div class="text-muted small">'
+				"Before saving, use <b>Find Existing Patient</b> (UPID, name, NIN, phone, insurance number)."
+				"</div>"
+			),
+		},
+		{
+			"fieldname": "rw_sb_identification",
+			"fieldtype": "Section Break",
+			"label": "Identification",
+			"collapsible": 1,
+			"collapsible_depends_on": "eval:1",
+			"css_class": "rw-patient-identification-section",
+			"insert_after": "rw_reg_search_help",
+		},
+		# {
+		# 	"fieldname": "rw_col_identification",
+		# 	"fieldtype": "Column Break",
+		# 	"label": "UPID & registry",
+		# 	"insert_after": "age_html",
+		# },
+		{
+			"fieldname": "rw_identification_type",
+			"fieldtype": "Select",
+			"label": "Identification Type",
+			"options": get_rwanda_identification_type_options(),
+			"default": "UNKNOWN",
+			"insert_after": "rw_col_identification",
+			"in_standard_filter": 1,
+		},
+		{
+			"fieldname": "rw_national_id",
+			"fieldtype": "Data",
+			"label": "Identification Number",
+			"description": "Cannot be changed after save except by MPI administrators.",
+			"insert_after": "rw_identification_type",
+			"in_standard_filter": 1,
+			"in_list_view": 1,
+		},
+		{
+			"fieldname": "rw_upid",
+			"fieldtype": "Data",
+			"label": "UPID",
+			"description": "Unique patient identifier (client registry / HIE)",
+			"insert_after": "rw_national_id",
+			"in_standard_filter": 1,
+			"in_list_view": 1,
+		},
+		{
+			"fieldname": "rw_nid_application_number",
+			"fieldtype": "Data",
+			"label": "NID Application Number",
+			"depends_on": 'eval:doc.rw_identification_type=="NID_APPLICATION_NUMBER"',
+			"insert_after": "rw_upid",
+		},
+		{
+			"fieldname": "rw_nationality",
+			"fieldtype": "Select",
+			"label": "Nationality",
+			"options": "Rwanda\nOther",
+			"default": "Rwanda",
+			"insert_after": "rw_nid_application_number",
+		},
+		{
+			"fieldname": "rw_tracnet_id",
+			"fieldtype": "Data",
+			"label": "TraceNet ID",
+			"insert_after": "rw_nationality",
+		},
+		{
+			"fieldname": "rw_patient_id_set",
+			"fieldtype": "Check",
+			"label": "Patient ID Set",
+			"default": "0",
+			"insert_after": "rw_tracnet_id",
+		},
+		{
+			"fieldname": "rw_go_manual",
+			"fieldtype": "Check",
+			"label": "Go Manual",
+			"default": "0",
+			"insert_after": "rw_patient_id_set",
+		},
+		{
+			"fieldname": "rw_upid_is_temporary",
+			"fieldtype": "Check",
+			"label": "Temporary UPID",
+			"default": "0",
+			"depends_on": "eval:doc.rw_go_manual",
+			"insert_after": "rw_go_manual",
+		},
+		{
+			"fieldname": "rw_upid_source",
+			"fieldtype": "Select",
+			"label": "UPID source",
+			"options": "HIE Client Registry\nLocal Temporary\nManual Assignment",
+			"depends_on": "eval:doc.rw_upid_is_temporary || doc.rw_go_manual",
+			"insert_after": "rw_upid_is_temporary",
+		},
+		{
+			"fieldname": "rw_sb_insurance",
+			"fieldtype": "Section Break",
+			"label": "Insurance",
+			"collapsible": 1,
+			"css_class": "rw-patient-insurance-section",
+			"insert_after": "rw_upid_source",
+		},
+		{
+			"fieldname": "rw_patient_insured",
+			"fieldtype": "Select",
+			"label": "Patient insured?",
+			"options": "No\nYes",
+			"default": "No",
+			"reqd": 1,
+			"insert_after": "rw_sb_insurance",
+			"in_standard_filter": 1,
+		},
+		{
+			"fieldname": "rw_col_insurance",
+			"fieldtype": "Column Break",
+			"insert_after": "rw_patient_insured",
+		},
+		{
+			"fieldname": "rw_insurance_type",
+			"fieldtype": "Select",
+			"label": "Insurance Provider",
+			"options": get_rwanda_insurance_provider_options(),
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"insert_after": "rw_col_insurance",
+			"in_standard_filter": 1,
+		},
+		{
+			"fieldname": "rw_insurance_member_number",
+			"fieldtype": "Data",
+			"label": "Insurance Number",
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"insert_after": "rw_insurance_type",
+			"in_standard_filter": 1,
+		},
+		{
+			"fieldname": "rw_is_main_insurer",
+			"fieldtype": "Check",
+			"label": "Is patient main insurer?",
+			"default": "1",
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"insert_after": "rw_insurance_member_number",
+		},
+		{
+			"fieldname": "rw_main_insured_name",
+			"fieldtype": "Data",
+			"label": "Main Insured",
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
+			"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
+			"insert_after": "rw_is_main_insurer",
+		},
+		{
+			"fieldname": "rw_main_insured_insurance_number",
+			"fieldtype": "Data",
+			"label": "Main Insured Insurance Number",
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
+			"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes" && !doc.rw_is_main_insurer',
+			"insert_after": "rw_main_insured_name",
+		},
+		{
+			"fieldname": "rw_mark_special_case",
+			"fieldtype": "Check",
+			"label": "Mark as special case",
+			"default": "0",
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"insert_after": "rw_main_insured_insurance_number",
+		},
+		{
+			"fieldname": "rw_insurance_valid_to",
+			"fieldtype": "Date",
+			"label": "Insurance valid to",
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"insert_after": "rw_mark_special_case",
+		},
+		{
+			"fieldname": "rw_rssb_last_verified_on",
+			"fieldtype": "Datetime",
+			"label": "Insurance last verified",
+			"read_only": 1,
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"insert_after": "rw_insurance_valid_to",
+		},
+		{
+			"fieldname": "rw_rssb_validation_notes",
+			"fieldtype": "Small Text",
+			"label": "Insurance verification notes",
+			"read_only": 1,
+			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
+			"insert_after": "rw_rssb_last_verified_on",
+		},
+		{
+			"fieldname": "rw_sb_social",
+			"fieldtype": "Section Break",
+			"label": "Social Information",
+			"collapsible": 1,
+			"css_class": "rw-patient-social-section",
+			"insert_after": "rw_rssb_validation_notes",
+		},
+		{
+			"fieldname": "rw_set_dob_manually",
+			"fieldtype": "Check",
+			"label": "Set DOB Manually",
+			"default": "0",
+			"insert_after": "rw_sb_social",
+		},
+		{
+			"fieldname": "rw_education_level",
+			"fieldtype": "Select",
+			"label": "Level of Education",
+			"options": "\nNone\nPrimary\nSecondary\nTVET\nUniversity\nOther",
+			"insert_after": "rw_set_dob_manually",
+		},
+		{
+			"fieldname": "rw_religion",
+			"fieldtype": "Select",
+			"label": "Religion",
+			"options": get_rwanda_religion_options(),
+			"insert_after": "rw_education_level",
+		},
+		# Residence (kept but hidden — available for future HMIS)
+		{
+			"fieldname": "rw_col_addr",
+			"fieldtype": "Column Break",
+			"insert_after": "rw_religion",
+		},
+		{
+			"fieldname": "rw_residence_province",
+			"fieldtype": "Data",
+			"label": "Residence province",
+			"insert_after": "rw_col_addr",
+		},
+		{
+			"fieldname": "rw_residence_district",
+			"fieldtype": "Data",
+			"label": "Residence district",
+			"insert_after": "rw_residence_province",
+		},
+		{
+			"fieldname": "rw_residence_sector",
+			"fieldtype": "Data",
+			"label": "Residence sector",
+			"insert_after": "rw_residence_district",
+		},
+		{
+			"fieldname": "rw_record_status",
+			"fieldtype": "Select",
+			"label": "Status",
+			"options": "Active\nInactive",
+			"default": "Active",
+			"insert_after": "rw_residence_sector",
+			"in_standard_filter": 1,
+			"in_list_view": 1,
+		},
+		{
+			"fieldname": "rw_inactive_reason",
+			"fieldtype": "Small Text",
+			"label": "Inactive reason",
+			"depends_on": 'eval:doc.rw_record_status=="Inactive"',
+			"mandatory_depends_on": 'eval:doc.rw_record_status=="Inactive"',
+			"insert_after": "rw_record_status",
+		},
+	]
+	fields.extend(_relative_section_fields("father", "Father Information", "rw_inactive_reason"))
+	fields.extend(_relative_section_fields("mother", "Mother Information", "rw_father_occupation"))
+	return {"Patient": fields}
+
+
+def _dedupe_field_order(fieldnames):
+	"""Each field once — duplicates in field_order break the desk layout."""
+	seen = set()
+	order = []
+	for fieldname in fieldnames:
+		if fieldname in seen:
+			continue
+		seen.add(fieldname)
+		order.append(fieldname)
+	return order
+
+
+def get_patient_ebuzima_field_order():
+	"""Identification: one column break — left = IDs, person, contact; right = UPID extras."""
+	visible = [
+		"basic_info",
+		"rw_reg_search_help",
+		"rw_sb_identification",
+		# Left column
+		"rw_identification_type",
+		"rw_national_id",
+		"first_name",
+		"middle_name",
+		"last_name",
+		"rw_nationality",
+		"patient_name",
+		"sex",
+		"blood_group",
+		"rw_tracnet_id",
+		"rw_patient_id_set",
+		"rw_go_manual",
+		"rw_record_status",
+		"marital_status",
+		"mobile",
+		"phone",
+		"email",
+		"occupation",
+		"report_preference",
+		"rw_set_dob_manually",
+		"dob",
+		"age_html",
+		# "rw_col_identification",
+		# Right column — UPID / manual registry fields
+		"rw_inactive_reason",
+		"rw_upid",
+		"rw_nid_application_number",
+		"rw_upid_is_temporary",
+		"rw_upid_source",
+		"rw_sb_insurance",
+		"rw_patient_insured",
+		"rw_col_insurance",
+		"rw_insurance_type",
+		"rw_insurance_member_number",
+		"rw_is_main_insurer",
+		"rw_main_insured_name",
+		"rw_main_insured_insurance_number",
+		"rw_sb_social",
+		"rw_education_level",
+		"rw_religion",
+		"rw_col_addr",
+		"rw_residence_province",
+		"rw_residence_district",
+		"rw_residence_sector",
+		"rw_sb_father",
+		"rw_father_id_type",
+		"rw_father_id_number",
+		"rw_father_names",
+		"rw_father_religion",
+		"rw_father_col_contact",
+		"rw_father_phone",
+		"rw_father_occupation",
+		"rw_sb_mother",
+		"rw_mother_id_type",
+		"rw_mother_id_number",
+		"rw_mother_names",
+		"rw_mother_religion",
+		"rw_mother_col_contact",
+		"rw_mother_phone",
+		"rw_mother_occupation",
+	]
+	hidden_tail = [
+		"naming_series",
+		"uid",
+		"status",
+		"inpatient_record",
+		"inpatient_status",
+		"image",
+		"column_break_14",
+		"column_break_25",
+		"invite_user",
+		"user_id",
+		"customer_details_section",
+		"customer",
+		"customer_group",
+		"territory",
+		"column_break_24",
+		"default_currency",
+		"default_price_list",
+		"language",
+		"more_info",
+		"patient_details",
+		"dashboard_tab",
+		"address_and_contact_tab",
+		"address_contacts",
+		"address_html",
+		"column_break_22",
+		"contact_html",
+		"sb_relation",
+		"patient_relation",
+		"medical_history_tab",
+		"allergy_medical_and_surgical_history",
+		"allergies",
+		"medication",
+		"column_break_20",
+		"medical_history",
+		"surgical_history",
+		"risk_factors",
+		"tobacco_past_use",
+		"tobacco_current_use",
+		"alcohol_past_use",
+		"alcohol_current_use",
+		"column_break_32",
+		"surrounding_factors",
+		"other_risk_factors",
+		"rw_mark_special_case",
+		"rw_insurance_valid_to",
+		"rw_rssb_last_verified_on",
+		"rw_rssb_validation_notes",
+	]
+	visible_set = set(visible)
+	return _dedupe_field_order(visible + [f for f in hidden_tail if f not in visible_set])
+
+
+def apply_patient_ebuzima_field_order():
+	"""Push field_order Property Setter — required for desk layout (custom fields alone are not enough)."""
+	order = get_patient_ebuzima_field_order()
+	value = json.dumps(order)
+	filters = {
+		"doc_type": "Patient",
+		"property": "field_order",
+		"doctype_or_field": "DocType",
 	}
+	name = frappe.db.get_value("Property Setter", filters, "name")
+	if name:
+		frappe.db.set_value("Property Setter", name, "value", value, update_modified=False)
+	else:
+		frappe.make_property_setter(
+			{
+				"doctype": "Property Setter",
+				"doctype_or_field": "DocType",
+				"doc_type": "Patient",
+				"property": "field_order",
+				"property_type": "Data",
+				"value": value,
+			},
+			validate_fields_for_doctype=False,
+		)
+	frappe.clear_cache(doctype="Patient")
+
+
+def install_rwanda_patient_ebuzima_layout():
+	"""Re-apply eBuzima patient registration layout (safe on existing sites)."""
+	install_rwanda_patient_registration()
+
+
+@frappe.whitelist()
+def apply_rwanda_patient_registration_layout():
+	"""Desk/bench: force Patient registration field order and labels onto the site."""
+	frappe.only_for(("System Manager", "Healthcare Administrator"), message=True)
+	install_rwanda_patient_registration()
+	return {"ok": True, "message": "Patient registration layout applied. Hard-refresh the Patient form."}
 
 
 def validate_rwanda_patient_registration(doc, method=None):
 	"""National ID / UPID / registration rules (called from Patient.validate)."""
 	if doc.doctype != "Patient":
 		return
+
+	_normalize_identification_type(doc)
+	_ensure_unknown_identification_number(doc)
+	_ensure_relative_unknown_identification_numbers(doc)
+	_sync_identification_to_uid(doc)
+	_sync_registration_status(doc)
 
 	nin = _clean_id(doc.get("rw_national_id"))
 	if nin:
@@ -481,7 +934,134 @@ def validate_rwanda_patient_registration(doc, method=None):
 	_validate_nin_immutable(doc)
 	_validate_duplicate_ids(doc)
 	_validate_inactive_reason(doc)
+	_validate_patient_id_set(doc)
 	_validate_insurance(doc)
+
+
+LEGACY_IDENTIFICATION_TYPE_MAP = {
+	"NIDA / NIN": "NID",
+	"Passport": "PASSPORT",
+	"Foreign ID": "PASSPORT",
+	"Refugee ID": "REFUGEE_ID",
+}
+
+
+def _normalize_identification_type(doc):
+	id_type = (doc.get("rw_identification_type") or "").strip()
+	if id_type in LEGACY_IDENTIFICATION_TYPE_MAP:
+		doc.rw_identification_type = LEGACY_IDENTIFICATION_TYPE_MAP[id_type]
+
+
+def _is_system_generated_unknown_id(value):
+	nin = _clean_id(value)
+	return bool(nin) and nin.startswith(UNKNOWN_ID_PREFIX)
+
+
+def _generate_unique_unknown_identification_number():
+	"""System ID for patients registered without official identification."""
+	for _ in range(20):
+		candidate = UNKNOWN_ID_PREFIX + frappe.generate_hash(length=10).upper()
+		if not frappe.db.exists("Patient", {"rw_national_id": candidate}):
+			return candidate
+	frappe.throw(
+		_("Could not generate a unique identification number. Retry."),
+		title=_("Patient registration"),
+	)
+
+
+def _ensure_unknown_identification_number(doc):
+	"""Auto-fill identification number when type is UNKNOWN."""
+	id_type = doc.get("rw_identification_type") or "UNKNOWN"
+	if id_type != "UNKNOWN":
+		return
+	if _clean_id(doc.get("rw_national_id")):
+		return
+	doc.rw_national_id = _generate_unique_unknown_identification_number()
+
+
+def _relative_unknown_id_prefix(role):
+	tag = RELATIVE_UNKNOWN_ROLE_TAGS.get(role)
+	if not tag:
+		return None
+	return f"{UNKNOWN_ID_PREFIX}{tag}-"
+
+
+def _is_system_generated_relative_unknown_id(value, role):
+	prefix = _relative_unknown_id_prefix(role)
+	if not prefix:
+		return False
+	nin = _clean_id(value)
+	return bool(nin) and nin.startswith(prefix)
+
+
+def _generate_unique_relative_unknown_identification_number(role):
+	"""System ID for father/mother when identification type is UNKNOWN."""
+	prefix = _relative_unknown_id_prefix(role)
+	if not prefix:
+		frappe.throw(_("Invalid relative role for identification number generation."))
+	fieldname = f"rw_{role}_id_number"
+	for _ in range(20):
+		candidate = prefix + frappe.generate_hash(length=8).upper()
+		if not frappe.db.exists("Patient", {fieldname: candidate}):
+			return candidate
+	frappe.throw(
+		_("Could not generate a unique identification number for {0}. Retry.").format(role),
+		title=_("Patient registration"),
+	)
+
+
+def _ensure_relative_unknown_identification_numbers(doc):
+	"""Auto-fill father/mother identification numbers when type is UNKNOWN."""
+	for role in RELATIVE_UNKNOWN_ROLE_TAGS:
+		id_type = doc.get(f"rw_{role}_id_type") or "UNKNOWN"
+		if id_type != "UNKNOWN":
+			continue
+		id_field = f"rw_{role}_id_number"
+		if _clean_id(doc.get(id_field)):
+			continue
+		doc.set(id_field, _generate_unique_relative_unknown_identification_number(role))
+
+
+def _sync_identification_to_uid(doc):
+	id_type = doc.get("rw_identification_type") or "UNKNOWN"
+	if id_type == "UPID":
+		upid = _clean_id(doc.get("rw_upid"))
+		if upid:
+			doc.uid = upid
+		return
+	if id_type == "NID_APPLICATION_NUMBER":
+		app_no = _clean_id(doc.get("rw_nid_application_number"))
+		if app_no:
+			doc.uid = app_no
+		return
+	nin = _clean_id(doc.get("rw_national_id"))
+	if nin and id_type in ("NID", "PASSPORT", "REFUGEE_ID", "UNKNOWN"):
+		doc.uid = nin
+
+
+def _sync_registration_status(doc):
+	if doc.get("rw_record_status") == "Inactive":
+		doc.status = "Disabled"
+	else:
+		doc.status = "Active"
+
+
+def _validate_patient_id_set(doc):
+	if not cint(doc.get("rw_patient_id_set")):
+		return
+	id_type = doc.get("rw_identification_type") or "UNKNOWN"
+	if id_type == "UPID" and not _clean_id(doc.get("rw_upid")):
+		frappe.throw(_("UPID is required when Patient ID Set is checked."), title=_("Identification"))
+	if id_type == "NID_APPLICATION_NUMBER" and not _clean_id(doc.get("rw_nid_application_number")):
+		frappe.throw(
+			_("NID Application Number is required when Patient ID Set is checked."),
+			title=_("Identification"),
+		)
+	if id_type in ("NID", "PASSPORT", "REFUGEE_ID") and not _clean_id(doc.get("rw_national_id")):
+		frappe.throw(
+			_("Identification number is required when Patient ID Set is checked."),
+			title=_("Identification"),
+		)
 
 
 def _clean_id(val):
@@ -504,6 +1084,12 @@ def _validate_nin_immutable(doc):
 	old_nin = _clean_id(prev.get("rw_national_id"))
 	new_nin = _clean_id(doc.get("rw_national_id"))
 	if old_nin and new_nin != old_nin and not _can_edit_nin():
+		prev_type = prev.get("rw_identification_type") or "UNKNOWN"
+		curr_type = doc.get("rw_identification_type") or "UNKNOWN"
+		if _is_system_generated_unknown_id(old_nin) or (
+			prev_type == "UNKNOWN" and curr_type != "UNKNOWN"
+		):
+			return
 		frappe.throw(
 			_("National ID (NIN) cannot be changed after it is set. Contact an MPI administrator."),
 			title=_("Restricted change"),
@@ -669,6 +1255,25 @@ def search_patients_rw(
 			_("Patient search failed. Run `bench migrate` after upgrading healthcare."),
 			title=_("Patient registration"),
 		)
+
+
+@frappe.whitelist()
+def generate_rw_unknown_identification_number():
+	"""System-generated identification number when identification type is UNKNOWN."""
+	if not frappe.has_permission("Patient", "create"):
+		frappe.throw(_("Not permitted to generate an identification number."), frappe.PermissionError)
+	return _generate_unique_unknown_identification_number()
+
+
+@frappe.whitelist()
+def generate_rw_relative_unknown_identification_number(role):
+	"""System-generated ID for father/mother when identification type is UNKNOWN."""
+	if not frappe.has_permission("Patient", "create"):
+		frappe.throw(_("Not permitted to generate an identification number."), frappe.PermissionError)
+	role = (role or "").strip().lower()
+	if role not in RELATIVE_UNKNOWN_ROLE_TAGS:
+		frappe.throw(_("Role must be father or mother."))
+	return _generate_unique_relative_unknown_identification_number(role)
 
 
 @frappe.whitelist()

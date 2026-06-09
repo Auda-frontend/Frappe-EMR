@@ -1,0 +1,102 @@
+<style>
+  body { font-family: Arial, sans-serif; font-size: 11px; }
+  h2 { text-align: center; font-size: 14px; text-transform: uppercase; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+  td, th { border: 1px solid #333; padding: 4px 6px; }
+  .triage-red    { background: #c0392b; color: #fff; font-weight: bold; padding: 4px 10px; }
+  .triage-orange { background: #e67e22; color: #fff; font-weight: bold; padding: 4px 10px; }
+  .triage-yellow { background: #f1c40f; color: #333; font-weight: bold; padding: 4px 10px; }
+  .triage-green  { background: #27ae60; color: #fff; font-weight: bold; padding: 4px 10px; }
+</style>
+
+{% if doc.is_maternity %}
+  <h2>Maternity Triage Form</h2>
+{% elif doc.is_child %}
+  <h2>Child Triage Form (3–12 Years)</h2>
+{% else %}
+  <h2>Adult Triage Form (Over 12 Years)</h2>
+{% endif %}
+
+<table>
+  <tr>
+    <td><b>Patient:</b> {{ doc.patient_name }}</td>
+    <td><b>Age:</b> {{ doc.patient_age }}</td>
+    <td><b>Date:</b> {{ doc.arrival_date }}</td>
+    <td><b>Arrival time:</b> {{ doc.arrival_time }}</td>
+  </tr>
+  <tr>
+    <td colspan="2"><b>Chief Complaint:</b> {{ doc.rw_chief_complaint }}</td>
+    <td colspan="2"><b>MRN:</b> {{ doc.medical_record_number }}</td>
+  </tr>
+</table>
+
+<table>
+  <tr><th colspan="4">Emergency Signs</th></tr>
+  <tr>
+    <td>Airway/Breathing: {{ '✔' if doc.emergency_airway else '☐' }}</td>
+    <td>Circulation: {{ '✔' if doc.emergency_circulation else '☐' }}</td>
+    <td>Lethargic+Pulse: {{ '✔' if doc.emergency_lethargic else '☐' }}</td>
+    <td>Convulsion: {{ '✔' if doc.emergency_convulsion else '☐' }}</td>
+  </tr>
+  <tr>
+    <td>Coma: {{ '✔' if doc.emergency_coma else '☐' }}</td>
+    <td>Severe Dehydration: {{ '✔' if doc.emergency_dehydration else '☐' }}</td>
+    <td>Hypoglycemia: {{ '✔' if doc.emergency_hypoglycemia else '☐' }}</td>
+    <td>Purpuric Rash: {{ '✔' if doc.emergency_purpuric_rash else '☐' }}</td>
+  </tr>
+  {% if doc.is_maternity %}
+  <tr>
+    <td>Prolapsed Cord: {{ '✔' if doc.emergency_prolapsed_cord else '☐' }}</td>
+    <td>No Fetal Movement: {{ '✔' if doc.emergency_no_fetal_movement else '☐' }}</td>
+    <td>Abnormal CTG: {{ '✔' if doc.emergency_abnormal_ctg else '☐' }}</td>
+    <td>Imminent Birth: {{ '✔' if doc.emergency_imminent_birth else '☐' }}</td>
+  </tr>
+  {% endif %}
+</table>
+
+<table>
+  <tr><th colspan="6">TEWS Score</th></tr>
+  <tr>
+    <td><b>RR:</b> {{ doc.respiratory_rate }}</td>
+    <td><b>HR:</b> {{ doc.pulse }}</td>
+    {% if not doc.is_child %}<td><b>SBP:</b> {{ doc.bp_systolic }}</td>{% endif %}
+    <td><b>Temp:</b> {{ doc.temperature }}</td>
+    <td><b>AVPU:</b> {{ doc.tews_avpu }}</td>
+    <td><b>Trauma:</b> {{ doc.tews_trauma }}</td>
+  </tr>
+  <tr>
+    <td colspan="3"><b>Total TEWS:</b> {{ doc.tews_total }}</td>
+    <td><b>SpO2:</b> {{ doc.rw_spo2 }}%</td>
+    <td><b>Pain:</b> {{ doc.rw_pain_score }}/10</td>
+    <td>
+      <span class="triage-{{ (doc.rw_triage_category or '').lower() }}">
+        {{ doc.rw_triage_category }}
+      </span>
+    </td>
+  </tr>
+</table>
+
+<table>
+  <tr><th colspan="3">Vital Signs</th></tr>
+  <tr>
+    <td><b>BP:</b> {{ doc.bp_systolic }}/{{ doc.bp_diastolic }}</td>
+    <td><b>Height:</b> {{ doc.height }} m</td>
+    <td><b>Weight:</b> {{ doc.weight }} kg</td>
+  </tr>
+  <tr>
+    <td><b>BMI:</b> {{ doc.bmi }}</td>
+    <td><b>MUAC:</b> {{ doc.rw_muac }} cm</td>
+    <td><b>Oriented:</b> {{ 'Yes' if doc.rw_oriented else 'No' }}</td>
+  </tr>
+</table>
+
+<table>
+  <tr>
+    <td><b>Nurse:</b> {{ doc.nurse_name }}</td>
+    <td><b>Triage finish time:</b> {{ doc.triage_finish_time }}</td>
+  </tr>
+  <tr>
+    <td><b>Doctor:</b> {{ doc.doctor_name }}</td>
+    <td><b>Attended at:</b> {{ doc.doctor_attended_at }}</td>
+  </tr>
+</table>

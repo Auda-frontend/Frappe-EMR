@@ -1,27 +1,88 @@
 // Rwanda patient registration desk UX (Phase A)
 
-const RW_INSURANCE_FIELDS = [
+const RW_HIDDEN_FORM_TABS = [
+	"dashboard_tab",
+	"address_and_contact_tab",
+	"medical_history_tab",
+];
+
+const RW_MEDICAL_HISTORY_FIELDS = [
+	"medical_history_tab",
+	"allergy_medical_and_surgical_history",
+	"allergies",
+	"medication",
+	"column_break_20",
+	"medical_history",
+	"surgical_history",
+	"risk_factors",
+	"tobacco_past_use",
+	"tobacco_current_use",
+	"alcohol_past_use",
+	"alcohol_current_use",
+	"column_break_32",
+	"surrounding_factors",
+	"other_risk_factors",
+];
+
+const RW_UNKNOWN_ID_PREFIX = "RW-UNK-";
+const RW_RELATIVE_ROLES = ["father", "mother"];
+const RW_RELATIVE_UNKNOWN_TAGS = { father: "F", mother: "M" };
+const RW_DEFAULT_OPEN_SECTION = "rw_sb_identification";
+const RW_DEFAULT_COLLAPSED_SECTIONS = [
+	"rw_sb_insurance",
+	"rw_sb_social",
+	"rw_sb_father",
+	"rw_sb_mother",
+];
+
+const RW_INSURANCE_DETAIL_FIELDS = [
+	"rw_col_insurance",
 	"rw_insurance_type",
-	"rw_mark_special_case",
 	"rw_insurance_member_number",
-	"rw_insurance_valid_to",
 	"rw_is_main_insurer",
 	"rw_main_insured_name",
 	"rw_main_insured_insurance_number",
-	"rw_rssb_last_verified_on",
-	"rw_rssb_validation_notes",
 ];
+
+const RW_STRAY_COLUMN_BREAKS = ["column_break_14", "column_break_25"];
 
 frappe.ui.form.on("Patient", {
 	refresh(frm) {
+		rw_patient_hide_extra_tabs(frm);
+		rw_patient_hide_stray_column_breaks(frm);
 		rw_patient_setup_insurance_visibility(frm);
+		rw_patient_setup_manual_flags(frm);
+		rw_patient_setup_identification_visibility(frm);
+		RW_RELATIVE_ROLES.forEach((role) => rw_patient_setup_relative_identification(frm, role));
+		rw_patient_setup_section_defaults(frm);
 		rw_patient_setup_registration_desk(frm);
+	},
+
+	rw_go_manual(frm) {
+		rw_patient_setup_manual_flags(frm);
+	},
+
+	rw_set_dob_manually(frm) {
+		rw_patient_setup_manual_flags(frm);
+	},
+
+	rw_identification_type(frm) {
+		rw_patient_handle_identification_type_change(frm);
+	},
+
+	rw_patient_id_set(frm) {
+		rw_patient_setup_identification_visibility(frm);
 	},
 
 	rw_patient_insured(frm) {
 		rw_patient_setup_insurance_visibility(frm);
 		if (frm.doc.rw_patient_insured === "No") {
-			RW_INSURANCE_FIELDS.forEach((f) => frm.set_value(f, null));
+			[
+				"rw_insurance_type",
+				"rw_insurance_member_number",
+				"rw_main_insured_name",
+				"rw_main_insured_insurance_number",
+			].forEach((f) => frm.set_value(f, null));
 			frm.set_value("rw_mark_special_case", 0);
 			frm.set_value("rw_is_main_insurer", 1);
 		}
@@ -36,7 +97,143 @@ frappe.ui.form.on("Patient", {
 			rw_patient_check_duplicate_nin(frm);
 		}
 	},
+
+	rw_father_id_type(frm) {
+		rw_patient_handle_relative_id_type_change(frm, "father");
+	},
+
+	rw_mother_id_type(frm) {
+		rw_patient_handle_relative_id_type_change(frm, "mother");
+	},
 });
+
+function rw_patient_hide_stray_column_breaks(frm) {
+	// Stock Marley column breaks between demographics fields — keep hidden so Identification stays 2-col.
+	RW_STRAY_COLUMN_BREAKS.forEach((fieldname) => {
+		if (frm.fields_dict[fieldname]) {
+			frm.set_df_property(fieldname, "hidden", 1);
+		}
+	});
+}
+
+function rw_patient_setup_section_defaults(frm) {
+	if (!frm.layout || !frm.layout.sections) {
+		return;
+	}
+
+	// Clear saved collapse state so Identification opens by default on each visit.
+	[
+		"rw-patient-identification-section",
+		"rw-patient-insurance-section",
+		"rw-patient-social-section",
+		"rw-patient-father-section",
+		"rw-patient-mother-section",
+	].forEach((css_class) => localStorage.removeItem(`${css_class}-closed`));
+
+	frm.layout.sections.forEach((section) => {
+		if (!section.df || !section.df.collapsible) {
+			return;
+		}
+		if (section.df.fieldname === RW_DEFAULT_OPEN_SECTION) {
+			section.collapse(false);
+		} else if (RW_DEFAULT_COLLAPSED_SECTIONS.includes(section.df.fieldname)) {
+			section.collapse(true);
+		}
+	});
+}
+
+function rw_patient_hide_extra_tabs(frm) {
+	[...RW_HIDDEN_FORM_TABS, ...RW_MEDICAL_HISTORY_FIELDS].forEach((fieldname) => {
+		if (frm.fields_dict[fieldname]) {
+			frm.set_df_property(fieldname, "hidden", 1);
+		}
+	});
+}
+
+function rw_patient_is_system_unknown_id(value) {
+	return !!(value && String(value).startsWith(RW_UNKNOWN_ID_PREFIX));
+}
+
+function rw_patient_is_system_relative_unknown_id(value, role) {
+	const tag = RW_RELATIVE_UNKNOWN_TAGS[role];
+	if (!tag || !value) {
+		return false;
+	}
+	return String(value).startsWith(`${RW_UNKNOWN_ID_PREFIX}${tag}-`);
+}
+
+function rw_patient_handle_relative_id_type_change(frm, role) {
+	const id_type_field = `rw_${role}_id_type`;
+	const id_number_field = `rw_${role}_id_number`;
+	const id_type = frm.doc[id_type_field] || "UNKNOWN";
+
+	if (id_type === "UNKNOWN") {
+		if (!frm.doc[id_number_field] || rw_patient_is_system_relative_unknown_id(frm.doc[id_number_field], role)) {
+			rw_patient_generate_relative_unknown_id(frm, role);
+		}
+	} else if (rw_patient_is_system_relative_unknown_id(frm.doc[id_number_field], role)) {
+		frm.set_value(id_number_field, null);
+	}
+
+	rw_patient_setup_relative_identification(frm, role);
+}
+
+function rw_patient_generate_relative_unknown_id(frm, role) {
+	frappe.call({
+		method: "healthcare.healthcare.rwanda_registration.generate_rw_relative_unknown_identification_number",
+		args: { role },
+		callback(r) {
+			if (r.message) {
+				frm.set_value(`rw_${role}_id_number`, r.message);
+			}
+		},
+	});
+}
+
+function rw_patient_setup_relative_identification(frm, role) {
+	const id_type_field = `rw_${role}_id_type`;
+	const id_number_field = `rw_${role}_id_number`;
+	const id_type = frm.doc[id_type_field] || "UNKNOWN";
+	const is_unknown = id_type === "UNKNOWN";
+
+	if (frm.fields_dict[id_number_field]) {
+		frm.set_df_property(
+			id_number_field,
+			"label",
+			is_unknown ? __("Identification Number (system generated)") : __("Identification Number")
+		);
+		frm.set_df_property(id_number_field, "read_only", is_unknown);
+	}
+
+	if (is_unknown && !frm.doc[id_number_field]) {
+		rw_patient_generate_relative_unknown_id(frm, role);
+	}
+}
+
+function rw_patient_handle_identification_type_change(frm) {
+	const id_type = frm.doc.rw_identification_type || "UNKNOWN";
+
+	if (id_type === "UNKNOWN") {
+		if (!frm.doc.rw_national_id || rw_patient_is_system_unknown_id(frm.doc.rw_national_id)) {
+			rw_patient_generate_unknown_id(frm);
+		}
+	} else if (rw_patient_is_system_unknown_id(frm.doc.rw_national_id)) {
+		frm.set_value("rw_national_id", null);
+	}
+
+	rw_patient_setup_identification_visibility(frm);
+}
+
+function rw_patient_generate_unknown_id(frm) {
+	frappe.call({
+		method: "healthcare.healthcare.rwanda_registration.generate_rw_unknown_identification_number",
+		callback(r) {
+			if (r.message) {
+				frm.set_value("rw_national_id", r.message);
+			}
+		},
+	});
+}
 
 function rw_patient_setup_registration_desk(frm) {
 	if (!frm.fields_dict.rw_reg_search_help) {
@@ -70,7 +267,7 @@ function rw_patient_workflow_buttons(frm) {
 	const group = __("Workflow");
 	frm.add_custom_button(__("Record triage"), () => {
 		frappe.route_options = { patient: frm.doc.name };
-		frappe.new_doc("Vital Signs");
+		frappe.new_doc("Triage Visit");
 	}, group);
 	frm.add_custom_button(__("Patient orientation"), () => frappe.set_route("patient-orientation"), group);
 	frm.add_custom_button(__("Department queue"), () => frappe.set_route("department-queue"), group);
@@ -78,10 +275,78 @@ function rw_patient_workflow_buttons(frm) {
 
 function rw_patient_setup_insurance_visibility(frm) {
 	const insured = frm.doc.rw_patient_insured === "Yes";
-	RW_INSURANCE_FIELDS.forEach((fieldname) => {
-		frm.toggle_display(fieldname, insured);
+	RW_INSURANCE_DETAIL_FIELDS.forEach((fieldname) => {
+		if (frm.fields_dict[fieldname]) {
+			frm.toggle_display(fieldname, insured);
+		}
 	});
 	rw_patient_toggle_main_insured_fields(frm);
+}
+
+function rw_patient_setup_manual_flags(frm) {
+	const go_manual = !!frm.doc.rw_go_manual;
+	const set_dob = !!frm.doc.rw_set_dob_manually;
+
+	if (frm.fields_dict.rw_upid) {
+		frm.set_df_property("rw_upid", "read_only", !go_manual && !frm.doc.rw_upid_is_temporary);
+	}
+	["rw_upid_is_temporary", "rw_upid_source"].forEach((fieldname) => {
+		if (frm.fields_dict[fieldname]) {
+			frm.toggle_display(fieldname, go_manual || frm.doc.rw_upid_is_temporary);
+		}
+	});
+	if (frm.fields_dict.dob) {
+		frm.set_df_property("dob", "read_only", !set_dob);
+	}
+}
+
+function rw_patient_setup_identification_visibility(frm) {
+	const id_type = frm.doc.rw_identification_type || "UNKNOWN";
+	const is_unknown = id_type === "UNKNOWN";
+	const show_nid_app = id_type === "NID_APPLICATION_NUMBER";
+	const show_upid_field = id_type === "UPID" || !!frm.doc.rw_go_manual || !!frm.doc.rw_upid_is_temporary;
+	const show_id_number = ["NID", "PASSPORT", "REFUGEE_ID", "UNKNOWN"].includes(id_type);
+
+	frm.toggle_display("rw_nid_application_number", show_nid_app);
+	frm.toggle_display("rw_upid", show_upid_field);
+	frm.toggle_display("rw_national_id", show_id_number);
+
+	if (frm.fields_dict.rw_national_id) {
+		const labels = {
+			NID: __("Identification Number (NID/NIN)"),
+			PASSPORT: __("Identification Number (Passport)"),
+			REFUGEE_ID: __("Identification Number (Refugee ID)"),
+			UNKNOWN: __("Identification Number (system generated)"),
+		};
+		frm.set_df_property(
+			"rw_national_id",
+			"label",
+			labels[id_type] || labels.UNKNOWN
+		);
+		frm.set_df_property("rw_national_id", "read_only", is_unknown);
+	}
+
+	if (frm.is_new() && is_unknown && !frm.doc.rw_national_id) {
+		rw_patient_generate_unknown_id(frm);
+	}
+
+	if (frm.doc.rw_patient_id_set) {
+		if (frm.fields_dict.rw_national_id) {
+			frm.set_df_property("rw_national_id", "reqd", show_id_number);
+		}
+		if (frm.fields_dict.rw_upid) {
+			frm.set_df_property("rw_upid", "reqd", show_upid_field && id_type === "UPID");
+		}
+		if (frm.fields_dict.rw_nid_application_number) {
+			frm.set_df_property("rw_nid_application_number", "reqd", show_nid_app);
+		}
+	} else {
+		["rw_national_id", "rw_upid", "rw_nid_application_number"].forEach((fieldname) => {
+			if (frm.fields_dict[fieldname]) {
+				frm.set_df_property(fieldname, "reqd", 0);
+			}
+		});
+	}
 }
 
 function rw_patient_toggle_main_insured_fields(frm) {

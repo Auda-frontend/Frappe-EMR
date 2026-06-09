@@ -42,25 +42,6 @@ PATIENT_HISTORY_ON_ENCOUNTER = (
 	("rw_other_risk_factors", "other_risk_factors"),
 )
 
-PATIENT_MEDICAL_HISTORY_FIELDS = (
-	"medical_history_tab",
-	"allergy_medical_and_surgical_history",
-	"allergies",
-	"medication",
-	"column_break_20",
-	"medical_history",
-	"surgical_history",
-	"risk_factors",
-	"tobacco_past_use",
-	"tobacco_current_use",
-	"alcohol_past_use",
-	"alcohol_current_use",
-	"column_break_32",
-	"surrounding_factors",
-	"other_risk_factors",
-)
-
-
 def install_rwanda_opd():
 	create_custom_fields(get_rwanda_opd_custom_fields(), update=True)
 	apply_opd_ui_labels()
@@ -388,10 +369,9 @@ def get_vital_signs_triage_fields():
 
 
 def hide_patient_medical_history_on_registration():
-	from healthcare.healthcare.rwanda_registration import set_patient_field_hidden
+	from healthcare.healthcare.rwanda_registration import hide_patient_medical_history_on_registration as _hide
 
-	for fieldname in PATIENT_MEDICAL_HISTORY_FIELDS:
-		set_patient_field_hidden(fieldname, hidden=1)
+	_hide()
 
 
 def apply_opd_ui_labels():
