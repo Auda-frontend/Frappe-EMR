@@ -1,0 +1,389 @@
+{
+ "autoname": "naming_series:",
+ "creation": "2026-06-12",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "patient",
+  "company",
+  "signs_date",
+  "signs_time",
+  "sb_form_routing",
+  "rw_patient_age",
+  "rw_patient_age_months",
+  "rw_is_maternity",
+  "rw_dob",
+  "rw_form_type",
+  "rw_adult_triage_form",
+  "rw_child_triage_form",
+  "rw_infant_triage_form",
+  "rw_maternity_triage_form",
+  "rw_tews_score",
+  "sb_vitals",
+  "temperature",
+  "pulse",
+  "respiratory_rate",
+  "bp_systolic",
+  "bp_diastolic",
+  "rw_spo2",
+  "rw_pain_score",
+  "sb_exam",
+  "tongue",
+  "abdomen",
+  "reflexes",
+  "vital_signs_note",
+  "sb_anthropometry",
+  "height",
+  "weight",
+  "bmi",
+  "rw_muac",
+  "sb_assessment",
+  "rw_triage_category",
+  "rw_chief_complaint",
+  "rw_triage_notes",
+  "rw_oriented",
+  "sb_notification",
+  "rw_nurse_name",
+  "rw_triage_finish_time",
+  "rw_notified_color",
+  "rw_notified_at",
+  "rw_doctor_name",
+  "rw_doctor_attended_at",
+  "rw_triage_manual_override",
+  "rw_override_reason"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "HLC-VTS-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "label": "Patient",
+   "options": "Patient",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "signs_date",
+   "fieldtype": "Date",
+   "label": "Triage Date"
+  },
+  {
+   "fieldname": "signs_time",
+   "fieldtype": "Time",
+   "label": "Triage Time"
+  },
+  {
+   "fieldname": "sb_form_routing",
+   "fieldtype": "Section Break",
+   "label": "Form Routing"
+  },
+  {
+   "fieldname": "rw_patient_age",
+   "fieldtype": "Int",
+   "label": "Patient Age (years)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rw_patient_age_months",
+   "fieldtype": "Int",
+   "label": "Patient Age (months)",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_is_maternity",
+   "fieldtype": "Check",
+   "label": "Is Maternity",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_dob",
+   "fieldtype": "Date",
+   "label": "Date of Birth",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rw_form_type",
+   "fieldtype": "Select",
+   "label": "Detected Form Type",
+   "options": "\nAdult\nChild\nInfant\nMaternity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rw_adult_triage_form",
+   "fieldtype": "Link",
+   "label": "Adult Triage Form",
+   "options": "Adult Triage Form",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_child_triage_form",
+   "fieldtype": "Link",
+   "label": "Child Triage Form",
+   "options": "Child Triage Form",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_infant_triage_form",
+   "fieldtype": "Link",
+   "label": "Infant Triage Form",
+   "options": "Infant Triage Form",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_maternity_triage_form",
+   "fieldtype": "Link",
+   "label": "Maternity Triage Form",
+   "options": "Maternity Triage Form",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_tews_score",
+   "fieldtype": "Int",
+   "label": "TEWS Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_vitals",
+   "fieldtype": "Section Break",
+   "label": "Vital Signs"
+  },
+  {
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "label": "Temperature (°C)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pulse",
+   "fieldtype": "Float",
+   "label": "Pulse (bpm)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "respiratory_rate",
+   "fieldtype": "Float",
+   "label": "Respiratory Rate (/min)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bp_systolic",
+   "fieldtype": "Float",
+   "label": "BP Systolic (mmHg)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "bp_diastolic",
+   "fieldtype": "Float",
+   "label": "BP Diastolic (mmHg)"
+  },
+  {
+   "fieldname": "rw_spo2",
+   "fieldtype": "Float",
+   "label": "SpO2 (%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rw_pain_score",
+   "fieldtype": "Int",
+   "label": "Pain Score (0-10)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_exam",
+   "fieldtype": "Section Break",
+   "label": "Physical Examination"
+  },
+  {
+   "fieldname": "tongue",
+   "fieldtype": "Select",
+   "label": "Tongue"
+  },
+  {
+   "fieldname": "abdomen",
+   "fieldtype": "Select",
+   "label": "Abdomen"
+  },
+  {
+   "fieldname": "reflexes",
+   "fieldtype": "Select",
+   "label": "Reflexes"
+  },
+  {
+   "fieldname": "vital_signs_note",
+   "fieldtype": "Text",
+   "label": "Vital Signs Note"
+  },
+  {
+   "fieldname": "sb_anthropometry",
+   "fieldtype": "Section Break",
+   "label": "Anthropometry"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "label": "Height (m)"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "label": "Weight (kg)"
+  },
+  {
+   "fieldname": "bmi",
+   "fieldtype": "Float",
+   "label": "BMI",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rw_muac",
+   "fieldtype": "Float",
+   "label": "MUAC (cm)"
+  },
+  {
+   "fieldname": "sb_assessment",
+   "fieldtype": "Section Break",
+   "label": "Triage Assessment"
+  },
+  {
+   "fieldname": "rw_triage_category",
+   "fieldtype": "Select",
+   "label": "Triage Category",
+   "options": "\nRED\nORANGE\nYELLOW\nGREEN",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rw_chief_complaint",
+   "fieldtype": "Small Text",
+   "label": "Chief Complaint"
+  },
+  {
+   "fieldname": "rw_triage_notes",
+   "fieldtype": "Text",
+   "label": "Triage Notes"
+  },
+  {
+   "fieldname": "rw_oriented",
+   "fieldtype": "Small Text",
+   "label": "Oriented"
+  },
+  {
+   "fieldname": "sb_notification",
+   "fieldtype": "Section Break",
+   "label": "Notification & Follow-up"
+  },
+  {
+   "fieldname": "rw_nurse_name",
+   "fieldtype": "Link",
+   "label": "Nurse Name",
+   "options": "User"
+  },
+  {
+   "fieldname": "rw_triage_finish_time",
+   "fieldtype": "Datetime",
+   "label": "Triage Finish Time"
+  },
+  {
+   "fieldname": "rw_notified_color",
+   "fieldtype": "Select",
+   "label": "Notified Color",
+   "options": "\nRED\nORANGE",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_notified_at",
+   "fieldtype": "Datetime",
+   "label": "Notified At",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_doctor_name",
+   "fieldtype": "Link",
+   "label": "Doctor Name",
+   "options": "User",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_doctor_attended_at",
+   "fieldtype": "Datetime",
+   "label": "Doctor Attended At",
+   "hidden": 1
+  },
+  {
+   "fieldname": "rw_triage_manual_override",
+   "fieldtype": "Check",
+   "label": "Manual Priority Override"
+  },
+  {
+   "fieldname": "rw_override_reason",
+   "fieldtype": "Small Text",
+   "label": "Override Reason",
+   "hidden": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-12",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Triage",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Nurse",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "create": 0,
+   "delete": 0,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Physician",
+   "share": 0,
+   "submit": 0,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Healthcare Administrator",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "patient",
+ "track_changes": 1
+}

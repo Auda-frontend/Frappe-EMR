@@ -551,6 +551,14 @@ def validate_rwanda_triage(doc, method=None):
 	if not doc.get("rw_triaged_by"):
 		doc.rw_triaged_by = frappe.session.user
 
+	# Records created from Triage Assessment already have TEWS color + OPD priority mapped.
+	if doc.get("rw_triage_assessment") and doc.get("rw_triage_color"):
+		if not doc.get("rw_triage_category"):
+			from healthcare.healthcare.rwanda_triage.scoring import map_triage_color_to_opd_priority
+
+			doc.rw_triage_category = map_triage_color_to_opd_priority(doc.rw_triage_color)
+		return
+
 	apply_auto_triage(doc)
 
 

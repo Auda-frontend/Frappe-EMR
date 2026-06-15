@@ -1,0 +1,630 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-06-09 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "parent_triage",
+  "patient",
+  "patient_name",
+  "age",
+  "medical_record_number",
+  "chief_complaint",
+  "date",
+  "arrival_time",
+  "sb_emergency",
+  "alarm_not_breathing",
+  "alarm_obstructed_breathing",
+  "alarm_severe_resp_distress",
+  "alarm_cardiac_arrest",
+  "alarm_hemorrhage_uncontrolled",
+  "alarm_stab_gunshot",
+  "alarm_lethargic",
+  "alarm_weak_fast_pulse",
+  "alarm_cap_refill_3sec",
+  "alarm_cold_hands",
+  "alarm_convulsion",
+  "alarm_coma",
+  "alarm_hypoglycemia",
+  "alarm_purpuric_rash",
+  "alarm_burn_face_inhalation",
+  "alarm_not_breathing_weak",
+  "alarm_central_cyanosis",
+  "alarm_pulse_low_absent",
+  "dehydration_skin_pinch",
+  "dehydration_lethargy",
+  "dehydration_sunken_eyes",
+  "convulsion_glucose",
+  "coma_glucose",
+  "yellow_focal_neuro_glucose",
+  "sb_tews",
+  "mobility",
+  "mobility_score",
+  "rr",
+  "rr_score",
+  "hr",
+  "hr_score",
+  "temperature",
+  "temp_score",
+  "avpu",
+  "avpu_score",
+  "trauma",
+  "trauma_score",
+  "tews_score",
+  "spo2",
+  "pain_score",
+  "triage_color",
+  "sb_yellow",
+  "yellow_focal_neuro",
+  "yellow_altered_mental",
+  "yellow_chest_pain",
+  "yellow_poisoning",
+  "yellow_coughing_blood",
+  "yellow_diabetic_high",
+  "yellow_aggression",
+  "yellow_acute_sob",
+  "yellow_severe_pain",
+  "yellow_burn_20_urgent",
+  "yellow_fracture_open",
+  "yellow_threatened_limb",
+  "yellow_eye_injury",
+  "yellow_large_joint_disloc",
+  "yellow_severe_mechanism",
+  "yellow_abdominal_trauma",
+  "sb_green",
+  "green_cant_drink",
+  "green_very_pale",
+  "green_resp_distress",
+  "green_diabetic_high",
+  "green_malnutrition",
+  "green_moderate_pain",
+  "green_disloc_finger_toe",
+  "green_fracture_closed",
+  "green_burn_no_urgency",
+  "sb_final",
+  "nurse_name",
+  "triage_finish_time",
+  "notified_color",
+  "notified_at",
+  "doctor_name",
+  "doctor_attended_at",
+  "manual_priority_override"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "CHTF-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "parent_triage",
+   "fieldtype": "Link",
+   "label": "Parent Triage",
+   "options": "Triage",
+   "read_only": 1
+  },
+  {
+   "fieldname": "triage_assessment",
+   "fieldtype": "Link",
+   "label": "Triage Assessment",
+   "options": "Triage Assessment"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "label": "Patient",
+   "options": "Patient",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "label": "Patient Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "age",
+   "fieldtype": "Int",
+   "label": "Age (years)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "medical_record_number",
+   "fieldtype": "Data",
+   "label": "Medical Record Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "chief_complaint",
+   "fieldtype": "Small Text",
+   "label": "Chief Complaint",
+   "read_only": 1
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "arrival_time",
+   "fieldtype": "Time",
+   "label": "Arrival Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_emergency",
+   "fieldtype": "Section Break",
+   "label": "Emergency Signs (RED Alarm)"
+  },
+  {
+   "fieldname": "alarm_not_breathing",
+   "fieldtype": "Check",
+   "label": "Airway \u2014 Not Breathing"
+  },
+  {
+   "fieldname": "alarm_obstructed_breathing",
+   "fieldtype": "Check",
+   "label": "Airway \u2014 Obstructed Breathing"
+  },
+  {
+   "fieldname": "alarm_severe_resp_distress",
+   "fieldtype": "Check",
+   "label": "Airway \u2014 Severe Respiratory Distress"
+  },
+  {
+   "fieldname": "alarm_cardiac_arrest",
+   "fieldtype": "Check",
+   "label": "Circulation \u2014 Cardiac Arrest"
+  },
+  {
+   "fieldname": "alarm_hemorrhage_uncontrolled",
+   "fieldtype": "Check",
+   "label": "Circulation \u2014 Hemorrhage Uncontrolled"
+  },
+  {
+   "fieldname": "alarm_stab_gunshot",
+   "fieldtype": "Check",
+   "label": "Circulation \u2014 Stab/Gunshot Wound to Neck or Chest"
+  },
+  {
+   "fieldname": "alarm_lethargic",
+   "fieldtype": "Check",
+   "label": "Lethargic"
+  },
+  {
+   "fieldname": "alarm_weak_fast_pulse",
+   "fieldtype": "Check",
+   "label": "Pulse Weak and Fast"
+  },
+  {
+   "fieldname": "alarm_cap_refill_3sec",
+   "fieldtype": "Check",
+   "label": "Capillary Refill \u2265 3 seconds"
+  },
+  {
+   "fieldname": "alarm_cold_hands",
+   "fieldtype": "Check",
+   "label": "Cold Hands"
+  },
+  {
+   "fieldname": "alarm_convulsion",
+   "fieldtype": "Check",
+   "label": "Convulsion \u2014 Current Seizure or Post-ictal (not alert)"
+  },
+  {
+   "fieldname": "alarm_coma",
+   "fieldtype": "Check",
+   "label": "Coma \u2014 Unresponsive or Responsive Only to Pain"
+  },
+  {
+   "fieldname": "alarm_hypoglycemia",
+   "fieldtype": "Check",
+   "label": "Hypoglycemia \u2014 Glucose < 3 mmol/L or < 60 mg/dL"
+  },
+  {
+   "fieldname": "alarm_purpuric_rash",
+   "fieldtype": "Check",
+   "label": "Purpuric Rash"
+  },
+  {
+   "fieldname": "alarm_burn_face_inhalation",
+   "fieldtype": "Check",
+   "label": "Burn \u2014 Face or Inhalation"
+  },
+  {
+   "fieldname": "alarm_not_breathing_weak",
+   "fieldtype": "Check",
+   "label": "Not Breathing or Weak Breathing"
+  },
+  {
+   "fieldname": "alarm_central_cyanosis",
+   "fieldtype": "Check",
+   "label": "Central Cyanosis"
+  },
+  {
+   "fieldname": "alarm_pulse_low_absent",
+   "fieldtype": "Check",
+   "label": "Pulse Low or Absent"
+  },
+  {
+   "fieldname": "dehydration_skin_pinch",
+   "fieldtype": "Check",
+   "label": "Severe Dehydration \u2014 Skin Pinch \u2265 2 sec"
+  },
+  {
+   "fieldname": "dehydration_lethargy",
+   "fieldtype": "Check",
+   "label": "Severe Dehydration \u2014 Lethargy"
+  },
+  {
+   "fieldname": "dehydration_sunken_eyes",
+   "fieldtype": "Check",
+   "label": "Severe Dehydration \u2014 Sunken Eyes"
+  },
+  {
+   "fieldname": "convulsion_glucose",
+   "fieldtype": "Float",
+   "label": "Convulsion Glucose Reading",
+   "depends_on": "eval:doc.alarm_convulsion==1"
+  },
+  {
+   "fieldname": "coma_glucose",
+   "fieldtype": "Float",
+   "label": "Coma Glucose Reading",
+   "depends_on": "eval:doc.alarm_coma==1"
+  },
+  {
+   "fieldname": "yellow_focal_neuro_glucose",
+   "fieldtype": "Float",
+   "label": "Focal Neuro Glucose Reading",
+   "depends_on": "eval:doc.yellow_focal_neuro==1"
+  },
+  {
+   "fieldname": "sb_tews",
+   "fieldtype": "Section Break",
+   "label": "TEWS Score"
+  },
+  {
+   "fieldname": "mobility",
+   "fieldtype": "Select",
+   "label": "Mobility",
+   "options": "0\n1",
+   "description": "0=Normal for age, 1=Unable to move as normal"
+  },
+  {
+   "fieldname": "mobility_score",
+   "fieldtype": "Int",
+   "label": "Mobility Score",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "rr",
+   "fieldtype": "Int",
+   "label": "Respiratory Rate (breaths/min)"
+  },
+  {
+   "fieldname": "rr_score",
+   "fieldtype": "Int",
+   "label": "RR Score",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "hr",
+   "fieldtype": "Int",
+   "label": "Heart Rate / Pulse (bpm)"
+  },
+  {
+   "fieldname": "hr_score",
+   "fieldtype": "Int",
+   "label": "HR Score",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "label": "Body Temperature (\u00b0C)"
+  },
+  {
+   "fieldname": "temp_score",
+   "fieldtype": "Int",
+   "label": "Temperature Score",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "avpu",
+   "fieldtype": "Select",
+   "label": "AVPU",
+   "options": "Alert\nConfused\nVoice\nPain\nUnresponsive"
+  },
+  {
+   "fieldname": "avpu_score",
+   "fieldtype": "Int",
+   "label": "AVPU Score",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "trauma",
+   "fieldtype": "Check",
+   "label": "Trauma"
+  },
+  {
+   "fieldname": "trauma_score",
+   "fieldtype": "Int",
+   "label": "Trauma Score",
+   "read_only": 1,
+   "hidden": 1
+  },
+  {
+   "fieldname": "tews_score",
+   "fieldtype": "Int",
+   "label": "Total TEWS Score",
+   "read_only": 1,
+   "bold": 1
+  },
+  {
+   "fieldname": "spo2",
+   "fieldtype": "Float",
+   "label": "SpO2 (%)"
+  },
+  {
+   "fieldname": "pain_score",
+   "fieldtype": "Int",
+   "label": "Pain Score (0\u201310)"
+  },
+  {
+   "fieldname": "triage_color",
+   "fieldtype": "Select",
+   "label": "Triage Color",
+   "options": "RED\nORANGE\nYELLOW\nGREEN",
+   "read_only": 1,
+   "bold": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "sb_yellow",
+   "fieldtype": "Section Break",
+   "label": "Very Urgent Signs \u2014 YELLOW (within 60 min)"
+  },
+  {
+   "fieldname": "yellow_focal_neuro",
+   "fieldtype": "Check",
+   "label": "Focal Neurological Deficit \u2014 Acute (< 1 day)"
+  },
+  {
+   "fieldname": "yellow_altered_mental",
+   "fieldtype": "Check",
+   "label": "Altered Mental Status \u2014 Acute (< 1 day)"
+  },
+  {
+   "fieldname": "yellow_chest_pain",
+   "fieldtype": "Check",
+   "label": "Chest Pain"
+  },
+  {
+   "fieldname": "yellow_poisoning",
+   "fieldtype": "Check",
+   "label": "Poisoning / Overdose"
+  },
+  {
+   "fieldname": "yellow_coughing_blood",
+   "fieldtype": "Check",
+   "label": "Coughing or Vomiting Blood"
+  },
+  {
+   "fieldname": "yellow_diabetic_high",
+   "fieldtype": "Check",
+   "label": "Unwell with Diabetes \u2014 Glucose > 200 mg/dL or > 11 mmol/L"
+  },
+  {
+   "fieldname": "yellow_aggression",
+   "fieldtype": "Check",
+   "label": "Aggression"
+  },
+  {
+   "fieldname": "yellow_acute_sob",
+   "fieldtype": "Check",
+   "label": "Shortness of Breath \u2014 Acute (< 1 day)"
+  },
+  {
+   "fieldname": "yellow_severe_pain",
+   "fieldtype": "Check",
+   "label": "Very Severe Pain (\u2265 7)"
+  },
+  {
+   "fieldname": "yellow_burn_20_urgent",
+   "fieldtype": "Check",
+   "label": "Burn > 20% or with Urgent Signs"
+  },
+  {
+   "fieldname": "yellow_fracture_open",
+   "fieldtype": "Check",
+   "label": "Fracture Open (with skin break)"
+  },
+  {
+   "fieldname": "yellow_threatened_limb",
+   "fieldtype": "Check",
+   "label": "Threatened Limb \u2014 No Pulse or Pale"
+  },
+  {
+   "fieldname": "yellow_eye_injury",
+   "fieldtype": "Check",
+   "label": "Eye Injury"
+  },
+  {
+   "fieldname": "yellow_large_joint_disloc",
+   "fieldtype": "Check",
+   "label": "Dislocation of Large Joint (not finger/toe)"
+  },
+  {
+   "fieldname": "yellow_severe_mechanism",
+   "fieldtype": "Check",
+   "label": "Severe Mechanism of Injury \u2014 Fall > 1 m, RTA, or Other Significant Trauma"
+  },
+  {
+   "fieldname": "yellow_abdominal_trauma",
+   "fieldtype": "Check",
+   "label": "Abdominal Trauma"
+  },
+  {
+   "fieldname": "sb_green",
+   "fieldtype": "Section Break",
+   "label": "Urgent Signs \u2014 GREEN (within 4 hours)"
+  },
+  {
+   "fieldname": "green_cant_drink",
+   "fieldtype": "Check",
+   "label": "Unable to Drink or Vomits Everything"
+  },
+  {
+   "fieldname": "green_very_pale",
+   "fieldtype": "Check",
+   "label": "Very Pale"
+  },
+  {
+   "fieldname": "green_resp_distress",
+   "fieldtype": "Check",
+   "label": "Respiratory Distress (less urgent)"
+  },
+  {
+   "fieldname": "green_diabetic_high",
+   "fieldtype": "Check",
+   "label": "Diabetic (not unwell) \u2014 Glucose > 300 mg/dL or > 17 mmol/L"
+  },
+  {
+   "fieldname": "green_malnutrition",
+   "fieldtype": "Check",
+   "label": "Severe Malnutrition / Wasting"
+  },
+  {
+   "fieldname": "green_moderate_pain",
+   "fieldtype": "Check",
+   "label": "Moderate Pain (5\u20136)"
+  },
+  {
+   "fieldname": "green_disloc_finger_toe",
+   "fieldtype": "Check",
+   "label": "Dislocation \u2014 Finger or Toe"
+  },
+  {
+   "fieldname": "green_fracture_closed",
+   "fieldtype": "Check",
+   "label": "Fracture Closed"
+  },
+  {
+   "fieldname": "green_burn_no_urgency",
+   "fieldtype": "Check",
+   "label": "Burn without Urgent Signs"
+  },
+  {
+   "fieldname": "sb_final",
+   "fieldtype": "Section Break",
+   "label": "Staff & notification"
+  },
+  {
+   "fieldname": "nurse_name",
+   "fieldtype": "Link",
+   "label": "Nurse Name",
+   "options": "User"
+  },
+  {
+   "fieldname": "triage_finish_time",
+   "fieldtype": "Datetime",
+   "label": "Triage Finish Time"
+  },
+  {
+   "fieldname": "notified_color",
+   "fieldtype": "Select",
+   "label": "Notified Color",
+   "options": "RED\nORANGE",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "notified_at",
+   "fieldtype": "Datetime",
+   "label": "Notified At",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "doctor_name",
+   "fieldtype": "Link",
+   "label": "Doctor Name",
+   "options": "User",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "doctor_attended_at",
+   "fieldtype": "Datetime",
+   "label": "Doctor Attended At",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "manual_priority_override",
+   "fieldtype": "Check",
+   "label": "Manual Priority Override",
+   "default": "0"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-09 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Child Triage Form",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Nursing User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Physician",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

@@ -1,0 +1,339 @@
+{
+ "actions": [],
+ "autoname": "naming_series:",
+ "creation": "2026-06-09 12:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "patient",
+  "patient_name",
+  "date_of_birth",
+  "patient_age",
+  "patient_age_months",
+  "patient_gender",
+  "medical_record_number",
+  "is_maternity",
+  "chief_complaint",
+  "arrival_date",
+  "arrival_time",
+  "company",
+  "sb_routing",
+  "form_type",
+  "adult_triage_form",
+  "child_triage_form",
+  "infant_triage_form",
+  "maternity_triage_form",
+  "sb_result",
+  "triage_color",
+  "tews_score",
+  "spo2",
+  "pain_score",
+  "manual_priority_override",
+  "override_reason",
+  "sb_notification",
+  "notified_color",
+  "notified_at",
+  "nurse_name",
+  "triage_finish_time",
+  "doctor_name",
+  "doctor_attended_at",
+  "sb_outcome",
+  "vital_signs_record",
+  "muac",
+  "triage_notes",
+  "patient_oriented"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "TRIAGE-.YYYY.-",
+   "reqd": 1
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "label": "Patient",
+   "options": "Patient",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "label": "Patient Name",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "date_of_birth",
+   "fieldtype": "Date",
+   "label": "Date of Birth",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_age",
+   "fieldtype": "Int",
+   "label": "Patient Age (years)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_age_months",
+   "fieldtype": "Int",
+   "label": "Patient Age (months)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_gender",
+   "fieldtype": "Data",
+   "label": "Patient Gender",
+   "read_only": 1
+  },
+  {
+   "fieldname": "medical_record_number",
+   "fieldtype": "Data",
+   "label": "Medical Record Number",
+   "read_only": 1
+  },
+  {
+   "fieldname": "is_maternity",
+   "fieldtype": "Check",
+   "label": "Is Maternity Patient",
+   "default": "0"
+  },
+  {
+   "fieldname": "chief_complaint",
+   "fieldtype": "Small Text",
+   "label": "Chief Complaint",
+   "reqd": 1
+  },
+  {
+   "fieldname": "arrival_date",
+   "fieldtype": "Date",
+   "label": "Arrival Date",
+   "reqd": 1,
+   "default": "Today"
+  },
+  {
+   "fieldname": "arrival_time",
+   "fieldtype": "Time",
+   "label": "Arrival Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_routing",
+   "fieldtype": "Section Break",
+   "label": "Form routing"
+  },
+  {
+   "fieldname": "form_type",
+   "fieldtype": "Select",
+   "label": "Detected Form Type",
+   "options": "Adult\nChild\nInfant\nMaternity",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "adult_triage_form",
+   "fieldtype": "Link",
+   "label": "Adult Triage Form",
+   "options": "Adult Triage Form",
+   "depends_on": "eval:doc.form_type==\"Adult\""
+  },
+  {
+   "fieldname": "child_triage_form",
+   "fieldtype": "Link",
+   "label": "Child Triage Form",
+   "options": "Child Triage Form",
+   "depends_on": "eval:doc.form_type==\"Child\""
+  },
+  {
+   "fieldname": "infant_triage_form",
+   "fieldtype": "Link",
+   "label": "Infant Triage Form",
+   "options": "Infant Triage Form",
+   "depends_on": "eval:doc.form_type==\"Infant\""
+  },
+  {
+   "fieldname": "maternity_triage_form",
+   "fieldtype": "Link",
+   "label": "Maternity Triage Form",
+   "options": "Maternity Triage Form",
+   "depends_on": "eval:doc.form_type==\"Maternity\""
+  },
+  {
+   "fieldname": "sb_result",
+   "fieldtype": "Section Break",
+   "label": "Triage result"
+  },
+  {
+   "fieldname": "triage_color",
+   "fieldtype": "Select",
+   "label": "Triage Color",
+   "options": "RED\nORANGE\nYELLOW\nGREEN",
+   "read_only": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "tews_score",
+   "fieldtype": "Int",
+   "label": "TEWS Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "spo2",
+   "fieldtype": "Float",
+   "label": "SpO2 (%)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "pain_score",
+   "fieldtype": "Int",
+   "label": "Pain Score (0\u201310)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "manual_priority_override",
+   "fieldtype": "Check",
+   "label": "Manual Priority Override",
+   "default": "0"
+  },
+  {
+   "fieldname": "override_reason",
+   "fieldtype": "Small Text",
+   "label": "Override Reason",
+   "depends_on": "eval:doc.manual_priority_override==1"
+  },
+  {
+   "fieldname": "sb_notification",
+   "fieldtype": "Section Break",
+   "label": "Notification"
+  },
+  {
+   "fieldname": "notified_color",
+   "fieldtype": "Select",
+   "label": "Notified Color",
+   "options": "RED\nORANGE",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "notified_at",
+   "fieldtype": "Datetime",
+   "label": "Notified At",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "nurse_name",
+   "fieldtype": "Link",
+   "label": "Nurse Name",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "triage_finish_time",
+   "fieldtype": "Datetime",
+   "label": "Triage Finish Time"
+  },
+  {
+   "fieldname": "doctor_name",
+   "fieldtype": "Link",
+   "label": "Doctor Name",
+   "options": "User",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "doctor_attended_at",
+   "fieldtype": "Datetime",
+   "label": "Doctor Attended At",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+  },
+  {
+   "fieldname": "sb_outcome",
+   "fieldtype": "Section Break",
+   "label": "Outcome"
+  },
+  {
+   "fieldname": "vital_signs_record",
+   "fieldtype": "Link",
+   "label": "Vital Signs Record",
+   "options": "Vital Signs",
+   "read_only": 1
+  },
+  {
+   "fieldname": "muac",
+   "fieldtype": "Float",
+   "label": "MUAC (cm)"
+  },
+  {
+   "fieldname": "triage_notes",
+   "fieldtype": "Text Editor",
+   "label": "Triage Notes"
+  },
+  {
+   "fieldname": "patient_oriented",
+   "fieldtype": "Small Text",
+   "label": "Patient Oriented To"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-06-09 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Triage Assessment",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Nursing User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "Physician",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  },
+  {
+   "role": "System Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

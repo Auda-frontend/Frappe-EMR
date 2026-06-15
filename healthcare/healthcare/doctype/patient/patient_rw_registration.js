@@ -267,7 +267,7 @@ function rw_patient_workflow_buttons(frm) {
 	const group = __("Workflow");
 	frm.add_custom_button(__("Record triage"), () => {
 		frappe.route_options = { patient: frm.doc.name };
-		frappe.new_doc("Triage Visit");
+		frappe.new_doc("Triage Assessment");
 	}, group);
 	frm.add_custom_button(__("Patient orientation"), () => frappe.set_route("patient-orientation"), group);
 	frm.add_custom_button(__("Department queue"), () => frappe.set_route("department-queue"), group);

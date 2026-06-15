@@ -1,0 +1,39 @@
+[
+ {
+  "doctype": "Custom Field",
+  "dt": "Patient",
+  "label": "Is Maternity Patient",
+  "fieldname": "rw_is_maternity",
+  "fieldtype": "Check",
+  "insert_after": "sex"
+ },
+ {
+  "doctype": "Custom Field",
+  "dt": "Patient",
+  "label": "Triage Color",
+  "fieldname": "custom_triage_color",
+  "fieldtype": "Select",
+  "options": "\nRED\nORANGE\nYELLOW\nGREEN",
+  "read_only": 1,
+  "insert_after": "rw_is_maternity"
+ },
+ {
+  "doctype": "Custom Field",
+  "dt": "Patient",
+  "label": "Last Triage Date",
+  "fieldname": "custom_last_triage_date",
+  "fieldtype": "Date",
+  "read_only": 1,
+  "insert_after": "custom_triage_color"
+ },
+ {
+  "doctype": "Custom Field",
+  "dt": "Patient",
+  "label": "Active Triage",
+  "fieldname": "custom_active_triage",
+  "fieldtype": "Link",
+  "options": "Triage",
+  "read_only": 1,
+  "insert_after": "custom_last_triage_date"
+ }
+]

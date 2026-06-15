@@ -770,6 +770,7 @@ def get_patient_ebuzima_field_order():
 		"rw_nationality",
 		"patient_name",
 		"sex",
+		"rw_is_maternity",
 		"blood_group",
 		"rw_tracnet_id",
 		"rw_patient_id_set",

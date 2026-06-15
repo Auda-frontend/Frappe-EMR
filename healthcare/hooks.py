@@ -145,6 +145,21 @@ doc_events = {
 		"after_insert": "healthcare.healthcare.rwanda_opd.on_triage_saved",
 		"on_update": "healthcare.healthcare.rwanda_opd.on_triage_saved",
 	},
+	"Adult Triage Form": {
+		"on_update": "healthcare.healthcare.doctype.adult_triage_form.adult_triage_form.sync_to_parent_triage",
+	},
+	"Child Triage Form": {
+		"on_update": "healthcare.healthcare.doctype.child_triage_form.child_triage_form.sync_to_parent_triage",
+	},
+	"Infant Triage Form": {
+		"on_update": "healthcare.healthcare.doctype.infant_triage_form.infant_triage_form.sync_to_parent_triage",
+	},
+	"Maternity Triage Form": {
+		"on_update": "healthcare.healthcare.doctype.maternity_triage_form.maternity_triage_form.sync_to_parent_triage",
+	},
+	"Triage": {
+		"on_submit": "healthcare.healthcare.doctype.triage.triage.Triage.on_submit",
+	},
 }
 
 scheduler_events = {
@@ -240,6 +255,7 @@ global_search_doctypes = {
 		{"doctype": "Medical Department", "index": 2},
 		{"doctype": "Vital Signs", "index": 3},
 		{"doctype": "Triage Visit", "index": 26},
+		{"doctype": "Triage Assessment", "index": 27},
 		{"doctype": "Healthcare Practitioner", "index": 4},
 		{"doctype": "Patient Appointment", "index": 5},
 		{"doctype": "Healthcare Service Unit", "index": 6},
@@ -331,3 +347,7 @@ def run_after_install():
 	from healthcare.healthcare.triage_visit_setup import install_triage_visit
 
 	install_triage_visit()
+
+	from healthcare.healthcare.rwanda_triage.setup import install_rwanda_triage_system
+
+	install_rwanda_triage_system()
