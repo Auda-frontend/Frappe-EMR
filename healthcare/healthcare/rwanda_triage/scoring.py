@@ -73,3 +73,20 @@ DEHYDRATION_FIELDS = [
 	"dehydration_lethargy",
 	"dehydration_sunken_eyes",
 ]
+
+
+def form_field(form_doc, fieldname):
+	if isinstance(form_doc, dict):
+		return form_doc.get(fieldname)
+	return form_doc.get(fieldname)
+
+
+def sync_form_results_to_assessment(assessment_doc, form_doc):
+	"""Copy triage result fields from an age-specific form onto Triage Assessment."""
+	color = form_field(form_doc, "triage_color")
+	if color:
+		assessment_doc.triage_color = color
+	for fieldname in ("tews_score", "spo2", "pain_score"):
+		value = form_field(form_doc, fieldname)
+		if value is not None:
+			setattr(assessment_doc, fieldname, value)

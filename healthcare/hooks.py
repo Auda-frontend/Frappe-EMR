@@ -146,16 +146,16 @@ doc_events = {
 		"on_update": "healthcare.healthcare.rwanda_opd.on_triage_saved",
 	},
 	"Adult Triage Form": {
-		"on_update": "healthcare.healthcare.doctype.adult_triage_form.adult_triage_form.sync_to_parent_triage",
+		"on_update": "healthcare.healthcare.rwanda_triage.form_sync.sync_triage_form_to_parent",
 	},
 	"Child Triage Form": {
-		"on_update": "healthcare.healthcare.doctype.child_triage_form.child_triage_form.sync_to_parent_triage",
+		"on_update": "healthcare.healthcare.rwanda_triage.form_sync.sync_triage_form_to_parent",
 	},
 	"Infant Triage Form": {
-		"on_update": "healthcare.healthcare.doctype.infant_triage_form.infant_triage_form.sync_to_parent_triage",
+		"on_update": "healthcare.healthcare.rwanda_triage.form_sync.sync_triage_form_to_parent",
 	},
 	"Maternity Triage Form": {
-		"on_update": "healthcare.healthcare.doctype.maternity_triage_form.maternity_triage_form.sync_to_parent_triage",
+		"on_update": "healthcare.healthcare.rwanda_triage.form_sync.sync_triage_form_to_parent",
 	},
 	"Triage": {
 		"on_submit": "healthcare.healthcare.doctype.triage.triage.Triage.on_submit",
