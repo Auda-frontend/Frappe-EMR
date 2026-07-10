@@ -1,0 +1,24 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Patient",
+  "enabled": 1,
+  "modified": "2026-06-26 04:00:34.410963",
+  "module": null,
+  "name": "is_maternity",
+  "script": "frappe.ui.form.on(\"Patient\", {\r\n    sex: function(frm) {\r\n        if (frm.doc.sex !== \"Female\") {\r\n            frm.set_value(\"rw_is_maternity\", 0);\r\n        }\r\n    }\r\n});",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Sales Invoice",
+  "enabled": 1,
+  "modified": "2026-07-03 14:32:37.108659",
+  "module": null,
+  "name": "coverage",
+  "script": "frappe.ui.form.on(\"Sales Invoice\", {\r\n\r\n    refresh: function(frm) {\r\n        apply_insurance_split(frm);\r\n        lock_insurance_fields(frm);\r\n    },\r\n\r\n    patient: function(frm) {\r\n        if (!frm.doc.patient) return;\r\n        apply_insurance_split(frm);\r\n    },\r\n\r\n    grand_total: function(frm) {\r\n        apply_insurance_split(frm);\r\n    }\r\n});\r\n\r\nfunction lock_insurance_fields(frm) {\r\n    [\"rw_insurance_provider_display\",\r\n     \"rw_insurance_coverage\",\r\n     \"rw_insurance_amount\",\r\n     \"rw_copay_amount\"\r\n    ].forEach(function(f) {\r\n        frm.set_df_property(f, \"read_only\", 1);\r\n    });\r\n}\r\n\r\nfunction apply_insurance_split(frm) {\r\n    if (!frm.doc.patient) return;\r\n\r\n    frappe.call({\r\n        method: \"frappe.client.get\",\r\n        args: { doctype: \"Patient\", name: frm.doc.patient },\r\n        callback: function(r) {\r\n            if (!r.message || !r.message.rw_insurance_provider) {\r\n                // No insurance — patient pays full amount\r\n                frm.set_value(\"rw_insurance_provider_display\", \"None / Cash\");\r\n                frm.set_value(\"rw_insurance_coverage\", 0);\r\n                frm.set_value(\"rw_insurance_amount\", 0);\r\n                frm.set_value(\"rw_copay_amount\", frm.doc.grand_total || 0);\r\n                frm.dashboard.set_headline_alert(\r\n                    \"No insurance on file — patient pays full amount\",\r\n                    \"orange\"\r\n                );\r\n                return;\r\n            }\r\n\r\n            var provider = r.message.rw_insurance_provider;\r\n\r\n            frappe.call({\r\n                method: \"frappe.client.get\",\r\n                args: {\r\n                    doctype: \"Insurance Provider\",\r\n                    name: provider\r\n                },\r\n                callback: function(ir) {\r\n                    if (!ir.message) return;\r\n\r\n                    var coverage = ir.message.coverage_percentage || 0;\r\n                    var total    = frm.doc.grand_total || 0;\r\n                    var ins_amt  = parseFloat(\r\n                        ((total * coverage) / 100).toFixed(0));\r\n                    var copay    = total - ins_amt;\r\n\r\n                    frm.set_value(\"rw_insurance_provider_display\",\r\n                        ir.message.provider_name);\r\n                    frm.set_value(\"rw_insurance_coverage\", coverage);\r\n                    frm.set_value(\"rw_insurance_amount\", ins_amt);\r\n                    frm.set_value(\"rw_copay_amount\", copay);\r\n\r\n                    var color = copay === 0 ? \"green\" : \"blue\";\r\n                    frm.dashboard.set_headline_alert(\r\n                        \"\\uD83D\\uDCB3 \" + ir.message.provider_name +\r\n                        \" covers \" + coverage + \"% \" +\r\n                        \"(RWF \" + ins_amt.toLocaleString() + \") \\u2014 \" +\r\n                        \"Patient pays RWF \" + copay.toLocaleString(),\r\n                        color\r\n                    );\r\n                }\r\n            });\r\n        }\r\n    });\r\n}",
+  "view": "Form"
+ }
+]

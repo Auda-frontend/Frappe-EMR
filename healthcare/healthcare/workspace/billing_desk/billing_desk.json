@@ -1,0 +1,361 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"Q1sgqcFzkv\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Billing Desk</span>\",\"col\":12}},{\"id\":\"3gckp2aouG\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Invoice\",\"col\":3}},{\"id\":\"_woeVmyRKU\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Invoices\",\"col\":3}},{\"id\":\"0PrvH92qKp\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Today's Invoices\",\"col\":3}},{\"id\":\"3uNlp3b4-I\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Collect Payment\",\"col\":3}},{\"id\":\"GgdvkPpp1A\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Medication Requests\",\"col\":3}},{\"id\":\"Zvbeyq6NXk\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Service Requests\",\"col\":3}},{\"id\":\"YKkZf2RYa9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Patients Today\",\"col\":3}},{\"id\":\"x1ponfk-si\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Dispensing\",\"col\":3}},{\"id\":\"ayNWBpaFjz\",\"type\":\"card\",\"data\":{\"card_name\":\"Billing\",\"col\":4}},{\"id\":\"qj_DaWVUlF\",\"type\":\"card\",\"data\":{\"card_name\":\"Pending Actions\",\"col\":4}},{\"id\":\"vnnM_KFLUM\",\"type\":\"card\",\"data\":{\"card_name\":\"Insurance\",\"col\":4}},{\"id\":\"YTex2Qd-Cs\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}},{\"id\":\"eWLe2zDDu9\",\"type\":\"card\",\"data\":{\"card_name\":\"Reference\",\"col\":4}}]",
+ "creation": "2026-07-03 11:21:10.544439",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "liabilities",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Billing Desk",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Billing",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Invoice",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Entry",
+   "link_count": 0,
+   "link_to": "Payment Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer",
+   "link_count": 0,
+   "link_to": "Customer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Point of Sale",
+   "link_count": 0,
+   "link_to": "POS Profile",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Medication Dispensing",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Medication Dispensing",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Insurance",
+   "link_count": 1,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Insurance Providers",
+   "link_count": 0,
+   "link_to": "Insurance Provider",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 5,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Daily Sales Summary",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item-wise Sales Register",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Payment Entry Register",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Accounts Receivable",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Invoice Trends",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reference",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item Price",
+   "link_count": 0,
+   "link_to": "Item Price",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Mode of Payment",
+   "link_count": 0,
+   "link_to": "Mode of Payment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Patient",
+   "link_count": 0,
+   "link_to": "Patient",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Patient Encounter",
+   "link_count": 0,
+   "link_to": "Patient Encounter",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Pending Actions",
+   "link_count": 6,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Unbilled Medication Requests",
+   "link_count": 0,
+   "link_to": "Medication Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Unbilled Service Requests",
+   "link_count": 0,
+   "link_to": "Service Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Draft Invoices",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Unpaid Invoices",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Ready for Billing",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Partially Paid",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-07-07 11:51:32.795608",
+ "modified_by": "auda@healthbuilders.org",
+ "module": "Healthcare",
+ "name": "Billing Desk",
+ "number_cards": [],
+ "owner": "auda@healthbuilders.org",
+ "parent_page": "Healthcare",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "Healthcare",
+ "roles": [],
+ "sequence_id": 29.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "New Invoice",
+   "link_to": "Sales Invoice",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Pending Dispensing",
+   "link_to": "Medication Dispensing",
+   "stats_filter": "[[\"Medication Dispensing\",\"overall_status\",\"=\",\"Ready for Billing\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Pending Invoices",
+   "link_to": "Sales Invoice",
+   "stats_filter": "[[\"Sales Invoice\",\"status\",\"=\",\"Draft\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Today's Invoices",
+   "link_to": "Sales Invoice",
+   "stats_filter": "[[\"Sales Invoice\",\"posting_date\",\"=\",\"2026-07-03\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Collect Payment",
+   "link_to": "Payment Entry",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Medication Requests",
+   "link_to": "Medication Request",
+   "stats_filter": "[[\"Medication Request\",\"status\",\"=\",\"active-Medication Request Status\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Service Requests",
+   "link_to": "Service Request",
+   "stats_filter": "[[\"Service Request\",\"status\",\"=\",\"active-Medication Request Status\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Patients Today",
+   "link_to": "Patient",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Billing Desk"
+}

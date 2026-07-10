@@ -37,7 +37,7 @@ const RW_DEFAULT_COLLAPSED_SECTIONS = [
 
 const RW_INSURANCE_DETAIL_FIELDS = [
 	"rw_col_insurance",
-	"rw_insurance_type",
+	"custom_insurance_provider",
 	"rw_insurance_member_number",
 	"rw_is_main_insurer",
 	"rw_main_insured_name",
@@ -78,7 +78,7 @@ frappe.ui.form.on("Patient", {
 		rw_patient_setup_insurance_visibility(frm);
 		if (frm.doc.rw_patient_insured === "No") {
 			[
-				"rw_insurance_type",
+				"custom_insurance_provider",
 				"rw_insurance_member_number",
 				"rw_main_insured_name",
 				"rw_main_insured_insurance_number",

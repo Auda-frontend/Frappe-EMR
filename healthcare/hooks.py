@@ -77,6 +77,21 @@ fixtures = [
 	{"dt": "Client Script"},
 	{"dt": "Print Format", "filters": [["module", "=", "Healthcare"]]},
 	{"dt": "DocType", "filters": [["module", "=", "Healthcare"]]},
+	 {
+        "dt": "DocType",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Medication Dispensing",
+                    "Dispensing Line",
+                    "Triage Form",
+                    "Insurance Provider"
+                ]
+            ]
+        ]
+    }
 ]
 
 # Uninstallation
@@ -139,6 +154,7 @@ doc_events = {
 			"healthcare.healthcare.rwanda_consultation.validate_rwanda_consultation",
 		],
 		"before_submit": "healthcare.healthcare.rwanda_consultation.before_submit_rwanda_consultation",
+		"on_submit": "healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.create_medication_dispensing",
 	},
 	"Vital Signs": {
 		"validate": "healthcare.healthcare.rwanda_opd.validate_rwanda_triage",
@@ -160,6 +176,10 @@ doc_events = {
 	"Triage": {
 		"on_submit": "healthcare.healthcare.doctype.triage.triage.Triage.on_submit",
 	},
+	"Medication Dispensing": {
+        "validate":  "healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.validate",
+        "on_update": "healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.on_update"
+    }
 }
 
 scheduler_events = {

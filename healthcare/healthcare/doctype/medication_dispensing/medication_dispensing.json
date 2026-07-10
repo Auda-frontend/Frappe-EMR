@@ -1,0 +1,215 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "DISP-.YYYY.-.#####",
+ "creation": "2026-07-07 04:17:26.142136",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_x39v",
+  "patient",
+  "patient_name",
+  "patient_encounter",
+  "visit_date",
+  "column_break_vxwn",
+  "insurance_provider",
+  "insurance_coverage",
+  "total_billable",
+  "insurance_amount",
+  "copay_amount",
+  "status_section",
+  "overall_status",
+  "pharmacy_queue_status",
+  "column_break_qber",
+  "collected_status",
+  "collected_at",
+  "collected_by",
+  "prescribed_medicines_section",
+  "dispensing_lines",
+  "notes_section",
+  "notes",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_x39v",
+   "fieldtype": "Section Break",
+   "label": "Patient Information"
+  },
+  {
+   "fieldname": "patient",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Patient",
+   "options": "Patient",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "patient.rw_father_names",
+   "fieldname": "patient_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Patient Name",
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_encounter",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Patient Encounter",
+   "options": "Patient Encounter",
+   "reqd": 1
+  },
+  {
+   "fieldname": "visit_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Visit Date",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_vxwn",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "insurance_provider",
+   "fieldtype": "Data",
+   "label": "Insurance Provider",
+   "read_only": 1
+  },
+  {
+   "fieldname": "insurance_coverage",
+   "fieldtype": "Float",
+   "label": "Insurance Coverage %",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_billable",
+   "fieldtype": "Currency",
+   "label": "Total Billable Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "insurance_amount",
+   "fieldtype": "Currency",
+   "label": "Insurance Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "copay_amount",
+   "fieldtype": "Currency",
+   "label": "Patient Co-Payment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "default": "Draft",
+   "fieldname": "overall_status",
+   "fieldtype": "Select",
+   "label": "Overall Status",
+   "options": "Draft\nReady for Billing\nPartially Paid\nFully Paid\nDispensed",
+   "read_only": 1
+  },
+  {
+   "default": "Not in Queue",
+   "fieldname": "pharmacy_queue_status",
+   "fieldtype": "Select",
+   "label": "Pharmacy Queue Status",
+   "options": "Not in Queue\nWaiting\nDispensing\nCompleted",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_qber",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Not Collected",
+   "fieldname": "collected_status",
+   "fieldtype": "Select",
+   "label": "Collected Status",
+   "options": "Not Collected\nCollected\nOutside"
+  },
+  {
+   "fieldname": "collected_at",
+   "fieldtype": "Datetime",
+   "label": "Collected At",
+   "read_only": 1
+  },
+  {
+   "fieldname": "collected_by",
+   "fieldtype": "Link",
+   "label": "Collected By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "prescribed_medicines_section",
+   "fieldtype": "Section Break",
+   "label": "Prescribed Medicines"
+  },
+  {
+   "fieldname": "dispensing_lines",
+   "fieldtype": "Table",
+   "label": "Dispensing Lines",
+   "options": "Dispensing Line"
+  },
+  {
+   "fieldname": "notes_section",
+   "fieldtype": "Section Break",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Medication Dispensing",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-07-07 11:38:34.362668",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Medication Dispensing",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "auda@healthbuilders.org",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "search_fields": "patient,patient_name,patient_encounter",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "patient_name",
+ "track_changes": 1
+}

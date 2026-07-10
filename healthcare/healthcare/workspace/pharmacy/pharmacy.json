@@ -1,0 +1,359 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"13ak7gkYiB\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">Pharmacy</span>\",\"col\":12}},{\"id\":\"bP2Swn9hia\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Medication Requests\",\"col\":3}},{\"id\":\"yRJ6Aakxom\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Stock Balance\",\"col\":3}},{\"id\":\"JM08Ez1T2l\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Medicines List\",\"col\":3}},{\"id\":\"N6zqXgDH1P\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Receive Stock\",\"col\":3}},{\"id\":\"FJsYyNBvmK\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Batch List\",\"col\":3}},{\"id\":\"TQ_N9c7-kr\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Expiring Soon\",\"col\":3}},{\"id\":\"IhjwjXCLPY\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Stock Ledger\",\"col\":3}},{\"id\":\"YP4Fy1nPYT\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Queue\",\"col\":3}},{\"id\":\"Oy9AGi0Rv5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Ready to Dispense\",\"col\":3}},{\"id\":\"J76Xn0l_FV\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"5BVSM4alfs\",\"type\":\"card\",\"data\":{\"card_name\":\"Dispensing\",\"col\":4}},{\"id\":\"BOQmvYe743\",\"type\":\"card\",\"data\":{\"card_name\":\"Dispensing Queue\",\"col\":4}},{\"id\":\"ZvHvQ4CRAS\",\"type\":\"card\",\"data\":{\"card_name\":\"Stock Management\",\"col\":4}},{\"id\":\"YVsHQgoPdN\",\"type\":\"card\",\"data\":{\"card_name\":\"Medicine Setup\",\"col\":4}},{\"id\":\"Nm0AeRlnv4\",\"type\":\"card\",\"data\":{\"card_name\":\"Reports\",\"col\":4}}]",
+ "creation": "2026-07-03 10:32:32.791422",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "hr",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "Pharmacy",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Dispensing",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Medication Request",
+   "link_count": 0,
+   "link_to": "Medication Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Patient",
+   "link_count": 0,
+   "link_to": "Patient",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Consultation",
+   "link_count": 0,
+   "link_to": "Patient Encounter",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Management",
+   "link_count": 6,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Receive Stock",
+   "link_count": 0,
+   "link_to": "Stock Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Balance",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Batch",
+   "link_count": 0,
+   "link_to": "Batch",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Warehouse",
+   "link_count": 0,
+   "link_to": "Warehouse",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Ledger Entry",
+   "link_count": 0,
+   "link_to": "Stock Ledger Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Reconciliation",
+   "link_count": 0,
+   "link_to": "Stock Reconciliation",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Medicine Setup",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Medication",
+   "link_count": 0,
+   "link_to": "Medication",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item",
+   "link_count": 0,
+   "link_to": "Item",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item Price",
+   "link_count": 0,
+   "link_to": "Item Price",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "UOM",
+   "link_count": 0,
+   "link_to": "UOM",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Balance",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Ledger",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Batch-wise Balance",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item-wise Sales Register",
+   "link_count": 0,
+   "link_to": "Report",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Dispensing Queue",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Waiting Queue",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "In Progress",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Ready to Dispense",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Completed Today",
+   "link_count": 0,
+   "link_to": "Medication Dispensing",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-07-07 12:09:57.968261",
+ "modified_by": "auda@healthbuilders.org",
+ "module": "Healthcare",
+ "name": "Pharmacy",
+ "number_cards": [],
+ "owner": "auda@healthbuilders.org",
+ "parent_page": "Healthcare",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "Healthcare",
+ "roles": [],
+ "sequence_id": 28.0,
+ "shortcuts": [
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Queue",
+   "link_to": "Medication Dispensing",
+   "stats_filter": "[[\"Medication Dispensing\",\"pharmacy_queue_status\",\"=\",\"Waiting\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Medication Requests",
+   "link_to": "Medication Request",
+   "stats_filter": "[[\"Medication Request\",\"name\",\"=\",null,false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Ready to Dispense",
+   "link_to": "Medication Dispensing",
+   "stats_filter": "[[\"Medication Dispensing\",\"overall_status\",\"=\",\"Fully Paid\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Stock Balance",
+   "link_to": "Closing Stock Balance",
+   "stats_filter": "[[\"Closing Stock Balance\",\"warehouse\",\"=\",\"Pharmacy - HBD\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Medicines List",
+   "link_to": "Medication",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Receive Stock",
+   "link_to": "Stock Entry",
+   "stats_filter": "[[\"Stock Entry\",\"stock_entry_type\",\"=\",\"Material Receipt\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Batch List",
+   "link_to": "Batch",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Expiring Soon",
+   "link_to": "Batch",
+   "stats_filter": "[[\"Batch\",\"expiry_date\",\"<=\",\"2026-07-03\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Stock Ledger",
+   "link_to": "Stock Ledger Entry",
+   "stats_filter": "[[\"Stock Ledger Entry\",\"warehouse\",\"=\",\"Pharmacy - HBD\",false]]",
+   "type": "DocType"
+  }
+ ],
+ "title": "Pharmacy"
+}
