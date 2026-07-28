@@ -11,6 +11,7 @@ from frappe.tests.utils import FrappeTestCase
 from healthcare.healthcare.doctype.patient_appointment.test_patient_appointment import (
 	create_patient,
 )
+from healthcare.healthcare.rwanda_registration import _validate_insurance
 
 
 class TestPatient(FrappeTestCase):
@@ -138,6 +139,19 @@ class TestPatient(FrappeTestCase):
 
 		self.assertEqual(p1_customer_name, p2_customer_name)
 		self.assertEqual(p2_customer.customer_name, "John Doe")
+
+	def test_validate_insurance_uses_custom_provider_field(self):
+		doc = frappe.get_doc({
+			"doctype": "Patient",
+			"first_name": "Insurance Test",
+			"sex": "Male",
+			"rw_patient_insured": "Yes",
+			"custom_insurance_provider": "CBHI (Mutuelle de sante)",
+			"rw_insurance_member_number": "ABC123",
+			"rw_is_main_insurer": 1,
+		})
+
+		self.assertIsNone(_validate_insurance(doc))
 
 
 def create_registration_item():

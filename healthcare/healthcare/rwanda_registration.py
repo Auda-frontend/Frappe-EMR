@@ -55,6 +55,7 @@ def install_rwanda_patient_registration():
 	remove_obsolete_rwanda_patient_fields()
 	remove_patient_insurance_coverage_doctype_if_unused()
 	create_custom_fields(get_rwanda_patient_custom_fields(), update=True)
+	ensure_patient_insurance_fields_not_mandatory()
 	hide_patient_customer_details_on_form()
 	hide_patient_registration_clutter()
 	hide_patient_medical_history_on_registration()
@@ -72,6 +73,22 @@ def install_rwanda_patient_registration():
 def install_rwanda_phase_a_registration():
 	"""Re-apply Phase A registration fields and desk metadata (safe on existing sites)."""
 	install_rwanda_patient_registration()
+
+
+def ensure_patient_insurance_fields_not_mandatory():
+	for fieldname in ("custom_insurance_provider", "rw_insurance_type"):
+		name = frappe.db.get_value("Custom Field", {"dt": "Patient", "fieldname": fieldname}, "name")
+		if not name:
+			continue
+		frappe.db.set_value(
+			"Custom Field",
+			name,
+			{
+				"mandatory_depends_on": None,
+				"reqd": 0,
+			},
+		)
+	frappe.db.commit()
 
 
 def remove_obsolete_rwanda_patient_fields():
@@ -188,6 +205,7 @@ PATIENT_REGISTRATION_HIDDEN_FIELDS = (
 	"rw_residence_district",
 	"rw_residence_sector",
 	"rw_mark_special_case",
+	"rw_insurance_type",
 	"rw_insurance_valid_to",
 	"rw_rssb_last_verified_on",
 	"rw_rssb_validation_notes",
@@ -593,12 +611,11 @@ def get_rwanda_patient_custom_fields():
 			"insert_after": "rw_patient_insured",
 		},
 		{
-			"fieldname": "rw_insurance_type",
+			"fieldname": "custom_insurance_provider",
 			"fieldtype": "Select",
 			"label": "Insurance Provider",
 			"options": get_rwanda_insurance_provider_options(),
 			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-			"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes"',
 			"insert_after": "rw_col_insurance",
 			"in_standard_filter": 1,
 		},
@@ -608,7 +625,7 @@ def get_rwanda_patient_custom_fields():
 			"label": "Insurance Number",
 			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
 			"mandatory_depends_on": 'eval:doc.rw_patient_insured=="Yes"',
-			"insert_after": "rw_insurance_type",
+			"insert_after": "custom_insurance_provider",
 			"in_standard_filter": 1,
 		},
 		{
@@ -1138,10 +1155,18 @@ def _validate_inactive_reason(doc):
 		)
 
 
+def _get_patient_insurance_provider(doc):
+	provider = _clean_id(doc.get("custom_insurance_provider")) or _clean_id(doc.get("rw_insurance_type"))
+	if provider:
+		doc.custom_insurance_provider = provider
+		doc.rw_insurance_type = provider
+	return provider
+
 def _validate_insurance(doc):
 	if doc.get("rw_patient_insured") != "Yes":
 		for fieldname in (
 			"rw_insurance_type",
+			"custom_insurance_provider",
 			"rw_mark_special_case",
 			"rw_insurance_member_number",
 			"rw_insurance_valid_to",
@@ -1154,8 +1179,25 @@ def _validate_insurance(doc):
 		doc.rw_is_main_insurer = 1
 		doc.rw_mark_special_case = 0
 		return
-	if not _clean_id(doc.get("rw_insurance_type")):
-		frappe.throw(_("Insurance provider is required when the patient is insured."), title=_("Insurance"))
+
+	frappe.errprint("===== INSURANCE DEBUG =====")
+	frappe.errprint(f"rw_patient_insured: {doc.get('rw_patient_insured')}")
+	frappe.errprint(f"custom_insurance_provider: {doc.get('custom_insurance_provider')}")
+	frappe.errprint(f"rw_insurance_type: {doc.get('rw_insurance_type')}")
+
+	provider = _get_patient_insurance_provider(doc)
+	if not provider:
+		if doc.is_new():
+			frappe.throw(
+				_("Insurance provider is required when the patient is insured."),
+				title=_("Insurance"),
+			)
+		else:
+			frappe.msgprint(
+				_("Insurance provider is missing. Please update before next visit."),
+				indicator="orange",
+			)
+		return
 	if not _clean_id(doc.get("rw_insurance_member_number")):
 		frappe.throw(
 			_("Insurance member / policy number is required when the patient is insured."),

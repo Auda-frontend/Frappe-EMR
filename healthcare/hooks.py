@@ -154,7 +154,10 @@ doc_events = {
 			"healthcare.healthcare.rwanda_consultation.validate_rwanda_consultation",
 		],
 		"before_submit": "healthcare.healthcare.rwanda_consultation.before_submit_rwanda_consultation",
-		"on_submit": "healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.create_medication_dispensing",
+		"on_submit": [
+			"healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.create_medication_dispensing",
+			"healthcare.healthcare.api.on_encounter_submit",
+		],
 	},
 	"Vital Signs": {
 		"validate": "healthcare.healthcare.rwanda_opd.validate_rwanda_triage",
@@ -174,11 +177,17 @@ doc_events = {
 		"on_update": "healthcare.healthcare.rwanda_triage.form_sync.sync_triage_form_to_parent",
 	},
 	"Triage": {
-		"on_submit": "healthcare.healthcare.doctype.triage.triage.Triage.on_submit",
+		"on_submit": [
+			"healthcare.healthcare.doctype.triage.triage.Triage.on_submit",
+			"healthcare.healthcare.api.on_triage_submit",
+		]
 	},
 	"Medication Dispensing": {
         "validate":  "healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.validate",
-        "on_update": "healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.on_update"
+        "on_update": [
+			"healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.on_update",
+			"healthcare.healthcare.api.on_dispensing_fully_paid"
+		]
     }
 }
 

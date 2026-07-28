@@ -5675,7 +5675,7 @@
   "label": "Insurance Provider",
   "length": 0,
   "link_filters": null,
-  "mandatory_depends_on": "eval:doc.rw_patient_insured==\"Yes\"",
+  "mandatory_depends_on": null,
   "modified": "2026-06-26 04:34:25.225905",
   "module": null,
   "name": "Patient-custom_insurance_provider",
