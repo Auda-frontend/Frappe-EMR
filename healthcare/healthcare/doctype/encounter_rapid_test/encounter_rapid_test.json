@@ -1,0 +1,63 @@
+{
+ "actions": [],
+ "creation": "2024-08-14 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "rapid_test",
+  "test_name",
+  "date_time",
+  "result_value",
+  "result"
+ ],
+ "fields": [
+  {
+   "fieldname": "rapid_test",
+   "fieldtype": "Link",
+   "label": "Rapid Test",
+   "options": "Lab Test Template",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "test_name",
+   "fieldtype": "Data",
+   "label": "Test Name",
+   "fetch_from": "rapid_test.lab_test_name",
+   "in_list_view": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "date_time",
+   "fieldtype": "Datetime",
+   "label": "Date & Time",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "result_value",
+   "fieldtype": "Data",
+   "label": "Result Value",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "result",
+   "fieldtype": "Select",
+   "label": "Result",
+   "options": "\nPositive\nNegative\nIndeterminate",
+   "in_list_view": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Encounter Rapid Test",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

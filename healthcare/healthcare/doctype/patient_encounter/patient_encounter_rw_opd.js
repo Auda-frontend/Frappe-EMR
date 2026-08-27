@@ -139,7 +139,7 @@ function rw_consultation_complete(frm) {
 		frappe.msgprint({
 			title: __("Visit outcome required"),
 			indicator: "orange",
-			message: __("Select a visit outcome on the Discharge & follow-up tab."),
+			message: __("Select a visit outcome before completing the visit."),
 		});
 		frm.scroll_to_field("rw_visit_outcome");
 		return;

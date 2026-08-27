@@ -1,0 +1,73 @@
+{
+ "actions": [],
+ "creation": "2024-08-14 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "drug_presentation",
+  "per_dose_amount",
+  "unit",
+  "frequency",
+  "duration",
+  "quantity_prescribed",
+  "patient_instructions"
+ ],
+ "fields": [
+  {
+   "fieldname": "drug_presentation",
+   "fieldtype": "Link",
+   "label": "Drug & Presentation",
+   "options": "Item",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "per_dose_amount",
+   "fieldtype": "Data",
+   "label": "Per-dose amount",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "unit",
+   "fieldtype": "Data",
+   "label": "Unit",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "frequency",
+   "fieldtype": "Data",
+   "label": "Frequency",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "duration",
+   "fieldtype": "Data",
+   "label": "Duration",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "quantity_prescribed",
+   "fieldtype": "Float",
+   "label": "Quantity prescribed",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "patient_instructions",
+   "fieldtype": "Small Text",
+   "label": "Patient instructions"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Encounter Drug Prescription",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

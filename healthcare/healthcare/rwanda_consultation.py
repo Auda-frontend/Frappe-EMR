@@ -4,6 +4,9 @@
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.utils import flt, getdate, today
+
+from healthcare.healthcare.consultation_api import CONSULTATION_STATUSES, RW_STATUS_MAP
 
 VISIT_OUTCOMES = (
 	"Discharged home",
@@ -23,13 +26,56 @@ CONSULTATION_HIDDEN_FIELDS = (
 	"therapy_plan",
 	"rehabilitation_section",
 	"therapies",
+	"custom_patient_details",
+	"rw_opd_sb",
+	"rw_tab_visit",
+	"rw_opd_visit_status",
+	"rw_visit_type",
+	"rw_oriented_service",
+	"rw_patient_upid",
+	"rw_patient_nin",
+	"rw_queue_number",
+	"rw_oriented_department",
+	"rw_col_opd",
+	"rw_hmis_origin",
+	"rw_service_point",
+	"rw_col_visit",
+	"rw_triage",
+	"rw_triage_category",
+	"rw_oriented_at",
+	"rw_triaged_at",
+	"rw_consultation_started_at",
+	"rw_visit_completed_at",
+	"rw_triage_vitals_html",
+	"rw_insurance_sb",
+	"rw_insurance_provider",
+	"rw_insurance_member_number",
+	"rw_patient_insured",
+	"rw_chief_complaint",
+	"rw_tab_medical_history",
+	"rw_allergies",
+	"rw_current_medication",
+	"rw_col_hist",
+	"rw_past_medical_history",
+	"rw_surgical_history",
+	"rw_risk_sb",
+	"rw_tobacco_past_use",
+	"rw_tobacco_current_use",
+	"rw_alcohol_past_use",
+	"rw_alcohol_current_use",
+	"rw_other_risk_factors",
+	"rw_tab_consultation",
+	"rw_tab_orders",
+	"rw_tab_discharge",
 )
 
 
 def install_rwanda_consultation():
 	create_custom_fields(get_rwanda_consultation_custom_fields(), update=True)
 	apply_consultation_form_labels()
+	reposition_follow_up_fields()
 	hide_consultation_clutter_fields()
+	backfill_consultation_status()
 	frappe.clear_cache()
 
 
@@ -41,50 +87,49 @@ def get_rwanda_consultation_custom_fields():
 
 def get_consultation_encounter_fields():
 	return [
-		# --- Visit & triage tab (summary) ---
+		# --- Status & workflow (Details tab) ---
 		{
-			"fieldname": "rw_triage_vitals_html",
+			"fieldname": "consultation_status",
+			"fieldtype": "Select",
+			"label": "Consultation Status",
+			"options": "\n".join(CONSULTATION_STATUSES),
+			"default": "Draft",
+			"insert_after": "tab_consultation",
+			"in_list_view": 1,
+			"in_standard_filter": 1,
+			"read_only": 1,
+		},
+		{
+			"fieldname": "consultation_duration",
+			"fieldtype": "Duration",
+			"label": "Duration",
+			"insert_after": "consultation_status",
+		},
+		{
+			"fieldname": "consultation_notes",
+			"fieldtype": "Text Editor",
+			"label": "Consultation Notes",
+			"insert_after": "consultation_duration",
+		},
+		{
+			"fieldname": "consultation_items_total",
+			"fieldtype": "Currency",
+			"label": "Items Total",
+			"insert_after": "consultation_notes",
+			"read_only": 1,
+		},
+		{
+			"fieldname": "rw_follow_up_indicator_html",
 			"fieldtype": "HTML",
-			"label": "Triage vitals",
-			"insert_after": "rw_chief_complaint",
+			"label": "Follow-up Indicator",
+			"insert_after": "consultation_items_total",
 		},
-		{
-			"fieldname": "rw_insurance_sb",
-			"fieldtype": "Section Break",
-			"label": "Insurance (from registration)",
-			"insert_after": "rw_triage_vitals_html",
-			"collapsible": 1,
-		},
-		{
-			"fieldname": "rw_insurance_provider",
-			"fieldtype": "Data",
-			"label": "Insurance provider",
-			"fetch_from": "patient.rw_insurance_type",
-			"read_only": 1,
-			"insert_after": "rw_insurance_sb",
-		},
-		{
-			"fieldname": "rw_insurance_member_number",
-			"fieldtype": "Data",
-			"label": "Insurance member number",
-			"fetch_from": "patient.rw_insurance_member_number",
-			"read_only": 1,
-			"insert_after": "rw_insurance_provider",
-		},
-		{
-			"fieldname": "rw_patient_insured",
-			"fieldtype": "Data",
-			"label": "Patient insured",
-			"fetch_from": "patient.rw_patient_insured",
-			"read_only": 1,
-			"insert_after": "rw_insurance_member_number",
-		},
-		# --- Consultation tab (clinical narrative before Marley symptom/dx blocks) ---
+		# --- Clinical narrative ---
 		{
 			"fieldname": "rw_history_present_illness",
 			"fieldtype": "Text Editor",
 			"label": "History of present illness (HPI)",
-			"insert_after": "rw_tab_consultation",
+			"insert_after": "rw_follow_up_indicator_html",
 		},
 		{
 			"fieldname": "rw_physical_examination_notes",
@@ -109,103 +154,53 @@ def get_consultation_encounter_fields():
 			),
 			"insert_after": "rw_clinical_impression",
 		},
-		# --- Orders tab (prescriptions / investigations) ---
+		# --- Items tab ---
 		{
-			"fieldname": "rw_tab_orders",
+			"fieldname": "rw_tab_items",
 			"fieldtype": "Tab Break",
-			"label": "Orders",
-			"insert_after": "codification_table",
+			"label": "Items",
+			"insert_after": "rw_diagnosis_help",
 		},
-		# --- Discharge & follow-up tab ---
 		{
-			"fieldname": "rw_tab_discharge",
+			"fieldname": "consultation_items",
+			"fieldtype": "Table",
+			"label": "Consultation Items",
+			"options": "Encounter Consultation Item",
+			"insert_after": "rw_tab_items",
+		},
+		# --- Tasks tab ---
+		{
+			"fieldname": "rw_tab_tasks",
 			"fieldtype": "Tab Break",
-			"label": "Discharge & follow-up",
-			"insert_after": "encounter_comment",
+			"label": "Tasks",
+			"insert_after": "consultation_items",
 		},
 		{
-			"fieldname": "rw_visit_outcome",
-			"fieldtype": "Select",
-			"label": "Visit outcome",
-			"options": "\n".join(VISIT_OUTCOMES),
-			"insert_after": "rw_tab_discharge",
-			"in_list_view": 1,
+			"fieldname": "consultation_tasks",
+			"fieldtype": "Table",
+			"label": "Tasks",
+			"options": "Encounter Consultation Task",
+			"insert_after": "rw_tab_tasks",
+		},
+		# --- Follow-up tab (uses existing rw_* discharge fields from rwanda_opd) ---
+		{
+			"fieldname": "rw_tab_followup_detail",
+			"fieldtype": "Tab Break",
+			"label": "Follow-up",
+			"insert_after": "consultation_tasks",
+		},
+		# --- History tab ---
+		{
+			"fieldname": "rw_tab_history",
+			"fieldtype": "Tab Break",
+			"label": "History",
+			"insert_after": "rw_referral_reason",
 		},
 		{
-			"fieldname": "rw_discharge_summary",
-			"fieldtype": "Text Editor",
-			"label": "Discharge summary",
-			"insert_after": "rw_visit_outcome",
-		},
-		{
-			"fieldname": "rw_patient_instructions",
-			"fieldtype": "Text Editor",
-			"label": "Patient instructions / advice",
-			"insert_after": "rw_discharge_summary",
-		},
-		{
-			"fieldname": "rw_col_followup",
-			"fieldtype": "Column Break",
-			"insert_after": "rw_patient_instructions",
-		},
-		{
-			"fieldname": "rw_follow_up_required",
-			"fieldtype": "Check",
-			"label": "Follow-up required",
-			"default": "0",
-			"insert_after": "rw_col_followup",
-		},
-		{
-			"fieldname": "rw_follow_up_date",
-			"fieldtype": "Date",
-			"label": "Follow-up date",
-			"depends_on": "eval:doc.rw_follow_up_required",
-			"mandatory_depends_on": "eval:doc.rw_follow_up_required",
-			"insert_after": "rw_follow_up_required",
-		},
-		{
-			"fieldname": "rw_follow_up_notes",
-			"fieldtype": "Small Text",
-			"label": "Follow-up notes",
-			"depends_on": "eval:doc.rw_follow_up_required",
-			"insert_after": "rw_follow_up_date",
-		},
-		{
-			"fieldname": "rw_referral_sb",
-			"fieldtype": "Section Break",
-			"label": "Referral",
-			"insert_after": "rw_follow_up_notes",
-			"collapsible": 1,
-		},
-		{
-			"fieldname": "rw_referral_required",
-			"fieldtype": "Check",
-			"label": "Referral required",
-			"default": "0",
-			"insert_after": "rw_referral_sb",
-		},
-		{
-			"fieldname": "rw_referral_facility",
-			"fieldtype": "Data",
-			"label": "Referral facility",
-			"depends_on": "eval:doc.rw_referral_required",
-			"mandatory_depends_on": "eval:doc.rw_referral_required",
-			"insert_after": "rw_referral_required",
-		},
-		{
-			"fieldname": "rw_referral_department",
-			"fieldtype": "Data",
-			"label": "Referral department / service",
-			"depends_on": "eval:doc.rw_referral_required",
-			"insert_after": "rw_referral_facility",
-		},
-		{
-			"fieldname": "rw_referral_reason",
-			"fieldtype": "Small Text",
-			"label": "Referral reason",
-			"depends_on": "eval:doc.rw_referral_required",
-			"mandatory_depends_on": "eval:doc.rw_referral_required",
-			"insert_after": "rw_referral_department",
+			"fieldname": "consultation_timeline_html",
+			"fieldtype": "HTML",
+			"label": "Audit Trail",
+			"insert_after": "rw_tab_history",
 		},
 	]
 
@@ -213,14 +208,9 @@ def get_consultation_encounter_fields():
 def apply_consultation_form_labels():
 	from healthcare.healthcare.rwanda_opd import set_encounter_field_property
 
-	set_encounter_field_property("sb_symptoms", "label", "Complaints & symptoms")
+	set_encounter_field_property("sb_medications", "label", "Medications (Drug Prescription)")
 	set_encounter_field_property("diagnosis", "label", "Diagnosis (required)")
-	set_encounter_field_property("symptoms", "label", "Presenting complaints")
 	set_encounter_field_property("encounter_comment", "label", "Internal consultation notes")
-	set_encounter_field_property("encounter_details_tab", "label", "Order history")
-	set_encounter_field_property("notes_tab", "label", "Clinical notes")
-	set_encounter_field_property("codification", "label", "ICD / medical coding")
-	set_encounter_field_property("appointment", "label", "Booking (optional)")
 
 
 def hide_consultation_clutter_fields():
@@ -230,11 +220,70 @@ def hide_consultation_clutter_fields():
 		set_encounter_field_hidden(fieldname, hidden=1)
 
 
+def reposition_follow_up_fields():
+	"""Move discharge/follow-up fields under the Follow-up tab."""
+	order = (
+		("rw_visit_outcome", "rw_tab_followup_detail"),
+		("rw_discharge_summary", "rw_visit_outcome"),
+		("rw_patient_instructions", "rw_discharge_summary"),
+		("rw_col_followup", "rw_patient_instructions"),
+		("rw_follow_up_required", "rw_col_followup"),
+		("rw_follow_up_date", "rw_follow_up_required"),
+		("rw_follow_up_notes", "rw_follow_up_date"),
+		("rw_referral_sb", "rw_follow_up_notes"),
+		("rw_referral_required", "rw_referral_sb"),
+		("rw_referral_facility", "rw_referral_required"),
+		("rw_referral_department", "rw_referral_facility"),
+		("rw_referral_reason", "rw_referral_department"),
+		("rw_tab_history", "rw_referral_reason"),
+		("consultation_timeline_html", "rw_tab_history"),
+	)
+	for fieldname, insert_after in order:
+		name = frappe.db.get_value(
+			"Custom Field", {"dt": "Patient Encounter", "fieldname": fieldname}, "name"
+		)
+		if name:
+			frappe.db.set_value("Custom Field", name, "insert_after", insert_after)
+
+
+def backfill_consultation_status():
+	"""Set consultation_status on existing encounters from rw_opd_visit_status."""
+	for rw_status, consultation_status in (
+		("Waiting", "Draft"),
+		("In Consultation", "In Progress"),
+		("Completed", "Completed"),
+		("Cancelled", "Cancelled"),
+	):
+		frappe.db.sql(
+			"""
+			update `tabPatient Encounter`
+			set consultation_status = %s
+			where ifnull(consultation_status, '') = ''
+				and rw_opd_visit_status = %s
+				and docstatus < 2
+			""",
+			(consultation_status, rw_status),
+		)
+	frappe.db.sql(
+		"""
+		update `tabPatient Encounter`
+		set consultation_status = 'Follow-up'
+		where rw_follow_up_required = 1
+			and consultation_status = 'Completed'
+			and docstatus < 2
+		"""
+	)
+
+
 def validate_rwanda_consultation(doc, method=None):
 	if doc.doctype != "Patient Encounter":
 		return
 
+	sync_consultation_status(doc)
+	calculate_consultation_items(doc)
+	update_consultation_tasks(doc)
 	_validate_consultation_workflow_state(doc)
+	_validate_follow_up_permissions(doc)
 
 	if doc.flags.get("ignore_rwanda_consultation_validation"):
 		return
@@ -258,8 +307,90 @@ def validate_before_complete_consultation(doc):
 		frappe.throw(_("Submit the consultation before completing the visit."), title=_("Consultation"))
 	_validate_mandatory_diagnosis(doc)
 	_validate_follow_up_and_referral(doc)
+	_validate_open_tasks(doc)
 	if not doc.get("rw_visit_outcome"):
-		frappe.throw(_("Select a visit outcome on the Discharge & follow-up tab."), title=_("Consultation"))
+		frappe.throw(_("Select a visit outcome before completing the visit."), title=_("Consultation"))
+
+
+def sync_consultation_status(doc):
+	"""Keep consultation_status and rw_opd_visit_status aligned."""
+	if doc.flags.get("skip_consultation_status_sync"):
+		return
+
+	status = doc.get("consultation_status")
+	rw_status = doc.get("rw_opd_visit_status")
+
+	if status == "Cancelled" or rw_status == "Cancelled":
+		doc.consultation_status = "Cancelled"
+		doc.rw_opd_visit_status = "Cancelled"
+		return
+
+	if status in CONSULTATION_STATUSES and status in RW_STATUS_MAP:
+		if rw_status != RW_STATUS_MAP[status]:
+			doc.rw_opd_visit_status = RW_STATUS_MAP[status]
+		return
+
+	if rw_status == "Waiting":
+		doc.consultation_status = "Draft"
+	elif rw_status == "In Consultation":
+		doc.consultation_status = "In Progress"
+	elif rw_status == "Completed":
+		if doc.get("rw_follow_up_required") and doc.get("consultation_status") == "Follow-up":
+			doc.consultation_status = "Follow-up"
+		else:
+			doc.consultation_status = "Completed"
+	elif rw_status == "Cancelled":
+		doc.consultation_status = "Cancelled"
+	elif not status:
+		doc.consultation_status = "Draft"
+
+
+def set_consultation_status(doc, status):
+	doc.flags.skip_consultation_status_sync = True
+	doc.consultation_status = status
+	if status in RW_STATUS_MAP:
+		doc.rw_opd_visit_status = RW_STATUS_MAP[status]
+	doc.flags.skip_consultation_status_sync = False
+
+
+def calculate_consultation_items(doc):
+	total = 0
+	for row in doc.get("consultation_items") or []:
+		row.amount = flt(row.quantity) * flt(row.rate)
+		total += flt(row.amount)
+	doc.consultation_items_total = total
+
+
+def update_consultation_tasks(doc):
+	for row in doc.get("consultation_tasks") or []:
+		if row.status == "Completed" and not row.completed_on:
+			row.completed_on = today()
+		elif row.status != "Completed":
+			row.completed_on = None
+
+
+def _validate_open_tasks(doc):
+	open_tasks = [
+		row.task_name
+		for row in doc.get("consultation_tasks") or []
+		if row.status not in ("Completed", "Cancelled")
+	]
+	if open_tasks and doc.consultation_status == "Completed":
+		frappe.msgprint(
+			_("Some tasks are still open: {0}").format(", ".join(open_tasks[:3])),
+			indicator="orange",
+			title=_("Tasks"),
+		)
+
+
+def _validate_follow_up_permissions(doc):
+	if not doc.has_value_changed("rw_follow_up_date"):
+		return
+	if "System Manager" in frappe.get_roles():
+		return
+	practitioner_user = frappe.db.get_value("Healthcare Practitioner", doc.practitioner, "user_id")
+	if practitioner_user != frappe.session.user:
+		frappe.throw(_("Only the assigned practitioner can change the follow-up date."), title=_("Follow-up"))
 
 
 def _validate_consultation_workflow_state(doc):
@@ -303,7 +434,7 @@ def _validate_follow_up_and_referral(doc):
 def _validate_visit_outcome_on_submit(doc):
 	if not doc.get("rw_visit_outcome"):
 		frappe.msgprint(
-			_("Select a visit outcome on the Discharge & follow-up tab before completing the visit."),
+			_("Select a visit outcome before completing the visit."),
 			indicator="orange",
 			title=_("Visit outcome"),
 		)

@@ -137,22 +137,8 @@ def schedule_inpatient(args):
 
 	# Set encounter details
 	encounter = frappe.get_doc("Patient Encounter", admission_order["admission_encounter"])
-	if encounter and encounter.symptoms:  # Symptoms
-		set_ip_child_records(inpatient_record, "chief_complaint", encounter.symptoms)
-
 	if encounter and encounter.diagnosis:  # Diagnosis
 		set_ip_child_records(inpatient_record, "diagnosis", encounter.diagnosis)
-
-	if encounter and encounter.drug_prescription:  # Medication
-		set_ip_child_records(inpatient_record, "drug_prescription", encounter.drug_prescription)
-
-	if encounter and encounter.lab_test_prescription:  # Lab Tests
-		set_ip_child_records(inpatient_record, "lab_test_prescription", encounter.lab_test_prescription)
-
-	if encounter and encounter.procedure_prescription:  # Procedure Prescription
-		set_ip_child_records(
-			inpatient_record, "procedure_prescription", encounter.procedure_prescription
-		)
 
 	if encounter and encounter.therapies:  # Therapies
 		inpatient_record.therapy_plan = encounter.therapy_plan

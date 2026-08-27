@@ -6,11 +6,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import cstr
-
-from healthcare.healthcare.doctype.patient_encounter.patient_encounter import (
-	get_prescription_dates,
-)
+from frappe.utils import add_days, cstr, getdate
 
 
 class InpatientMedicationOrder(Document):
@@ -64,7 +60,6 @@ class InpatientMedicationOrder(Document):
 
 		self.db_set("status", status)
 
-	@frappe.whitelist()
 	def add_order_entries(self, order):
 		if order.get("drug_code"):
 			dosage = frappe.get_doc("Prescription Dosage", order.get("dosage"))
@@ -84,7 +79,16 @@ class InpatientMedicationOrder(Document):
 	@frappe.whitelist()
 	def get_from_encounter(self, encounter):
 		patient_encounter = frappe.get_doc("Patient Encounter", encounter)
-		if not patient_encounter.drug_prescription:
+		if not patient_encounter.get("drug_prescription"):
 			return
-		for drug in patient_encounter.drug_prescription:
+		for drug in patient_encounter.get("drug_prescription"):
 			self.add_order_entries(drug)
+
+
+def get_prescription_dates(period, start_date):
+	prescription_duration = frappe.get_doc("Prescription Duration", period)
+	days = prescription_duration.get_days()
+	dates = [start_date]
+	for i in range(1, days):
+		dates.append(add_days(getdate(start_date), i))
+	return dates

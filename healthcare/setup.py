@@ -890,7 +890,6 @@ def get_patient_history_config():
 			"encounter_date",
 			[
 				{"label": "Healthcare Practitioner", "fieldname": "practitioner", "fieldtype": "Link"},
-				{"label": "Symptoms", "fieldname": "symptoms", "fieldtype": "Table Multiselect"},
 				{"label": "Diagnosis", "fieldname": "diagnosis", "fieldtype": "Table Multiselect"},
 				{"label": "Drug Prescription", "fieldname": "drug_prescription", "fieldtype": "Table"},
 				{"label": "Lab Tests", "fieldname": "lab_test_prescription", "fieldtype": "Table"},

@@ -1,0 +1,54 @@
+{
+ "actions": [],
+ "creation": "2024-08-14 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "lab_test_code",
+  "lab_test_name",
+  "date_time",
+  "clinical_information"
+ ],
+ "fields": [
+  {
+   "fieldname": "lab_test_code",
+   "fieldtype": "Link",
+   "label": "Lab Test",
+   "options": "Lab Test Template",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "lab_test_name",
+   "fieldtype": "Data",
+   "label": "Lab Test Name",
+   "fetch_from": "lab_test_code.lab_test_name",
+   "in_list_view": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "date_time",
+   "fieldtype": "Datetime",
+   "label": "Date & Time",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "clinical_information",
+   "fieldtype": "Small Text",
+   "label": "Clinical Information"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Encounter Lab Test",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

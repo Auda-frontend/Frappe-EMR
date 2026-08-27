@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "creation": "2024-08-14 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "therapy_type",
+  "no_of_sessions"
+ ],
+ "fields": [
+  {
+   "fieldname": "therapy_type",
+   "fieldtype": "Link",
+   "label": "Therapy Type",
+   "options": "Therapy Type",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "no_of_sessions",
+   "fieldtype": "Int",
+   "label": "No of Sessions",
+   "in_list_view": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Encounter Therapy",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

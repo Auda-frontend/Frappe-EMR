@@ -9,63 +9,153 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "tab_consultation",
+  "practitioner",
+  "consultation_type",
+  "practitioner_level",
+  "practitioner_name",
+  "service_unit",
+  "column_break_consultation",
+  "sb_patient_information",
   "naming_series",
-  "title",
-  "appointment",
-  "appointment_type",
   "patient",
+  "encounter_date",
+  "column_break_patient",
   "patient_name",
+  "patient_dob",
+  "patient_insurance",
+  "patient_province",
+  "patient_sector",
+  "consent_provided",
+  "patient_upid",
   "patient_sex",
   "patient_age",
-  "inpatient_record",
-  "inpatient_status",
-  "column_break_6",
-  "company",
-  "status",
-  "encounter_date",
-  "encounter_time",
-  "practitioner",
-  "practitioner_name",
-  "medical_department",
-  "google_meet_link",
-  "invoiced",
-  "submit_orders_on_save",
-  "sb_symptoms",
-  "symptoms",
-  "symptoms_in_print",
-  "get_applicable_treatment_plans",
-  "physical_examination",
-  "diagnosis",
-  "diagnosis_in_print",
-  "codification",
-  "codification_table",
-  "sb_drug_prescription",
-  "drug_prescription",
-  "sb_test_prescription",
+  "patient_district",
+  "sb_medical_history",
+  "chief_complaints",
+  "present_illness",
+  "history_present_illness",
+  "past_medical_history",
+  "immunization",
+  "gyneco_obstetrical_history",
+  "surgical_history",
+  "any_allergies",
+  "sb_lifestyle_mental",
+  "lifestyle",
+  "mental_health_status",
+  "medications",
+  "sb_family_social",
+  "family_history",
+  "social_history",
+  "sb_physical_examination",
+  "height_cm",
+  "weight_kg",
+  "bmi",
+  "bmi_status",
+  "systole",
+  "diastole",
+  "bp_status",
+  "pulse",
+  "temp",
+  "pain_score",
+  "rr",
+  "spo2",
+  "column_break_pe",
+  "systematic_physical_examination",
+  "tab_investigation",
+  "sb_investigations",
+  "clinical_information",
   "lab_test_prescription",
+  "rapid_tests",
+  "imaging",
+  "tab_final_diagnosis",
+  "sb_icd11",
+  "diagnosis",
+  "tab_treatment",
+  "sb_medications",
+  "drug_prescription",
   "sb_procedures",
   "procedure_prescription",
-  "rehabilitation_section",
-  "therapy_plan",
+  "sb_prosthetics_orthotics",
+  "prosthetics_orthotics",
+  "sb_rehabilitation",
   "therapies",
-  "section_break_33",
+  "sb_education",
+  "education",
+  "tab_consumables",
+  "consumables",
+  "procedure_consumables",
+  "tab_followup",
+  "general_followup",
+  "tab_discharge",
+  "patient_status",
+  "discharge_date",
+  "discharging_service",
+  "global_bill_created",
+  "column_break_discharge",
+  "clinical_summary",
+  "invoiced",
+  "submit_orders_on_save",
+  "codification_table",
   "encounter_comment",
-  "sb_refs",
-  "amended_from",
-  "encounter_details_tab",
-  "order_history_html",
-  "encounter_details",
-  "notes_tab",
-  "clinical_notes"
+  "encounter_time",
+  "medical_department",
+  "company",
+  "status",
+  "inpatient_record",
+  "inpatient_status",
+  "title",
+  "therapy_plan",
+  "amended_from"
  ],
  "fields": [
   {
-   "allow_on_submit": 1,
-   "fieldname": "inpatient_record",
+   "fieldname": "tab_consultation",
+   "fieldtype": "Tab Break",
+   "label": "Consultation"
+  },
+  {
+   "fieldname": "practitioner",
    "fieldtype": "Link",
-   "label": "Inpatient Record",
-   "options": "Inpatient Record",
+   "in_standard_filter": 1,
+   "label": "Healthcare Practitioner",
+   "options": "Healthcare Practitioner",
+   "reqd": 1
+  },
+  {
+   "fieldname": "consultation_type",
+   "fieldtype": "Select",
+   "label": "Type of Consultation",
+   "options": "\nNew Case\nFollow-up\nEmergency\nRoutine"
+  },
+  {
+   "fieldname": "practitioner_level",
+   "fieldtype": "Select",
+   "label": "Practitioner's Level",
+   "options": "\nGeneral Practitioner\nSpecialist\nMedical Officer\nClinical Officer\nNurse\nIntern\nOther"
+  },
+  {
+   "fetch_from": "practitioner.practitioner_name",
+   "fieldname": "practitioner_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Practitioner Name",
    "read_only": 1
+  },
+  {
+   "fieldname": "service_unit",
+   "fieldtype": "Link",
+   "label": "Service Unit",
+   "options": "Healthcare Service Unit"
+  },
+  {
+   "fieldname": "column_break_consultation",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sb_patient_information",
+   "fieldtype": "Section Break",
+   "label": "Patient Information"
   },
   {
    "fieldname": "naming_series",
@@ -73,15 +163,6 @@
    "label": "Series",
    "no_copy": 1,
    "options": "HLC-ENC-.YYYY.-",
-   "set_only_once": 1
-  },
-  {
-   "fieldname": "appointment",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Appointment",
-   "options": "Patient Appointment",
-   "search_index": 1,
    "set_only_once": 1
   },
   {
@@ -95,15 +176,61 @@
    "search_index": 1
   },
   {
+   "default": "Today",
+   "fieldname": "encounter_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_patient",
+   "fieldtype": "Column Break"
+  },
+  {
    "fieldname": "patient_name",
    "fieldtype": "Data",
-   "label": "Patient Name",
+   "label": "Full Name",
    "read_only": 1
   },
   {
-   "fieldname": "patient_age",
+   "fetch_from": "patient.dob",
+   "fieldname": "patient_dob",
+   "fieldtype": "Date",
+   "label": "DOB",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "patient.custom_insurance_provider",
+   "fieldname": "patient_insurance",
    "fieldtype": "Data",
-   "label": "Age",
+   "label": "Insurance",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "patient.rw_residence_province",
+   "fieldname": "patient_province",
+   "fieldtype": "Data",
+   "label": "Province",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "patient.rw_residence_sector",
+   "fieldname": "patient_sector",
+   "fieldtype": "Data",
+   "label": "Sector",
+   "read_only": 1
+  },
+  {
+   "fieldname": "consent_provided",
+   "fieldtype": "Check",
+   "label": "Consent Provided?"
+  },
+  {
+   "fetch_from": "patient.rw_upid",
+   "fieldname": "patient_upid",
+   "fieldtype": "Data",
+   "label": "UPID",
    "read_only": 1
   },
   {
@@ -114,124 +241,242 @@
    "read_only": 1
   },
   {
-   "fieldname": "company",
-   "fieldtype": "Link",
-   "label": "Company",
-   "options": "Company"
-  },
-  {
-   "fieldname": "column_break_6",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "practitioner",
-   "fieldtype": "Link",
-   "in_standard_filter": 1,
-   "label": "Healthcare Practitioner",
-   "options": "Healthcare Practitioner",
-   "reqd": 1
-  },
-  {
-   "default": "Today",
-   "fieldname": "encounter_date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "label": "Encounter Date",
-   "reqd": 1
-  },
-  {
-   "default": "Now",
-   "fieldname": "encounter_time",
-   "fieldtype": "Time",
-   "label": "Encounter Time",
-   "reqd": 1
-  },
-  {
-   "default": "0",
-   "fieldname": "invoiced",
-   "fieldtype": "Check",
-   "label": "Invoiced",
-   "no_copy": 1,
+   "fieldname": "patient_age",
+   "fieldtype": "Data",
+   "label": "Age",
    "read_only": 1
   },
   {
-   "fieldname": "sb_symptoms",
+   "fetch_from": "patient.rw_residence_district",
+   "fieldname": "patient_district",
+   "fieldtype": "Data",
+   "label": "District",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_medical_history",
    "fieldtype": "Section Break",
-   "label": "Encounter Impression"
+   "label": "Medical History"
   },
   {
-   "fieldname": "symptoms",
-   "fieldtype": "Table MultiSelect",
-   "ignore_xss_filter": 1,
-   "label": "Symptoms",
-   "no_copy": 1,
-   "options": "Patient Encounter Symptom"
+   "fieldname": "chief_complaints",
+   "fieldtype": "Text Editor",
+   "label": "Chief Complaints"
   },
   {
-   "default": "0",
-   "depends_on": "eval: doc.symptoms != ''",
-   "fieldname": "symptoms_in_print",
-   "fieldtype": "Check",
-   "label": "In print",
-   "no_copy": 1,
-   "print_hide": 1,
-   "report_hide": 1
+   "fieldname": "present_illness",
+   "fieldtype": "Text Editor",
+   "label": "Present illness"
   },
   {
-   "fieldname": "physical_examination",
-   "fieldtype": "Column Break"
+   "fieldname": "history_present_illness",
+   "fieldtype": "Text Editor",
+   "label": "History of Present illness"
   },
   {
-   "fieldname": "diagnosis",
-   "fieldtype": "Table MultiSelect",
-   "ignore_xss_filter": 1,
-   "label": "Diagnosis",
-   "no_copy": 1,
-   "options": "Patient Encounter Diagnosis"
+   "fieldname": "past_medical_history",
+   "fieldtype": "Text Editor",
+   "label": "Past Medical History"
   },
   {
-   "default": "1",
-   "depends_on": "eval: doc.diagnosis != ''",
-   "fieldname": "diagnosis_in_print",
-   "fieldtype": "Check",
-   "label": "In print",
-   "no_copy": 1,
-   "print_hide": 1,
-   "report_hide": 1
+   "fieldname": "immunization",
+   "fieldtype": "Text Editor",
+   "label": "Immunization (VAT)"
   },
   {
-   "collapsible": 1,
-   "fieldname": "codification",
+   "fieldname": "gyneco_obstetrical_history",
+   "fieldtype": "Text Editor",
+   "label": "Gyneco-Obstetrical History"
+  },
+  {
+   "fieldname": "surgical_history",
+   "fieldtype": "Text Editor",
+   "label": "Surgical History"
+  },
+  {
+   "fieldname": "any_allergies",
+   "fieldtype": "Text Editor",
+   "label": "Any Allergie?"
+  },
+  {
+   "fieldname": "sb_lifestyle_mental",
    "fieldtype": "Section Break",
-   "label": "Medical Coding"
+   "label": "Lifestyle & Mental Health"
   },
   {
-   "fieldname": "codification_table",
-   "fieldtype": "Table",
-   "label": "Medical Codes",
-   "options": "Codification Table"
+   "fieldname": "lifestyle",
+   "fieldtype": "Text Editor",
+   "label": "Lifestyle"
   },
   {
-   "fieldname": "sb_drug_prescription",
-   "fieldtype": "Section Break",
+   "fieldname": "mental_health_status",
+   "fieldtype": "Text Editor",
+   "label": "Mental health status"
+  },
+  {
+   "fieldname": "medications",
+   "fieldtype": "Text Editor",
    "label": "Medications"
   },
   {
-   "fieldname": "drug_prescription",
-   "fieldtype": "Table",
-   "label": "Drug Prescription",
-   "options": "Drug Prescription"
+   "fieldname": "sb_family_social",
+   "fieldtype": "Section Break",
+   "label": "Family & Social history"
   },
   {
-   "fieldname": "sb_test_prescription",
+   "fieldname": "family_history",
+   "fieldtype": "Small Text",
+   "label": "Family History"
+  },
+  {
+   "fieldname": "social_history",
+   "fieldtype": "Small Text",
+   "label": "Social History"
+  },
+  {
+   "fieldname": "sb_physical_examination",
+   "fieldtype": "Section Break",
+   "label": "Physical Examinations"
+  },
+  {
+   "fieldname": "height_cm",
+   "fieldtype": "Float",
+   "label": "Height (Cm)"
+  },
+  {
+   "fieldname": "weight_kg",
+   "fieldtype": "Float",
+   "label": "Weight (Kg)"
+  },
+  {
+   "fieldname": "bmi",
+   "fieldtype": "Float",
+   "label": "BMI (Kg/m2)"
+  },
+  {
+   "fieldname": "bmi_status",
+   "fieldtype": "Data",
+   "label": "BMI Status"
+  },
+  {
+   "fieldname": "systole",
+   "fieldtype": "Int",
+   "label": "Systole"
+  },
+  {
+   "fieldname": "diastole",
+   "fieldtype": "Int",
+   "label": "Diastole"
+  },
+  {
+   "fieldname": "bp_status",
+   "fieldtype": "Data",
+   "label": "BP Status"
+  },
+  {
+   "fieldname": "pulse",
+   "fieldtype": "Int",
+   "label": "Pulse (bpm)"
+  },
+  {
+   "fieldname": "temp",
+   "fieldtype": "Float",
+   "label": "Temp (\u00b0C)"
+  },
+  {
+   "fieldname": "pain_score",
+   "fieldtype": "Int",
+   "label": "Pain Score"
+  },
+  {
+   "fieldname": "rr",
+   "fieldtype": "Int",
+   "label": "RR"
+  },
+  {
+   "fieldname": "spo2",
+   "fieldtype": "Int",
+   "label": "SpO2 (%)"
+  },
+  {
+   "fieldname": "column_break_pe",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "systematic_physical_examination",
+   "fieldtype": "Table",
+   "label": "Systematic physical examination",
+   "options": "Encounter Systematic Exam"
+  },
+  {
+   "fieldname": "tab_investigation",
+   "fieldtype": "Tab Break",
+   "label": "Investigation"
+  },
+  {
+   "fieldname": "sb_investigations",
    "fieldtype": "Section Break",
    "label": "Investigations"
+  },
+  {
+   "fieldname": "clinical_information",
+   "fieldtype": "Small Text",
+   "label": "Clinical Information"
   },
   {
    "fieldname": "lab_test_prescription",
    "fieldtype": "Table",
    "label": "Lab Tests",
-   "options": "Lab Prescription"
+   "no_copy": 1,
+   "options": "Encounter Lab Test"
+  },
+  {
+   "fieldname": "rapid_tests",
+   "fieldtype": "Table",
+   "label": "Rapid Tests",
+   "no_copy": 1,
+   "options": "Encounter Rapid Test"
+  },
+  {
+   "fieldname": "imaging",
+   "fieldtype": "Table",
+   "label": "Imaging",
+   "no_copy": 1,
+   "options": "Encounter Imaging"
+  },
+  {
+   "fieldname": "tab_final_diagnosis",
+   "fieldtype": "Tab Break",
+   "label": "Final Diagnosis"
+  },
+  {
+   "fieldname": "sb_icd11",
+   "fieldtype": "Section Break",
+   "label": "ICD 11 Diagnosis search"
+  },
+  {
+   "fieldname": "diagnosis",
+   "fieldtype": "Table",
+   "label": "Diagnosis",
+   "no_copy": 1,
+   "options": "Encounter Final Diagnosis"
+  },
+  {
+   "fieldname": "tab_treatment",
+   "fieldtype": "Tab Break",
+   "label": "Treatment"
+  },
+  {
+   "fieldname": "sb_medications",
+   "fieldtype": "Section Break",
+   "label": "Medications (Drug Prescription)"
+  },
+  {
+   "fieldname": "drug_prescription",
+   "fieldtype": "Table",
+   "label": "Drug Prescription",
+   "no_copy": 1,
+   "options": "Encounter Drug Prescription"
   },
   {
    "fieldname": "sb_procedures",
@@ -243,26 +488,22 @@
    "fieldtype": "Table",
    "label": "Clinical Procedures",
    "no_copy": 1,
-   "options": "Procedure Prescription"
+   "options": "Encounter Clinical Procedure"
   },
   {
-   "fieldname": "encounter_comment",
-   "fieldtype": "Small Text",
-   "ignore_xss_filter": 1,
-   "label": "Review Details",
-   "no_copy": 1
+   "fieldname": "sb_prosthetics_orthotics",
+   "fieldtype": "Section Break",
+   "label": "Prosthetics and Orthotics Provision"
   },
   {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
+   "fieldname": "prosthetics_orthotics",
+   "fieldtype": "Table",
+   "label": "Prosthetics and Orthotics Provision",
    "no_copy": 1,
-   "options": "Patient Encounter",
-   "print_hide": 1,
-   "read_only": 1
+   "options": "Encounter Prosthetics Orthotics"
   },
   {
-   "fieldname": "rehabilitation_section",
+   "fieldname": "sb_rehabilitation",
    "fieldtype": "Section Break",
    "label": "Rehabilitation"
   },
@@ -270,35 +511,130 @@
    "fieldname": "therapies",
    "fieldtype": "Table",
    "label": "Therapies",
-   "options": "Therapy Plan Detail"
+   "no_copy": 1,
+   "options": "Encounter Therapy"
   },
   {
-   "fieldname": "section_break_33",
-   "fieldtype": "Section Break"
+   "fieldname": "sb_education",
+   "fieldtype": "Section Break",
+   "label": "Education"
   },
   {
-   "fieldname": "therapy_plan",
+   "fieldname": "education",
+   "fieldtype": "Text Editor",
+   "label": "Education"
+  },
+  {
+   "fieldname": "tab_consumables",
+   "fieldtype": "Tab Break",
+   "label": "Consumables"
+  },
+  {
+   "fieldname": "consumables",
+   "fieldtype": "Table",
+   "label": "Consumables",
+   "no_copy": 1,
+   "options": "Encounter Consumable"
+  },
+  {
+   "fieldname": "procedure_consumables",
+   "fieldtype": "Table",
+   "label": "Procedure Consumables",
+   "no_copy": 1,
+   "options": "Encounter Procedure Consumable"
+  },
+  {
+   "fieldname": "tab_followup",
+   "fieldtype": "Tab Break",
+   "label": "General Followup"
+  },
+  {
+   "fieldname": "general_followup",
+   "fieldtype": "Table",
+   "label": "General Followup",
+   "no_copy": 1,
+   "options": "Encounter General Followup"
+  },
+  {
+   "fieldname": "tab_discharge",
+   "fieldtype": "Tab Break",
+   "label": "Discharge"
+  },
+  {
+   "fieldname": "patient_status",
+   "fieldtype": "Select",
+   "label": "Patient Status",
+   "options": "\nIn treatment\nAdmitted\nDischarged\nReferred\nDeceased"
+  },
+  {
+   "fieldname": "discharge_date",
+   "fieldtype": "Date",
+   "label": "Discharge date"
+  },
+  {
+   "fieldname": "discharging_service",
    "fieldtype": "Link",
+   "label": "Discharging Service",
+   "options": "Healthcare Service Unit"
+  },
+  {
+   "fieldname": "global_bill_created",
+   "fieldtype": "Check",
+   "label": "Global Bill Created"
+  },
+  {
+   "fieldname": "column_break_discharge",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "clinical_summary",
+   "fieldtype": "Text Editor",
+   "label": "Clinical summary"
+  },
+  {
+   "default": "0",
+   "fieldname": "invoiced",
+   "fieldtype": "Check",
    "hidden": 1,
-   "label": "Therapy Plan",
-   "options": "Therapy Plan",
+   "label": "Invoiced",
+   "no_copy": 1,
    "read_only": 1
   },
   {
-   "fieldname": "appointment_type",
-   "fieldtype": "Link",
-   "ignore_user_permissions": 1,
-   "label": "Appointment Type",
-   "no_copy": 1,
-   "options": "Appointment Type",
-   "print_hide": 1,
-   "read_only": 1,
-   "report_hide": 1
+   "default": "0",
+   "depends_on": "eval:!doc.__islocal;",
+   "fieldname": "submit_orders_on_save",
+   "fieldtype": "Check",
+   "hidden": 1,
+   "label": "Submit Orders on Save"
+  },
+  {
+   "fieldname": "codification_table",
+   "fieldtype": "Table",
+   "hidden": 1,
+   "label": "Medical Codes",
+   "options": "Codification Table"
+  },
+  {
+   "fieldname": "encounter_comment",
+   "fieldtype": "Small Text",
+   "hidden": 1,
+   "ignore_xss_filter": 1,
+   "label": "Review Details",
+   "no_copy": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "encounter_time",
+   "fieldtype": "Time",
+   "hidden": 1,
+   "label": "Encounter Time"
   },
   {
    "fetch_from": "practitioner.department",
    "fieldname": "medical_department",
    "fieldtype": "Link",
+   "hidden": 1,
    "ignore_user_permissions": 1,
    "in_standard_filter": 1,
    "label": "Department",
@@ -306,22 +642,35 @@
    "read_only": 1
   },
   {
-   "allow_on_submit": 1,
-   "fieldname": "inpatient_status",
-   "fieldtype": "Data",
-   "label": "Inpatient Status",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Status",
+   "options": "\nOpen\nOrdered\nCompleted\nCancelled",
    "read_only": 1
   },
   {
-   "fieldname": "sb_refs",
-   "fieldtype": "Section Break"
+   "allow_on_submit": 1,
+   "fieldname": "inpatient_record",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Inpatient Record",
+   "options": "Inpatient Record",
+   "read_only": 1
   },
   {
-   "fetch_from": "practitioner.practitioner_name",
-   "fieldname": "practitioner_name",
+   "allow_on_submit": 1,
+   "fieldname": "inpatient_status",
    "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Practitioner Name",
+   "hidden": 1,
+   "label": "Inpatient Status",
    "read_only": 1
   },
   {
@@ -335,58 +684,22 @@
    "read_only": 1
   },
   {
-   "depends_on": "eval:doc.patient",
-   "fieldname": "get_applicable_treatment_plans",
-   "fieldtype": "Button",
-   "label": "Get Applicable Treatment Plans"
-  },
-  {
-   "fetch_from": "appointment.google_meet_link",
-   "fieldname": "google_meet_link",
-   "fieldtype": "Data",
-   "label": "Google Meet Link",
+   "fieldname": "therapy_plan",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Therapy Plan",
+   "options": "Therapy Plan",
    "read_only": 1
   },
   {
-   "depends_on": "eval:!doc.__islocal && doc.docstatus == 0;",
-   "fieldname": "encounter_details_tab",
-   "fieldtype": "Tab Break",
-   "label": "Encounter Details"
-  },
-  {
-   "fieldname": "encounter_details",
-   "fieldtype": "HTML"
-  },
-  {
-   "fieldname": "status",
-   "fieldtype": "Select",
-   "label": "Status",
-   "options": "\nOpen\nOrdered\nCompleted\nCancelled",
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Patient Encounter",
+   "print_hide": 1,
    "read_only": 1
-  },
-  {
-   "default": "0",
-   "depends_on": "eval:!doc.__islocal;",
-   "fieldname": "submit_orders_on_save",
-   "fieldtype": "Check",
-   "label": "Submit Orders on Save"
-  },
-  {
-   "depends_on": "eval:!doc.__islocal && doc.docstatus == 0;",
-   "fieldname": "notes_tab",
-   "fieldtype": "Tab Break",
-   "label": "Notes"
-  },
-  {
-   "allow_on_submit": 1,
-   "fieldname": "clinical_notes",
-   "fieldtype": "HTML",
-   "label": "Clinical Notes"
-  },
-  {
-   "fieldname": "order_history_html",
-   "fieldtype": "HTML",
-   "label": "Order History"
   }
  ],
  "is_submittable": 1,

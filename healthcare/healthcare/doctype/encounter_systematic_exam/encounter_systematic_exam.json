@@ -1,0 +1,51 @@
+{
+ "actions": [],
+ "creation": "2024-08-14 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "exam_type",
+  "status",
+  "abnormalities_summary",
+  "short_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "exam_type",
+   "fieldtype": "Data",
+   "label": "Exam Type",
+   "in_list_view": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "\nNormal\nAbnormal\nNot examined",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "abnormalities_summary",
+   "fieldtype": "Small Text",
+   "label": "Abnormalities Summary"
+  },
+  {
+   "fieldname": "short_notes",
+   "fieldtype": "Small Text",
+   "label": "Short Notes"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2024-08-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Encounter Systematic Exam",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

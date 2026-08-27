@@ -6,8 +6,6 @@
 import frappe
 from frappe.tests.utils import FrappeTestCase
 
-from healthcare.healthcare.doctype.patient_encounter.patient_encounter import PatientEncounter
-
 
 class TestPatientEncounter(FrappeTestCase):
 	def setUp(self):
@@ -39,38 +37,8 @@ class TestPatientEncounter(FrappeTestCase):
 				"sex": "MALE",
 			}
 		).insert()
-		try:
-			self.care_plan_male = frappe.get_doc(
-				{
-					"doctype": "Treatment Plan Template",
-					"template_name": "test plan - m",
-					"gender": gender_m.gender,
-				}
-			).insert()
-			self.care_plan_female = frappe.get_doc(
-				{
-					"doctype": "Treatment Plan Template",
-					"template_name": "test plan - f",
-					"gender": gender_f.gender,
-				}
-			).insert()
-		except frappe.exceptions.DuplicateEntryError:
-			self.care_plan_male = frappe.get_doc(
-				{
-					"doctype": "Treatment Plan Template",
-					"template_name": "test plan - m",
-					"gender": gender_m.gender,
-				}
-			)
-			self.care_plan_female = frappe.get_doc(
-				{
-					"doctype": "Treatment Plan Template",
-					"template_name": "test plan - f",
-					"gender": gender_f.gender,
-				}
-			)
 
-	def test_treatment_plan_template_filter(self):
+	def test_encounter_title(self):
 		encounter = frappe.get_doc(
 			{
 				"doctype": "Patient Encounter",
@@ -78,15 +46,5 @@ class TestPatientEncounter(FrappeTestCase):
 				"practitioner": self.practitioner.name,
 			}
 		).insert()
-		plans = PatientEncounter.get_applicable_treatment_plans(encounter.as_dict())
-		self.assertEqual(plans[0]["name"], self.care_plan_male.template_name)
-
-		encounter = frappe.get_doc(
-			{
-				"doctype": "Patient Encounter",
-				"patient": self.patient_female.name,
-				"practitioner": self.practitioner.name,
-			}
-		).insert()
-		plans = PatientEncounter.get_applicable_treatment_plans(encounter.as_dict())
-		self.assertEqual(plans[0]["name"], self.care_plan_female.template_name)
+		self.assertIn(self.patient_male.patient_name, encounter.title)
+		self.assertIn("Doc", encounter.title)

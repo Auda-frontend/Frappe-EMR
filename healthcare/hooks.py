@@ -154,10 +154,6 @@ doc_events = {
 			"healthcare.healthcare.rwanda_consultation.validate_rwanda_consultation",
 		],
 		"before_submit": "healthcare.healthcare.rwanda_consultation.before_submit_rwanda_consultation",
-		"on_submit": [
-			"healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.create_medication_dispensing",
-			"healthcare.healthcare.api.on_encounter_submit",
-		],
 	},
 	"Vital Signs": {
 		"validate": "healthcare.healthcare.rwanda_opd.validate_rwanda_triage",
