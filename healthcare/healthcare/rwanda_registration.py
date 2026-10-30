@@ -57,10 +57,11 @@ def install_rwanda_patient_registration():
 	remove_patient_insurance_coverage_doctype_if_unused()
 	create_custom_fields(get_rwanda_patient_custom_fields(), update=True)
 	ensure_patient_insurance_fields_not_mandatory()
-	hide_patient_customer_details_on_form()
+	show_patient_customer_details_and_more_info()
 	hide_patient_registration_clutter()
 	hide_patient_medical_history_on_registration()
 	apply_patient_registration_labels()
+	apply_patient_field_rules()
 	apply_patient_ebuzima_field_order()
 	apply_triage_labels()
 	ensure_rwanda_mpi_role()
@@ -116,7 +117,7 @@ def remove_patient_insurance_coverage_doctype_if_unused():
 	frappe.db.commit()
 
 
-# Shown on Sales Invoice / billing — hidden on Patient registration.
+# Frappe default Customer Details section fields (kept visible, collapsed by default).
 PATIENT_CUSTOMER_AND_BILLING_DEFAULT_FIELDS = (
 	"customer_details_section",
 	"customer",
@@ -130,9 +131,15 @@ PATIENT_CUSTOMER_AND_BILLING_DEFAULT_FIELDS = (
 
 
 def hide_patient_customer_details_on_form():
-	"""Route party & price defaults to billing (Sales Invoice), not Patient form."""
+	"""No longer called at install (Customer Details stays visible); kept for older imports."""
 	for fieldname in PATIENT_CUSTOMER_AND_BILLING_DEFAULT_FIELDS:
 		set_patient_field_hidden(fieldname, hidden=1)
+
+
+def show_patient_customer_details_and_more_info():
+	"""Keep Frappe's default Customer Details and More Information sections visible."""
+	for fieldname in PATIENT_CUSTOMER_AND_BILLING_DEFAULT_FIELDS + ("more_info", "patient_details"):
+		set_patient_field_hidden(fieldname, hidden=0)
 
 
 def _set_patient_property(property_name, value, fieldname=None, property_type="Data"):
@@ -177,8 +184,6 @@ PATIENT_REGISTRATION_HIDDEN_FIELDS = (
 	"column_break_25",
 	"invite_user",
 	"user_id",
-	"more_info",
-	"patient_details",
 	"dashboard_tab",
 	"address_and_contact_tab",
 	"address_contacts",
@@ -207,6 +212,7 @@ PATIENT_REGISTRATION_HIDDEN_FIELDS = (
 	"rw_residence_district",
 	"rw_residence_sector",
 	"rw_mark_special_case",
+	"rw_tracnet_id",
 	"rw_insurance_type",
 	"rw_insurance_valid_to",
 	"rw_rssb_last_verified_on",
@@ -265,6 +271,12 @@ def apply_patient_registration_labels():
 	set_patient_field_property("rw_sb_identification", "label", "Identification")
 	set_patient_field_property("rw_col_identification", "label", "UPID & registry")
 	set_patient_field_property("rw_record_status", "label", "Status")
+
+
+def apply_patient_field_rules():
+	"""Display rules stored as Property Setters, so they survive fixture re-imports."""
+	# Is Maternity Patient only applies to female patients.
+	set_patient_field_property("rw_is_maternity", "depends_on", 'eval:doc.sex=="Female"')
 
 
 def set_patient_field_property(fieldname, property_name, value):
@@ -748,7 +760,6 @@ def get_patient_ebuzima_field_order():
 		"sex",
 		"rw_is_maternity",
 		"blood_group",
-		"rw_tracnet_id",
 		"rw_patient_id_set",
 		"rw_go_manual",
 		"rw_record_status",
@@ -799,8 +810,20 @@ def get_patient_ebuzima_field_order():
 		"rw_mother_col_contact",
 		"rw_mother_phone",
 		"rw_mother_occupation",
+		# Frappe defaults, kept at the end of the page
+		"customer_details_section",
+		"customer",
+		"customer_group",
+		"territory",
+		"column_break_24",
+		"default_currency",
+		"default_price_list",
+		"language",
+		"more_info",
+		"patient_details",
 	]
 	hidden_tail = [
+		"rw_tracnet_id",
 		"naming_series",
 		"uid",
 		"status",
@@ -883,6 +906,9 @@ def validate_rwanda_patient_registration(doc, method=None):
 	_ensure_relative_unknown_identification_numbers(doc)
 	_sync_identification_to_uid(doc)
 	_sync_registration_status(doc)
+
+	if doc.get("sex") != "Female":
+		doc.rw_is_maternity = 0
 
 	nin = _clean_id(doc.get("rw_national_id"))
 	if nin:
