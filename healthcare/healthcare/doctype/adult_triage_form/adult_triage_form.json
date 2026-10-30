@@ -1,12 +1,12 @@
 {
  "actions": [],
- "autoname": "autoincrement",
- "creation": "2026-06-09 12:00:00",
+ "autoname": "naming_series:",
+ "creation": "2026-06-09 12:00:00.000000",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "parent_triage",
+  "triage_assessment",
   "patient",
   "patient_name",
   "age",
@@ -89,9 +89,7 @@
   "notified_at",
   "doctor_name",
   "doctor_attended_at",
-  "manual_priority_override",
-  "triage_assessment",
-  "amended_from"
+  "manual_priority_override"
  ],
  "fields": [
   {
@@ -102,25 +100,20 @@
    "reqd": 1
   },
   {
-   "fieldname": "parent_triage",
-   "fieldtype": "Link",
-   "label": "Parent Triage",
-   "options": "Triage",
-   "read_only": 1
-  },
-  {
    "fieldname": "triage_assessment",
    "fieldtype": "Link",
    "label": "Triage Assessment",
-   "options": "Triage Assessment"
+   "options": "Triage Assessment",
+   "reqd": 1,
+   "read_only": 1
   },
   {
    "fieldname": "patient",
    "fieldtype": "Link",
-   "in_list_view": 1,
    "label": "Patient",
    "options": "Patient",
-   "read_only": 1
+   "read_only": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "patient_name",
@@ -164,130 +157,112 @@
    "label": "Emergency Signs (RED Alarm)"
   },
   {
-   "default": "0",
    "fieldname": "alarm_not_breathing",
    "fieldtype": "Check",
    "label": "Airway \u2014 Not Breathing"
   },
   {
-   "default": "0",
    "fieldname": "alarm_obstructed_breathing",
    "fieldtype": "Check",
    "label": "Airway \u2014 Obstructed Breathing"
   },
   {
-   "default": "0",
    "fieldname": "alarm_severe_resp_distress",
    "fieldtype": "Check",
    "label": "Airway \u2014 Severe Respiratory Distress"
   },
   {
-   "default": "0",
    "fieldname": "alarm_cardiac_arrest",
    "fieldtype": "Check",
    "label": "Circulation \u2014 Cardiac Arrest"
   },
   {
-   "default": "0",
    "fieldname": "alarm_hemorrhage_uncontrolled",
    "fieldtype": "Check",
    "label": "Circulation \u2014 Hemorrhage Uncontrolled"
   },
   {
-   "default": "0",
    "fieldname": "alarm_stab_gunshot",
    "fieldtype": "Check",
    "label": "Circulation \u2014 Stab/Gunshot Wound to Neck or Chest"
   },
   {
-   "default": "0",
    "fieldname": "alarm_lethargic",
    "fieldtype": "Check",
    "label": "Lethargic"
   },
   {
-   "default": "0",
    "fieldname": "alarm_weak_fast_pulse",
    "fieldtype": "Check",
    "label": "Pulse Weak and Fast"
   },
   {
-   "default": "0",
    "fieldname": "alarm_cap_refill_3sec",
    "fieldtype": "Check",
    "label": "Capillary Refill \u2265 3 seconds"
   },
   {
-   "default": "0",
    "fieldname": "alarm_cold_hands",
    "fieldtype": "Check",
    "label": "Cold Hands"
   },
   {
-   "default": "0",
    "fieldname": "alarm_convulsion",
    "fieldtype": "Check",
    "label": "Convulsion \u2014 Current Seizure or Post-ictal (not alert)"
   },
   {
-   "default": "0",
    "fieldname": "alarm_coma",
    "fieldtype": "Check",
    "label": "Coma \u2014 Unresponsive or Responsive Only to Pain"
   },
   {
-   "default": "0",
    "fieldname": "alarm_hypoglycemia",
    "fieldtype": "Check",
    "label": "Hypoglycemia \u2014 Glucose < 3 mmol/L or < 60 mg/dL"
   },
   {
-   "default": "0",
    "fieldname": "alarm_purpuric_rash",
    "fieldtype": "Check",
    "label": "Purpuric Rash"
   },
   {
-   "default": "0",
    "fieldname": "alarm_burn_face_inhalation",
    "fieldtype": "Check",
    "label": "Burn \u2014 Face or Inhalation"
   },
   {
-   "default": "0",
    "fieldname": "dehydration_skin_pinch",
    "fieldtype": "Check",
    "label": "Severe Dehydration \u2014 Skin Pinch \u2265 2 sec"
   },
   {
-   "default": "0",
    "fieldname": "dehydration_lethargy",
    "fieldtype": "Check",
    "label": "Severe Dehydration \u2014 Lethargy"
   },
   {
-   "default": "0",
    "fieldname": "dehydration_sunken_eyes",
    "fieldtype": "Check",
    "label": "Severe Dehydration \u2014 Sunken Eyes"
   },
   {
-   "depends_on": "eval:doc.alarm_convulsion==1",
    "fieldname": "convulsion_glucose",
    "fieldtype": "Float",
-   "label": "Convulsion Glucose Reading"
+   "label": "Convulsion Glucose Reading",
+   "depends_on": "eval:doc.alarm_convulsion==1"
   },
   {
-   "depends_on": "eval:doc.alarm_coma==1",
    "fieldname": "coma_glucose",
    "fieldtype": "Float",
-   "label": "Coma Glucose Reading"
+   "label": "Coma Glucose Reading",
+   "depends_on": "eval:doc.alarm_coma==1"
   },
   {
-   "depends_on": "eval:doc.yellow_focal_neuro==1",
    "fieldname": "yellow_focal_neuro_glucose",
    "fieldtype": "Float",
-   "label": "Focal Neuro Glucose Reading"
+   "label": "Focal Neuro Glucose Reading",
+   "depends_on": "eval:doc.yellow_focal_neuro==1"
   },
   {
    "fieldname": "sb_tews",
@@ -295,18 +270,18 @@
    "label": "TEWS Score"
   },
   {
-   "description": "0=Walking, 1=With help/Wheelchair, 2=Stretcher, 3=Immobile",
    "fieldname": "mobility",
    "fieldtype": "Select",
    "label": "Mobility",
-   "options": "0\n1\n2\n3"
+   "options": "0\n1\n2\n3",
+   "description": "0=Walking, 1=With help/Wheelchair, 2=Stretcher, 3=Immobile"
   },
   {
    "fieldname": "mobility_score",
    "fieldtype": "Int",
-   "hidden": 1,
    "label": "Mobility Score",
-   "read_only": 1
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "rr",
@@ -316,9 +291,9 @@
   {
    "fieldname": "rr_score",
    "fieldtype": "Int",
-   "hidden": 1,
    "label": "RR Score",
-   "read_only": 1
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "hr",
@@ -328,9 +303,9 @@
   {
    "fieldname": "hr_score",
    "fieldtype": "Int",
-   "hidden": 1,
    "label": "HR Score",
-   "read_only": 1
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "sbp",
@@ -340,9 +315,9 @@
   {
    "fieldname": "sbp_score",
    "fieldtype": "Int",
-   "hidden": 1,
    "label": "SBP Score",
-   "read_only": 1
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "temperature",
@@ -352,9 +327,9 @@
   {
    "fieldname": "temp_score",
    "fieldtype": "Int",
-   "hidden": 1,
    "label": "Temperature Score",
-   "read_only": 1
+   "read_only": 1,
+   "hidden": 1
   },
   {
    "fieldname": "avpu",
@@ -365,12 +340,11 @@
   {
    "fieldname": "avpu_score",
    "fieldtype": "Int",
-   "hidden": 1,
    "label": "AVPU Score",
-   "read_only": 1
+   "read_only": 1,
+   "hidden": 1
   },
   {
-   "default": "0",
    "fieldname": "trauma",
    "fieldtype": "Check",
    "label": "Trauma"
@@ -378,16 +352,16 @@
   {
    "fieldname": "trauma_score",
    "fieldtype": "Int",
-   "hidden": 1,
    "label": "Trauma Score",
-   "read_only": 1
+   "read_only": 1,
+   "hidden": 1
   },
   {
-   "bold": 1,
    "fieldname": "tews_score",
    "fieldtype": "Int",
    "label": "Total TEWS Score",
-   "read_only": 1
+   "read_only": 1,
+   "bold": 1
   },
   {
    "fieldname": "spo2",
@@ -400,13 +374,13 @@
    "label": "Pain Score (0\u201310)"
   },
   {
-   "bold": 1,
    "fieldname": "triage_color",
    "fieldtype": "Select",
-   "in_list_view": 1,
    "label": "Triage Color",
    "options": "RED\nORANGE\nYELLOW\nGREEN",
-   "read_only": 1
+   "read_only": 1,
+   "bold": 1,
+   "in_list_view": 1
   },
   {
    "fieldname": "sb_yellow",
@@ -414,97 +388,81 @@
    "label": "Very Urgent Signs \u2014 YELLOW (within 60 min)"
   },
   {
-   "default": "0",
    "fieldname": "yellow_focal_neuro",
    "fieldtype": "Check",
    "label": "Focal Neurological Deficit \u2014 Acute (< 1 day)"
   },
   {
-   "default": "0",
    "fieldname": "yellow_altered_mental",
    "fieldtype": "Check",
    "label": "Altered Mental Status \u2014 Acute (< 1 day)"
   },
   {
-   "default": "0",
    "fieldname": "yellow_chest_pain",
    "fieldtype": "Check",
    "label": "Chest Pain"
   },
   {
-   "default": "0",
    "fieldname": "yellow_poisoning",
    "fieldtype": "Check",
    "label": "Poisoning / Overdose"
   },
   {
-   "default": "0",
    "fieldname": "yellow_coughing_blood",
    "fieldtype": "Check",
    "label": "Coughing or Vomiting Blood"
   },
   {
-   "default": "0",
    "fieldname": "yellow_diabetic_high",
    "fieldtype": "Check",
    "label": "Unwell with Diabetes \u2014 Glucose > 200 mg/dL or > 11 mmol/L"
   },
   {
-   "default": "0",
    "fieldname": "yellow_aggression",
    "fieldtype": "Check",
    "label": "Aggression"
   },
   {
-   "default": "0",
    "fieldname": "yellow_acute_sob",
    "fieldtype": "Check",
    "label": "Shortness of Breath \u2014 Acute (< 1 day)"
   },
   {
-   "default": "0",
    "fieldname": "yellow_severe_pain",
    "fieldtype": "Check",
    "label": "Very Severe Pain (\u2265 7)"
   },
   {
-   "default": "0",
    "fieldname": "yellow_burn_20_urgent",
    "fieldtype": "Check",
    "label": "Burn > 20% or with Urgent Signs"
   },
   {
-   "default": "0",
    "fieldname": "yellow_fracture_open",
    "fieldtype": "Check",
    "label": "Fracture Open (with skin break)"
   },
   {
-   "default": "0",
    "fieldname": "yellow_threatened_limb",
    "fieldtype": "Check",
    "label": "Threatened Limb \u2014 No Pulse or Pale"
   },
   {
-   "default": "0",
    "fieldname": "yellow_eye_injury",
    "fieldtype": "Check",
    "label": "Eye Injury"
   },
   {
-   "default": "0",
    "fieldname": "yellow_large_joint_disloc",
    "fieldtype": "Check",
    "label": "Dislocation of Large Joint (not finger/toe)"
   },
   {
-   "default": "0",
    "fieldname": "yellow_severe_mechanism",
    "fieldtype": "Check",
    "label": "Severe Mechanism of Injury \u2014 Fall > 1 m, RTA, or Other Significant Trauma"
   },
   {
-   "default": "0",
    "fieldname": "yellow_abdominal_trauma",
    "fieldtype": "Check",
    "label": "Abdominal Trauma"
@@ -515,55 +473,46 @@
    "label": "Urgent Signs \u2014 GREEN (within 4 hours)"
   },
   {
-   "default": "0",
    "fieldname": "green_cant_drink",
    "fieldtype": "Check",
    "label": "Unable to Drink or Vomits Everything"
   },
   {
-   "default": "0",
    "fieldname": "green_very_pale",
    "fieldtype": "Check",
    "label": "Very Pale"
   },
   {
-   "default": "0",
    "fieldname": "green_resp_distress",
    "fieldtype": "Check",
    "label": "Respiratory Distress (less urgent)"
   },
   {
-   "default": "0",
    "fieldname": "green_diabetic_high",
    "fieldtype": "Check",
    "label": "Diabetic (not unwell) \u2014 Glucose > 300 mg/dL or > 17 mmol/L"
   },
   {
-   "default": "0",
    "fieldname": "green_malnutrition",
    "fieldtype": "Check",
    "label": "Severe Malnutrition / Wasting"
   },
   {
-   "default": "0",
    "fieldname": "green_moderate_pain",
    "fieldtype": "Check",
    "label": "Moderate Pain (5\u20136)"
   },
   {
-   "default": "0",
    "fieldname": "green_disloc_finger_toe",
    "fieldtype": "Check",
    "label": "Dislocation \u2014 Finger or Toe"
   },
   {
-   "default": "0",
    "fieldname": "green_fracture_closed",
    "fieldtype": "Check",
    "label": "Fracture Closed"
   },
   {
-   "default": "0",
    "fieldname": "green_burn_no_urgency",
    "fieldtype": "Check",
    "label": "Burn without Urgent Signs"
@@ -585,96 +534,88 @@
    "label": "Triage Finish Time"
   },
   {
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
    "fieldname": "notified_color",
    "fieldtype": "Select",
    "label": "Notified Color",
-   "options": "RED\nORANGE"
+   "options": "RED\nORANGE",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
   },
   {
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
    "fieldname": "notified_at",
    "fieldtype": "Datetime",
-   "label": "Notified At"
+   "label": "Notified At",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
   },
   {
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
    "fieldname": "doctor_name",
    "fieldtype": "Link",
    "label": "Doctor Name",
-   "options": "User"
+   "options": "User",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
   },
   {
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
    "fieldname": "doctor_attended_at",
    "fieldtype": "Datetime",
-   "label": "Doctor Attended At"
+   "label": "Doctor Attended At",
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
   },
   {
-   "default": "0",
    "fieldname": "manual_priority_override",
    "fieldtype": "Check",
-   "label": "Manual Priority Override"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Adult Triage Form",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
+   "label": "Manual Priority Override",
+   "default": "0"
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-12 13:40:38.689878",
- "modified_by": "auda@healthbuilders.org",
+ "modified": "2026-06-09 12:00:00.000000",
+ "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Adult Triage Form",
- "naming_rule": "Autoincrement",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
+   "role": "Nursing User",
+   "read": 1,
+   "write": 1,
    "create": 1,
    "delete": 1,
+   "submit": 0,
+   "print": 1,
    "email": 1,
    "export": 1,
-   "print": 1,
-   "read": 1,
    "report": 1,
-   "role": "Nursing User",
-   "share": 1,
-   "write": 1
+   "share": 1
   },
   {
-   "create": 1,
-   "email": 1,
-   "export": 1,
-   "print": 1,
-   "read": 1,
-   "report": 1,
    "role": "Physician",
-   "share": 1,
-   "submit": 1,
-   "write": 1
-  },
-  {
+   "read": 1,
+   "write": 1,
    "create": 1,
+   "delete": 0,
+   "submit": 1,
+   "print": 1,
    "email": 1,
    "export": 1,
-   "print": 1,
-   "read": 1,
    "report": 1,
+   "share": 1
+  },
+  {
    "role": "System Manager",
-   "share": 1,
-   "write": 1
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "print": 1,
+   "email": 1,
+   "export": 1,
+   "report": 1,
+   "share": 1
   }
  ],
- "row_format": "Dynamic",
  "sort_field": "modified",
  "sort_order": "DESC",
- "states": [],
  "track_changes": 1
 }

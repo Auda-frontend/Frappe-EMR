@@ -6,7 +6,7 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "parent_triage",
+  "triage_assessment",
   "patient",
   "patient_name",
   "age",
@@ -107,17 +107,12 @@
    "reqd": 1
   },
   {
-   "fieldname": "parent_triage",
-   "fieldtype": "Link",
-   "label": "Parent Triage",
-   "options": "Triage",
-   "read_only": 1
-  },
-  {
    "fieldname": "triage_assessment",
    "fieldtype": "Link",
    "label": "Triage Assessment",
-   "options": "Triage Assessment"
+   "options": "Triage Assessment",
+   "reqd": 1,
+   "read_only": 1
   },
   {
    "fieldname": "patient",

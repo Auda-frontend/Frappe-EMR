@@ -81,6 +81,13 @@ def get_patient_encounter_opd_fields():
 			"fieldname": "rw_tab_visit",
 			"fieldtype": "Tab Break",
 			"label": "Visit & triage",
+			"hidden": 1,
+			"insert_after": "amended_from",
+		},
+		{
+			"fieldname": "rw_section_visit",
+			"fieldtype": "Section Break",
+			"label": "Visit & triage",
 			"insert_after": "patient_age",
 		},
 		{
@@ -89,7 +96,7 @@ def get_patient_encounter_opd_fields():
 			"label": "Visit status",
 			"options": "\n".join(VISIT_STATUSES),
 			"default": "Waiting",
-			"insert_after": "rw_tab_visit",
+			"insert_after": "rw_section_visit",
 			"in_list_view": 1,
 			"in_standard_filter": 1,
 			"read_only": 1,
@@ -196,13 +203,20 @@ def get_patient_encounter_opd_fields():
 			"fieldname": "rw_tab_medical_history",
 			"fieldtype": "Tab Break",
 			"label": "Medical history",
+			"hidden": 1,
+			"insert_after": "amended_from",
+		},
+		{
+			"fieldname": "rw_section_medical_history",
+			"fieldtype": "Section Break",
+			"label": "Medical history",
 			"insert_after": "rw_visit_completed_at",
 		},
 		{
 			"fieldname": "rw_allergies",
 			"fieldtype": "Small Text",
 			"label": "Allergies",
-			"insert_after": "rw_tab_medical_history",
+			"insert_after": "rw_section_medical_history",
 		},
 		{
 			"fieldname": "rw_current_medication",
@@ -272,7 +286,8 @@ def get_patient_encounter_opd_fields():
 			"fieldname": "rw_tab_consultation",
 			"fieldtype": "Tab Break",
 			"label": "Consultation",
-			"insert_after": "submit_orders_on_save",
+			"hidden": 1,
+			"insert_after": "amended_from",
 		},
 	]
 

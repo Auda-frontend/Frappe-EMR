@@ -85,6 +85,7 @@
   "tab_consumables",
   "consumables",
   "procedure_consumables",
+  "codification_table",
   "tab_followup",
   "general_followup",
   "tab_discharge",
@@ -96,7 +97,6 @@
   "clinical_summary",
   "invoiced",
   "submit_orders_on_save",
-  "codification_table",
   "encounter_comment",
   "encounter_time",
   "medical_department",
@@ -611,7 +611,7 @@
   {
    "fieldname": "codification_table",
    "fieldtype": "Table",
-   "hidden": 1,
+   "hidden": 0,
    "label": "Medical Codes",
    "options": "Codification Table"
   },

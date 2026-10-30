@@ -7,6 +7,7 @@ import json
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 from frappe.utils import cint
 
 RWANDA_MPI_ROLES = ("System Manager", "Rwanda MPI Admin")
@@ -134,33 +135,34 @@ def hide_patient_customer_details_on_form():
 		set_patient_field_hidden(fieldname, hidden=1)
 
 
-def set_patient_field_hidden(fieldname, hidden=1):
-	"""Property Setter on core Patient fields (idempotent)."""
-	val = "1" if hidden else "0"
-	name = frappe.db.get_value(
-		"Property Setter",
-		{
-			"doc_type": "Patient",
-			"field_name": fieldname,
-			"property": "hidden",
-		},
-		"name",
-	)
-	if name:
-		frappe.db.set_value("Property Setter", name, "value", val)
-		return
-	frappe.make_property_setter(
-		{
-			"doctype": "Property Setter",
-			"doctype_or_field": "DocField",
-			"doc_type": "Patient",
-			"field_name": fieldname,
-			"property": "hidden",
-			"property_type": "Check",
-			"value": val,
-		},
+def _set_patient_property(property_name, value, fieldname=None, property_type="Data"):
+	"""Create or replace one Property Setter on the Patient DocType (idempotent).
+
+	Pass fieldname for a field-level property (hidden, label...), or leave it None for
+	a DocType-level property (field_order, search_fields).
+	"""
+	filters = {
+		"doc_type": "Patient",
+		"property": property_name,
+		"doctype_or_field": "DocField" if fieldname else "DocType",
+	}
+	if fieldname:
+		filters["field_name"] = fieldname
+	frappe.db.delete("Property Setter", filters)
+	make_property_setter(
+		"Patient",
+		fieldname,
+		property_name,
+		value,
+		property_type,
+		for_doctype=not fieldname,
 		validate_fields_for_doctype=False,
 	)
+
+
+def set_patient_field_hidden(fieldname, hidden=1):
+	"""Property Setter on Patient fields (idempotent)."""
+	_set_patient_property("hidden", "1" if hidden else "0", fieldname, "Check")
 
 
 # Core Patient fields hidden on the eBuzima-style registration form.
@@ -266,26 +268,7 @@ def apply_patient_registration_labels():
 
 
 def set_patient_field_property(fieldname, property_name, value):
-	name = frappe.db.get_value(
-		"Property Setter",
-		{"doc_type": "Patient", "field_name": fieldname, "property": property_name},
-		"name",
-	)
-	if name:
-		frappe.db.set_value("Property Setter", name, "value", value)
-		return
-	frappe.make_property_setter(
-		{
-			"doctype": "Property Setter",
-			"doctype_or_field": "DocField",
-			"doc_type": "Patient",
-			"field_name": fieldname,
-			"property": property_name,
-			"property_type": "Data",
-			"value": value,
-		},
-		validate_fields_for_doctype=False,
-	)
+	_set_patient_property(property_name, value, fieldname, "Data")
 
 
 def extend_patient_list_filters():
@@ -359,31 +342,7 @@ def extend_patient_quick_search_fields():
 	if len(parts) == before:
 		return
 	new_val = ",".join(parts)
-	ps_name = frappe.db.get_value(
-		"Property Setter",
-		{
-			"doc_type": "Patient",
-			"property": "search_fields",
-			"doctype_or_field": "DocType",
-		},
-		"name",
-	)
-	if ps_name:
-		ps = frappe.get_doc("Property Setter", ps_name)
-		ps.value = new_val
-		ps.save(ignore_permissions=True)
-	else:
-		frappe.make_property_setter(
-			{
-				"doctype": "Property Setter",
-				"doc_type": "Patient",
-				"doctype_or_field": "DocType",
-				"property": "search_fields",
-				"property_type": "Small Text",
-				"value": new_val,
-			},
-			validate_fields_for_doctype=False,
-		)
+	_set_patient_property("search_fields", new_val, None, "Small Text")
 
 
 def get_rwanda_identification_type_options():
@@ -612,9 +571,9 @@ def get_rwanda_patient_custom_fields():
 		},
 		{
 			"fieldname": "custom_insurance_provider",
-			"fieldtype": "Select",
+			"fieldtype": "Link",
 			"label": "Insurance Provider",
-			"options": get_rwanda_insurance_provider_options(),
+			"options": "Insurance Provider",
 			"depends_on": 'eval:doc.rw_patient_insured=="Yes"',
 			"insert_after": "rw_col_insurance",
 			"in_standard_filter": 1,
@@ -897,27 +856,7 @@ def get_patient_ebuzima_field_order():
 def apply_patient_ebuzima_field_order():
 	"""Push field_order Property Setter — required for desk layout (custom fields alone are not enough)."""
 	order = get_patient_ebuzima_field_order()
-	value = json.dumps(order)
-	filters = {
-		"doc_type": "Patient",
-		"property": "field_order",
-		"doctype_or_field": "DocType",
-	}
-	name = frappe.db.get_value("Property Setter", filters, "name")
-	if name:
-		frappe.db.set_value("Property Setter", name, "value", value, update_modified=False)
-	else:
-		frappe.make_property_setter(
-			{
-				"doctype": "Property Setter",
-				"doctype_or_field": "DocType",
-				"doc_type": "Patient",
-				"property": "field_order",
-				"property_type": "Data",
-				"value": value,
-			},
-			validate_fields_for_doctype=False,
-		)
+	_set_patient_property("field_order", json.dumps(order))
 	frappe.clear_cache(doctype="Patient")
 
 

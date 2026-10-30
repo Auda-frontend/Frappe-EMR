@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # Rwanda OPD consultation form (Patient Encounter) — fields, validation, desk UX.
 
+import json
+
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
@@ -26,33 +28,46 @@ CONSULTATION_HIDDEN_FIELDS = (
 	"therapy_plan",
 	"rehabilitation_section",
 	"therapies",
-	"custom_patient_details",
 	"rw_opd_sb",
-	"rw_tab_visit",
-	"rw_opd_visit_status",
 	"rw_visit_type",
-	"rw_oriented_service",
-	"rw_patient_upid",
-	"rw_patient_nin",
-	"rw_queue_number",
-	"rw_oriented_department",
 	"rw_col_opd",
 	"rw_hmis_origin",
 	"rw_service_point",
-	"rw_col_visit",
-	"rw_triage",
-	"rw_triage_category",
-	"rw_oriented_at",
 	"rw_triaged_at",
-	"rw_consultation_started_at",
-	"rw_visit_completed_at",
 	"rw_triage_vitals_html",
 	"rw_insurance_sb",
 	"rw_insurance_provider",
 	"rw_insurance_member_number",
 	"rw_patient_insured",
-	"rw_chief_complaint",
+	"rw_tab_visit",
 	"rw_tab_medical_history",
+	"rw_tab_consultation",
+	"rw_tab_items",
+	"rw_tab_tasks",
+	"rw_tab_followup_detail",
+	"rw_tab_history",
+	"rw_tab_orders",
+	"rw_tab_discharge",
+)
+
+CONSULTATION_VISIBLE_MOVED_FIELDS = (
+	"custom_patient_details",
+	"rw_section_visit",
+	"rw_opd_visit_status",
+	"rw_oriented_service",
+	"rw_oriented_department",
+	"rw_queue_number",
+	"rw_patient_upid",
+	"rw_patient_nin",
+	"rw_col_visit",
+	"rw_triage",
+	"rw_triage_category",
+	"rw_triage_alerts",
+	"rw_chief_complaint",
+	"rw_oriented_at",
+	"rw_consultation_started_at",
+	"rw_visit_completed_at",
+	"rw_section_medical_history",
 	"rw_allergies",
 	"rw_current_medication",
 	"rw_col_hist",
@@ -64,9 +79,11 @@ CONSULTATION_HIDDEN_FIELDS = (
 	"rw_alcohol_past_use",
 	"rw_alcohol_current_use",
 	"rw_other_risk_factors",
-	"rw_tab_consultation",
-	"rw_tab_orders",
-	"rw_tab_discharge",
+	"rw_section_items",
+	"rw_section_tasks",
+	"rw_section_followup",
+	"rw_section_history",
+	"codification_table",
 )
 
 
@@ -74,6 +91,7 @@ def install_rwanda_consultation():
 	create_custom_fields(get_rwanda_consultation_custom_fields(), update=True)
 	apply_consultation_form_labels()
 	reposition_follow_up_fields()
+	apply_encounter_field_order()
 	hide_consultation_clutter_fields()
 	backfill_consultation_status()
 	frappe.clear_cache()
@@ -154,53 +172,81 @@ def get_consultation_encounter_fields():
 			),
 			"insert_after": "rw_clinical_impression",
 		},
-		# --- Items tab ---
+		# --- Consumables section ---
 		{
 			"fieldname": "rw_tab_items",
 			"fieldtype": "Tab Break",
 			"label": "Items",
-			"insert_after": "rw_diagnosis_help",
+			"hidden": 1,
+			"insert_after": "amended_from",
+		},
+		{
+			"fieldname": "rw_section_items",
+			"fieldtype": "Section Break",
+			"label": "Items",
+			"insert_after": "procedure_consumables",
 		},
 		{
 			"fieldname": "consultation_items",
 			"fieldtype": "Table",
 			"label": "Consultation Items",
 			"options": "Encounter Consultation Item",
-			"insert_after": "rw_tab_items",
+			"insert_after": "rw_section_items",
 		},
-		# --- Tasks tab ---
+		# --- Investigation section ---
 		{
 			"fieldname": "rw_tab_tasks",
 			"fieldtype": "Tab Break",
 			"label": "Tasks",
-			"insert_after": "consultation_items",
+			"hidden": 1,
+			"insert_after": "amended_from",
+		},
+		{
+			"fieldname": "rw_section_tasks",
+			"fieldtype": "Section Break",
+			"label": "Tasks",
+			"insert_after": "imaging",
 		},
 		{
 			"fieldname": "consultation_tasks",
 			"fieldtype": "Table",
 			"label": "Tasks",
 			"options": "Encounter Consultation Task",
-			"insert_after": "rw_tab_tasks",
+			"insert_after": "rw_section_tasks",
 		},
-		# --- Follow-up tab (uses existing rw_* discharge fields from rwanda_opd) ---
+		# --- General Followup section (uses existing rw_* discharge fields) ---
 		{
 			"fieldname": "rw_tab_followup_detail",
 			"fieldtype": "Tab Break",
 			"label": "Follow-up",
-			"insert_after": "consultation_tasks",
+			"hidden": 1,
+			"insert_after": "amended_from",
 		},
-		# --- History tab ---
+		{
+			"fieldname": "rw_section_followup",
+			"fieldtype": "Section Break",
+			"label": "Follow-up",
+			"insert_after": "general_followup",
+		},
+		# --- Consultation history section ---
 		{
 			"fieldname": "rw_tab_history",
 			"fieldtype": "Tab Break",
 			"label": "History",
-			"insert_after": "rw_referral_reason",
+			"hidden": 1,
+			"insert_after": "amended_from",
+		},
+		{
+			"fieldname": "rw_section_history",
+			"fieldtype": "Section Break",
+			"label": "History",
+			"insert_after": "rw_diagnosis_help",
 		},
 		{
 			"fieldname": "consultation_timeline_html",
 			"fieldtype": "HTML",
 			"label": "Audit Trail",
-			"insert_after": "rw_tab_history",
+			"insert_after": "rw_section_history",
 		},
 	]
 
@@ -211,19 +257,78 @@ def apply_consultation_form_labels():
 	set_encounter_field_property("sb_medications", "label", "Medications (Drug Prescription)")
 	set_encounter_field_property("diagnosis", "label", "Diagnosis (required)")
 	set_encounter_field_property("encounter_comment", "label", "Internal consultation notes")
+	set_encounter_field_property("patient_sector", "label", "Catchment Area")
 
 
 def hide_consultation_clutter_fields():
 	from healthcare.healthcare.rwanda_opd import set_encounter_field_hidden
 
+	for fieldname in CONSULTATION_VISIBLE_MOVED_FIELDS:
+		set_encounter_field_hidden(fieldname, hidden=0)
+
 	for fieldname in CONSULTATION_HIDDEN_FIELDS:
 		set_encounter_field_hidden(fieldname, hidden=1)
 
 
+def apply_encounter_field_order():
+	frappe.clear_cache(doctype="Patient Encounter")
+	order = [field.fieldname for field in frappe.get_meta("Patient Encounter").fields]
+	patient_details_order = (
+		"custom_patient_details",
+		"sb_patient_information",
+		"naming_series",
+		"encounter_date",
+		"patient",
+		"column_break_patient",
+		"patient_upid",
+		"patient_name",
+		"patient_sex",
+		"patient_dob",
+		"patient_age",
+		"patient_insurance",
+		"patient_sector",
+		"patient_province",
+		"patient_district",
+	)
+	missing_fields = [fieldname for fieldname in patient_details_order if fieldname not in order]
+	if missing_fields:
+		frappe.throw(
+			"Patient Encounter is missing Patient Details fields: "
+			+ ", ".join(missing_fields)
+		)
+	for fieldname in patient_details_order:
+		order.remove(fieldname)
+	order[0:0] = patient_details_order
+	order.remove("codification_table")
+	order.insert(order.index("procedure_consumables") + 1, "codification_table")
+	value = json.dumps(order)
+	filters = {
+		"doc_type": "Patient Encounter",
+		"property": "field_order",
+		"doctype_or_field": "DocType",
+	}
+	name = frappe.db.get_value("Property Setter", filters, "name")
+	if name:
+		frappe.db.set_value("Property Setter", name, "value", value, update_modified=False)
+	else:
+		frappe.make_property_setter(
+			{
+				"doctype": "Property Setter",
+				"doctype_or_field": "DocType",
+				"doc_type": "Patient Encounter",
+				"property": "field_order",
+				"property_type": "Data",
+				"value": value,
+			},
+			validate_fields_for_doctype=False,
+		)
+	frappe.clear_cache(doctype="Patient Encounter")
+
+
 def reposition_follow_up_fields():
-	"""Move discharge/follow-up fields under the Follow-up tab."""
+	"""Move discharge/follow-up fields into General Followup."""
 	order = (
-		("rw_visit_outcome", "rw_tab_followup_detail"),
+		("rw_visit_outcome", "rw_section_followup"),
 		("rw_discharge_summary", "rw_visit_outcome"),
 		("rw_patient_instructions", "rw_discharge_summary"),
 		("rw_col_followup", "rw_patient_instructions"),
@@ -235,8 +340,8 @@ def reposition_follow_up_fields():
 		("rw_referral_facility", "rw_referral_required"),
 		("rw_referral_department", "rw_referral_facility"),
 		("rw_referral_reason", "rw_referral_department"),
-		("rw_tab_history", "rw_referral_reason"),
-		("consultation_timeline_html", "rw_tab_history"),
+		("rw_section_history", "rw_diagnosis_help"),
+		("consultation_timeline_html", "rw_section_history"),
 	)
 	for fieldname, insert_after in order:
 		name = frappe.db.get_value(
