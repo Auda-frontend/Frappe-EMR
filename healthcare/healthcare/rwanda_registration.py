@@ -207,10 +207,12 @@ PATIENT_REGISTRATION_HIDDEN_FIELDS = (
 	"column_break_32",
 	"surrounding_factors",
 	"other_risk_factors",
-	"rw_col_addr",
-	"rw_residence_province",
-	"rw_residence_district",
-	"rw_residence_sector",
+	"patient_name",
+	"marital_status",
+	"report_preference",
+	"rw_triage_color",
+	"rw_last_triage_date",
+	"rw_active_triage_assessment",
 	"rw_mark_special_case",
 	"rw_tracnet_id",
 	"rw_insurance_type",
@@ -245,7 +247,13 @@ UNKNOWN_ID_PREFIX = "RW-UNK-"
 def hide_patient_registration_clutter():
 	for fieldname in PATIENT_REGISTRATION_HIDDEN_FIELDS:
 		set_patient_field_hidden(fieldname, hidden=1)
-	for fieldname in ("marital_status", "report_preference"):
+	# Residence is shown in its own section now; clear any stale hidden flag from earlier runs.
+	for fieldname in (
+		"rw_col_addr",
+		"rw_residence_province",
+		"rw_residence_district",
+		"rw_residence_sector",
+	):
 		set_patient_field_hidden(fieldname, hidden=0)
 
 
@@ -257,17 +265,20 @@ def hide_patient_medical_history_on_registration():
 
 def apply_patient_registration_labels():
 	"""Desk labels aligned with eBuzima-style registration."""
-	set_patient_field_property("basic_info", "label", "Patient Registration")
+	set_patient_field_property("basic_info", "label", "Patient Demographics")
 	set_patient_field_property("first_name", "label", "First Name")
 	set_patient_field_property("middle_name", "label", "Middle Name (optional)")
 	set_patient_field_property("last_name", "label", "Last Name")
 	set_patient_field_property("sex", "label", "Gender")
-	set_patient_field_property("mobile", "label", "Mobile")
-	set_patient_field_property("phone", "label", "Phone")
+	set_patient_field_property("mobile", "label", "Primary Phone Number")
+	set_patient_field_property("phone", "label", "Secondary Phone Number")
 	set_patient_field_property("dob", "label", "Date of Birth")
 	set_patient_field_property("age_html", "label", "Age")
 	set_patient_field_property("blood_group", "label", "Blood Group")
-	set_patient_field_property("occupation", "label", "Occupation")
+	set_patient_field_property("occupation", "label", "Patient Occupation")
+	set_patient_field_property("rw_education_level", "label", "Patient's Level of Education")
+	set_patient_field_property("rw_religion", "label", "Patient Religion")
+	set_patient_field_property("rw_sb_insurance", "label", "Patient Insurance")
 	set_patient_field_property("rw_sb_identification", "label", "Identification")
 	set_patient_field_property("rw_col_identification", "label", "UPID & registry")
 	set_patient_field_property("rw_record_status", "label", "Status")
@@ -277,6 +288,10 @@ def apply_patient_field_rules():
 	"""Display rules stored as Property Setters, so they survive fixture re-imports."""
 	# Is Maternity Patient only applies to female patients.
 	set_patient_field_property("rw_is_maternity", "depends_on", 'eval:doc.sex=="Female"')
+	# Patient Insurance and Patient Residence open by default: a collapsed header hides their fields.
+	_set_patient_property("collapsible", "0", "rw_sb_insurance", "Check")
+	_set_patient_property("collapsible", "0", "rw_sb_residence", "Check")
+	_set_patient_property("collapsible", "0", "rw_sb_social_cases", "Check")
 
 
 def set_patient_field_property(fieldname, property_name, value):
@@ -726,6 +741,36 @@ def get_rwanda_patient_custom_fields():
 			"insert_after": "rw_record_status",
 		},
 	]
+	fields.extend(
+		[
+			{
+				"fieldname": "rw_col_demographics",
+				"fieldtype": "Column Break",
+				"insert_after": "age_html",
+			},
+			{
+				"fieldname": "rw_sb_social_cases",
+				"fieldtype": "Section Break",
+				"label": "Social cases",
+				"collapsible": 0,
+				"insert_after": "rw_main_insured_insurance_number",
+			},
+			{
+				"fieldname": "rw_social_cases",
+				"fieldtype": "Table",
+				"label": "Social cases",
+				"options": "Patient Social Case",
+				"insert_after": "rw_sb_social_cases",
+			},
+			{
+				"fieldname": "rw_sb_residence",
+				"fieldtype": "Section Break",
+				"label": "Patient Residence",
+				"collapsible": 0,
+				"insert_after": "rw_mother_occupation",
+			},
+		]
+	)
 	fields.extend(_relative_section_fields("father", "Father Information", "rw_inactive_reason"))
 	fields.extend(_relative_section_fields("mother", "Mother Information", "rw_father_occupation"))
 	return {"Patient": fields}
@@ -748,52 +793,35 @@ def get_patient_ebuzima_field_order():
 	visible = [
 		"basic_info",
 		"rw_reg_search_help",
-		"rw_sb_identification",
-		# Left column
+		# Patient Demographics: left column
+		"rw_patient_id_set",
+		"rw_go_manual",
 		"rw_identification_type",
 		"rw_national_id",
+		"rw_nid_application_number",
+		"rw_upid",
+		"rw_nationality",
 		"first_name",
 		"middle_name",
 		"last_name",
-		"rw_nationality",
-		"patient_name",
 		"sex",
 		"rw_is_maternity",
 		"blood_group",
-		"rw_patient_id_set",
-		"rw_go_manual",
-		"rw_record_status",
-		"marital_status",
-		"mobile",
-		"phone",
-		"email",
-		"occupation",
-		"report_preference",
 		"rw_set_dob_manually",
 		"dob",
 		"age_html",
-		# "rw_col_identification",
-		# Right column — UPID / manual registry fields
+		# Patient Demographics: right column
+		"rw_col_demographics",
+		"rw_record_status",
 		"rw_inactive_reason",
-		"rw_upid",
-		"rw_nid_application_number",
-		"rw_upid_is_temporary",
-		"rw_upid_source",
-		"rw_sb_insurance",
 		"rw_patient_insured",
-		"rw_col_insurance",
-		"custom_insurance_provider",
-		"rw_insurance_member_number",
-		"rw_is_main_insurer",
-		"rw_main_insured_name",
-		"rw_main_insured_insurance_number",
-		"rw_sb_social",
+		"mobile",
+		"phone",
+		"email",
 		"rw_education_level",
+		"occupation",
 		"rw_religion",
-		"rw_col_addr",
-		"rw_residence_province",
-		"rw_residence_district",
-		"rw_residence_sector",
+		# Father Information
 		"rw_sb_father",
 		"rw_father_id_type",
 		"rw_father_id_number",
@@ -802,6 +830,7 @@ def get_patient_ebuzima_field_order():
 		"rw_father_col_contact",
 		"rw_father_phone",
 		"rw_father_occupation",
+		# Mother Information
 		"rw_sb_mother",
 		"rw_mother_id_type",
 		"rw_mother_id_number",
@@ -810,6 +839,23 @@ def get_patient_ebuzima_field_order():
 		"rw_mother_col_contact",
 		"rw_mother_phone",
 		"rw_mother_occupation",
+		# Patient Residence
+		"rw_sb_residence",
+		"rw_residence_province",
+		"rw_residence_district",
+		"rw_col_addr",
+		"rw_residence_sector",
+		# Patient Insurance (all fields appear only when Patient insured? = Yes)
+		"rw_sb_insurance",
+		"custom_insurance_provider",
+		"rw_insurance_member_number",
+		"rw_col_insurance",
+		"rw_is_main_insurer",
+		"rw_main_insured_name",
+		"rw_main_insured_insurance_number",
+		# Social cases table
+		"rw_sb_social_cases",
+		"rw_social_cases",
 		# Frappe defaults, kept at the end of the page
 		"customer_details_section",
 		"customer",
@@ -849,6 +895,16 @@ def get_patient_ebuzima_field_order():
 		"surrounding_factors",
 		"other_risk_factors",
 		# Hidden registration fields
+		"rw_sb_identification",
+		"rw_sb_social",
+		"rw_upid_is_temporary",
+		"rw_upid_source",
+		"patient_name",
+		"marital_status",
+		"report_preference",
+		"rw_triage_color",
+		"rw_last_triage_date",
+		"rw_active_triage_assessment",
 		"rw_tracnet_id",
 		"naming_series",
 		"uid",
