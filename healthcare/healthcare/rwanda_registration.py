@@ -14,6 +14,7 @@ RWANDA_MPI_ROLES = ("System Manager", "Rwanda MPI Admin")
 
 # Legacy custom fields / table from earlier iteration — removed on install.
 OBSOLETE_PATIENT_CUSTOM_FIELDS = (
+	"rw_sb_insurance_details",
 	"rw_registration_sb",
 	"rw_col_reg_1",
 	"rw_col_reg_2",
@@ -749,6 +750,13 @@ def get_rwanda_patient_custom_fields():
 				"insert_after": "age_html",
 			},
 			{
+				"fieldname": "rw_insurances",
+				"fieldtype": "Table",
+				"label": "Insurances",
+				"options": "Patient Insurance Entry",
+				"insert_after": "rw_sb_insurance",
+			},
+			{
 				"fieldname": "rw_sb_social_cases",
 				"fieldtype": "Section Break",
 				"label": "Social cases",
@@ -815,6 +823,12 @@ def get_patient_ebuzima_field_order():
 		"rw_record_status",
 		"rw_inactive_reason",
 		"rw_patient_insured",
+		# Appear right below the dropdown when Patient insured? = Yes
+		"custom_insurance_provider",
+		"rw_insurance_member_number",
+		"rw_is_main_insurer",
+		"rw_main_insured_name",
+		"rw_main_insured_insurance_number",
 		"mobile",
 		"phone",
 		"email",
@@ -845,14 +859,9 @@ def get_patient_ebuzima_field_order():
 		"rw_residence_district",
 		"rw_col_addr",
 		"rw_residence_sector",
-		# Patient Insurance (all fields appear only when Patient insured? = Yes)
+		# Patient Insurance: the Insurances table (always shown)
 		"rw_sb_insurance",
-		"custom_insurance_provider",
-		"rw_insurance_member_number",
-		"rw_col_insurance",
-		"rw_is_main_insurer",
-		"rw_main_insured_name",
-		"rw_main_insured_insurance_number",
+		"rw_insurances",
 		# Social cases table
 		"rw_sb_social_cases",
 		"rw_social_cases",
@@ -895,6 +904,7 @@ def get_patient_ebuzima_field_order():
 		"surrounding_factors",
 		"other_risk_factors",
 		# Hidden registration fields
+		"rw_col_insurance",
 		"rw_sb_identification",
 		"rw_sb_social",
 		"rw_upid_is_temporary",
@@ -971,6 +981,7 @@ def validate_rwanda_patient_registration(doc, method=None):
 	_validate_inactive_reason(doc)
 	_validate_patient_id_set(doc)
 	_validate_insurance(doc)
+	_validate_insurance_table(doc)
 
 
 LEGACY_IDENTIFICATION_TYPE_MAP = {
@@ -1178,6 +1189,27 @@ def _get_patient_insurance_provider(doc):
 		doc.custom_insurance_provider = provider
 		doc.rw_insurance_type = provider
 	return provider
+
+def _validate_insurance_table(doc):
+	"""Insurances table: no duplicate insurers, and exactly one default row when rows exist."""
+	rows = doc.get("rw_insurances") or []
+	if not rows:
+		return
+	seen = set()
+	for row in rows:
+		if row.insurance_provider in seen:
+			frappe.throw(
+				_("Row {0}: insurance provider {1} is already listed in the Insurances table.").format(
+					row.idx, frappe.bold(row.insurance_provider)
+				)
+			)
+		seen.add(row.insurance_provider)
+	defaults = [row for row in rows if cint(row.is_default)]
+	if len(defaults) > 1:
+		frappe.throw(_("Only one insurance can be marked as default."))
+	if not defaults:
+		rows[0].is_default = 1
+
 
 def _validate_insurance(doc):
 	if doc.get("rw_patient_insured") != "Yes":

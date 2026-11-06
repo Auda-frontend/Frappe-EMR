@@ -1,0 +1,42 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-11-06 12:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "insurance_provider",
+  "is_default"
+ ],
+ "fields": [
+  {
+   "fieldname": "insurance_provider",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Insurance Provider",
+   "options": "Insurance Provider",
+   "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "is_default",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Default"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-11-06 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Healthcare",
+ "name": "Patient Insurance Entry",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
