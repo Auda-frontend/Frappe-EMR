@@ -52,10 +52,45 @@ OBSOLETE_PATIENT_CUSTOM_FIELDS = (
 RELATIVE_UNKNOWN_ROLE_TAGS = {"father": "F", "mother": "M"}
 
 
+def ensure_insurance_provider_doctype():
+	"""Create the Insurance Provider DocType if it does not exist yet.
+
+	It is a custom DocType that only lives in fixtures, and Frappe imports fixtures AFTER the
+	after_install hook runs. On a brand-new site the Insurance Provider link fields would fail
+	validation, so it is created here first. The fixture import afterwards overwrites it with the
+	exported definition, so the two stay in step.
+	"""
+	if frappe.db.exists("DocType", "Insurance Provider"):
+		return
+	frappe.get_doc(
+		{
+			"doctype": "DocType",
+			"name": "Insurance Provider",
+			"module": "Healthcare",
+			"custom": 1,
+			"autoname": "field:provider_name",
+			"sort_field": "modified",
+			"sort_order": "DESC",
+			"fields": [
+				{"fieldname": "provider_name", "fieldtype": "Data", "label": "Provider Name", "reqd": 1, "in_list_view": 1, "unique": 1},
+				{"fieldname": "provider_code", "fieldtype": "Data", "label": "Provider Code"},
+				{"fieldname": "provider_type", "fieldtype": "Select", "label": "Provider Type", "options": "Public\nPrivate\nMutuelle"},
+				{"fieldname": "coverage_percentage", "fieldtype": "Float", "label": "Coverage Percentage"},
+				{"fieldname": "is_active", "fieldtype": "Check", "label": "Is Active", "default": "1"},
+				{"fieldname": "description", "fieldtype": "Small Text", "label": "Description"},
+			],
+			"permissions": [
+				{"role": "System Manager", "read": 1, "write": 1, "create": 1, "delete": 1, "report": 1, "export": 1, "share": 1}
+			],
+		}
+	).insert(ignore_permissions=True)
+
+
 def install_rwanda_patient_registration():
 	"""Idempotent: strip legacy layout, apply unified fields on Patient, MPI role."""
 	remove_obsolete_rwanda_patient_fields()
 	remove_patient_insurance_coverage_doctype_if_unused()
+	ensure_insurance_provider_doctype()
 	create_custom_fields(get_rwanda_patient_custom_fields(), update=True)
 	ensure_patient_insurance_fields_not_mandatory()
 	show_patient_customer_details_and_more_info()
