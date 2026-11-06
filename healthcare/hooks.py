@@ -363,6 +363,13 @@ def run_after_install():
 
 	setup_healthcare()
 
+	# Fixtures (custom fields, custom DocTypes) are normally imported AFTER after_install,
+	# but the Rwanda setup below needs them, so import them first. Frappe imports them
+	# again at the end of install-app, which is harmless.
+	from frappe.utils.fixtures import sync_fixtures
+
+	sync_fixtures("healthcare")
+
 	from healthcare.healthcare.rwanda_registration import install_rwanda_patient_registration
 	from healthcare.healthcare.rwanda_opd import install_rwanda_opd
 
