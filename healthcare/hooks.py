@@ -71,6 +71,7 @@ jinja = {
 
 # before_install = "healthcare.install.before_install"
 after_install = "healthcare.hooks.run_after_install"
+after_migrate = "healthcare.hooks.run_rwanda_setup"
 
 fixtures = [
 	{"dt": "Custom Field"},
@@ -358,28 +359,24 @@ company_data_to_be_ignored = [
 
 
 def run_after_install():
-	"""Run stock Marley setup, then Rwanda registration extensions."""
-	from healthcare.setup import setup_healthcare
+    """Stock Marley setup only.
 
-	setup_healthcare()
+    The Rwanda setup runs in after_migrate (run_rwanda_setup), after Frappe has imported every
+    fixture, dashboard and workspace it depends on.
+    """
+    from healthcare.setup import setup_healthcare
 
-	# Fixtures (custom fields, custom DocTypes) are normally imported AFTER after_install,
-	# but the Rwanda setup below needs them, so import them first. Frappe imports them
-	# again at the end of install-app, which is harmless.
-	from frappe.utils.fixtures import sync_fixtures
+    setup_healthcare()
 
-	sync_fixtures("healthcare")
 
-	from healthcare.healthcare.rwanda_registration import install_rwanda_patient_registration
-	from healthcare.healthcare.rwanda_opd import install_rwanda_opd
+def run_rwanda_setup():
+    """Rwanda setup. Runs at the end of every `bench migrate`, so each step must be safe to repeat."""
+    from healthcare.healthcare.rwanda_registration import install_rwanda_patient_registration
+    from healthcare.healthcare.rwanda_opd import install_rwanda_opd
+    from healthcare.healthcare.triage_visit_setup import install_triage_visit
+    from healthcare.healthcare.rwanda_triage.setup import install_rwanda_triage_system
 
-	install_rwanda_patient_registration()
-	install_rwanda_opd()
-
-	from healthcare.healthcare.triage_visit_setup import install_triage_visit
-
-	install_triage_visit()
-
-	from healthcare.healthcare.rwanda_triage.setup import install_rwanda_triage_system
-
-	install_rwanda_triage_system()
+    install_rwanda_patient_registration()
+    install_rwanda_opd()
+    install_triage_visit()
+    install_rwanda_triage_system()
