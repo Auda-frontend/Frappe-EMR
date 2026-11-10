@@ -7,6 +7,7 @@ import json
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 from frappe.utils import cint, flt, getdate, now_datetime, today
 
 # Visit is created at orientation; clinician pulls from department queue.
@@ -398,24 +399,18 @@ def apply_opd_ui_labels():
 
 
 def set_encounter_field_property(fieldname, property_name, value, property_type="Data"):
-	name = frappe.db.get_value(
+	"""Create or replace one Property Setter on the Patient Encounter DocType (idempotent)."""
+	frappe.db.delete(
 		"Property Setter",
 		{"doc_type": "Patient Encounter", "field_name": fieldname, "property": property_name},
-		"name",
 	)
-	if name:
-		frappe.db.set_value("Property Setter", name, "value", value)
-		return
-	frappe.make_property_setter(
-		{
-			"doctype": "Property Setter",
-			"doctype_or_field": "DocField",
-			"doc_type": "Patient Encounter",
-			"field_name": fieldname,
-			"property": property_name,
-			"property_type": property_type,
-			"value": value,
-		},
+	make_property_setter(
+		"Patient Encounter",
+		fieldname,
+		property_name,
+		value,
+		property_type,
+		for_doctype=False,
 		validate_fields_for_doctype=False,
 	)
 
@@ -873,7 +868,11 @@ def start_consultation(encounter):
 	if doc.rw_opd_visit_status != "Waiting":
 		frappe.throw(_("Only patients in Waiting status can be called from the queue."), title=_("Consultation"))
 
-	doc.rw_opd_visit_status = "In Consultation"
+	from healthcare.healthcare.rwanda_consultation import set_consultation_status
+
+	# Set both status fields together: sync_consultation_status puts rw_opd_visit_status back to
+	# match consultation_status on every save, so changing only one of them is undone.
+	set_consultation_status(doc, "In Progress")
 	if not doc.rw_consultation_started_at:
 		doc.rw_consultation_started_at = now_datetime()
 	doc.save()
@@ -888,7 +887,9 @@ def complete_consultation(encounter):
 	from healthcare.healthcare.rwanda_consultation import validate_before_complete_consultation
 
 	validate_before_complete_consultation(doc)
-	doc.rw_opd_visit_status = "Completed"
+	from healthcare.healthcare.rwanda_consultation import set_consultation_status
+
+	set_consultation_status(doc, "Completed")
 	doc.rw_visit_completed_at = now_datetime()
 	doc.save()
 	return {"name": doc.name, "rw_opd_visit_status": doc.rw_opd_visit_status}
