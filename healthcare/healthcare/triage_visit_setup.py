@@ -73,7 +73,6 @@ def _ensure_workspace_links():
 
 	ws.save(ignore_permissions=True)
 
-	_update_desk_page_healthcare()
 
 
 def _update_desk_page_healthcare():

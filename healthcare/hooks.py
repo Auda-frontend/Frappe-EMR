@@ -176,14 +176,12 @@ doc_events = {
 	"Triage": {
 		"on_submit": [
 			"healthcare.healthcare.doctype.triage.triage.Triage.on_submit",
-			"healthcare.healthcare.api.on_triage_submit",
 		]
 	},
 	"Medication Dispensing": {
         "validate":  "healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.validate",
         "on_update": [
-			"healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.on_update",
-			"healthcare.healthcare.api.on_dispensing_fully_paid"
+			"healthcare.healthcare.doctype.medication_dispensing.medication_dispensing.on_update"
 		]
     }
 }
@@ -380,3 +378,7 @@ def run_rwanda_setup():
     install_rwanda_opd()
     install_triage_visit()
     install_rwanda_triage_system()
+
+    from healthcare.healthcare.workspace_links import ensure_queue_workspace_links
+
+    ensure_queue_workspace_links()
