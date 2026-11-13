@@ -382,3 +382,7 @@ def run_rwanda_setup():
     from healthcare.healthcare.workspace_links import ensure_queue_workspace_links
 
     ensure_queue_workspace_links()
+
+    from healthcare.healthcare.queue_encounter import ensure_queue_encounter_field
+
+    ensure_queue_encounter_field()

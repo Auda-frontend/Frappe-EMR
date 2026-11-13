@@ -892,6 +892,11 @@ def complete_consultation(encounter):
 	set_consultation_status(doc, "Completed")
 	doc.rw_visit_completed_at = now_datetime()
 	doc.save()
+
+	from healthcare.healthcare.queue_api import complete_for_encounter
+
+	# The consultation is over, so close the patient's entry in the queue.
+	complete_for_encounter(doc.name)
 	return {"name": doc.name, "rw_opd_visit_status": doc.rw_opd_visit_status}
 
 
