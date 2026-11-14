@@ -1222,7 +1222,6 @@ def _get_patient_insurance_provider(doc):
 	provider = _clean_id(doc.get("custom_insurance_provider")) or _clean_id(doc.get("rw_insurance_type"))
 	if provider:
 		doc.custom_insurance_provider = provider
-		doc.rw_insurance_type = provider
 	return provider
 
 def _validate_insurance_table(doc):
@@ -1263,11 +1262,6 @@ def _validate_insurance(doc):
 		doc.rw_is_main_insurer = 1
 		doc.rw_mark_special_case = 0
 		return
-
-	frappe.errprint("===== INSURANCE DEBUG =====")
-	frappe.errprint(f"rw_patient_insured: {doc.get('rw_patient_insured')}")
-	frappe.errprint(f"custom_insurance_provider: {doc.get('custom_insurance_provider')}")
-	frappe.errprint(f"rw_insurance_type: {doc.get('rw_insurance_type')}")
 
 	provider = _get_patient_insurance_provider(doc)
 	if not provider:
@@ -1359,7 +1353,7 @@ def search_patients_rw(
 			p.uid,
 			p.rw_national_id,
 			p.rw_upid,
-			p.rw_insurance_type,
+			COALESCE(NULLIF(p.custom_insurance_provider, ''), p.rw_insurance_type) AS rw_insurance_type,
 			p.rw_insurance_member_number,
 			p.dob,
 			p.mobile,
