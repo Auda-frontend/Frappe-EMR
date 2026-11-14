@@ -6,6 +6,7 @@ import json
 import frappe
 from frappe import _
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
+from frappe.custom.doctype.property_setter.property_setter import make_property_setter
 from frappe.utils import flt, getdate, today
 
 from healthcare.healthcare.consultation_api import CONSULTATION_STATUSES, RW_STATUS_MAP
@@ -302,26 +303,20 @@ def apply_encounter_field_order():
 	order.remove("codification_table")
 	order.insert(order.index("procedure_consumables") + 1, "codification_table")
 	value = json.dumps(order)
-	filters = {
-		"doc_type": "Patient Encounter",
-		"property": "field_order",
-		"doctype_or_field": "DocType",
-	}
-	name = frappe.db.get_value("Property Setter", filters, "name")
-	if name:
-		frappe.db.set_value("Property Setter", name, "value", value, update_modified=False)
-	else:
-		frappe.make_property_setter(
-			{
-				"doctype": "Property Setter",
-				"doctype_or_field": "DocType",
-				"doc_type": "Patient Encounter",
-				"property": "field_order",
-				"property_type": "Data",
-				"value": value,
-			},
-			validate_fields_for_doctype=False,
-		)
+	# Replace any previous field order, then save it against the Patient Encounter DocType.
+	frappe.db.delete(
+		"Property Setter",
+		{"doc_type": "Patient Encounter", "property": "field_order", "doctype_or_field": "DocType"},
+	)
+	make_property_setter(
+		"Patient Encounter",
+		None,
+		"field_order",
+		value,
+		"Data",
+		for_doctype=True,
+		validate_fields_for_doctype=False,
+	)
 	frappe.clear_cache(doctype="Patient Encounter")
 
 
