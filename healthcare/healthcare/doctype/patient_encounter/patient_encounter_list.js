@@ -27,8 +27,8 @@ frappe.listview_settings["Patient Encounter"] = {
 		return [__("Open"), "blue", "docstatus,=,0"];
 	},
 	onload(listview) {
-		listview.page.add_inner_button(__("Department queue"), () => frappe.set_route("department-queue"));
-		listview.page.add_inner_button(__("Patient orientation"), () => frappe.set_route("patient-orientation"));
+		listview.page.add_inner_button(__("Department queue"), () => frappe.set_route("List", "Queue"));
+		listview.page.add_inner_button(__("Patient orientation"), () => frappe.set_route("List", "Internal Orientation"));
 		listview.can_create = false;
 		listview.page.set_title(__("Outpatient Consultation"));
 		frappe.breadcrumbs.$breadcrumbs.find("li").last().find("a").text(__("Outpatient Consultation"));

@@ -106,13 +106,7 @@ function rw_consultation_setup_desk(frm) {
 		frm.add_custom_button(__("Complete visit"), () => rw_consultation_complete(frm), group);
 	}
 
-	frm.add_custom_button(__("Department queue"), () => {
-		frappe.route_options = {
-			medical_department: frm.doc.rw_oriented_department || frm.doc.medical_department,
-			oriented_service: frm.doc.rw_oriented_service,
-		};
-		frappe.set_route("department-queue");
-	}, __("Workflow"));
+	frm.add_custom_button(__("Queue"), () => frappe.set_route("List", "Queue"), __("Workflow"));
 }
 
 function rw_consultation_toggle_clinical_fields(frm, read_only) {
