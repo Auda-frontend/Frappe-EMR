@@ -20,23 +20,19 @@ def _counter_key(service_unit, queue_date):
 def take_counter(service_unit, queue_date=None):
 	"""Return the next counter for a service unit and day, with no duplicates.
 
-	The counter row is locked (SELECT ... FOR UPDATE) until the request commits, so a second request
-	for the same unit and day waits and then continues from the committed value.
+	One statement either creates the counter row or increments it, and it takes the row lock straight
+	away. A second request for the same unit and day waits for the first to finish and then continues
+	from the committed value. (Reading the row first and inserting it only when it is missing can
+	deadlock when many requests arrive at the same moment.)
 	"""
 	key = _counter_key(service_unit, queue_date)
-	for _attempt in range(3):
-		row = frappe.db.sql("select `current` from `tabSeries` where `name` = %s for update", (key,))
-		if row:
-			frappe.db.sql("update `tabSeries` set `current` = `current` + 1 where `name` = %s", (key,))
-			return cint(row[0][0]) + 1
-		try:
-			frappe.db.sql("insert into `tabSeries` (`name`, `current`) values (%s, 1)", (key,))
-			return 1
-		except Exception as e:
-			# 1062 = duplicate entry: another request created the row first, so lock it and retry
-			if not (getattr(e, "args", None) and e.args[0] == 1062):
-				raise
-	frappe.throw(_("Could not assign a queue counter. Please try again."), title=_("Queue"))
+	frappe.db.sql(
+		"insert into `tabSeries` (`name`, `current`) values (%s, 1) "
+		"on duplicate key update `current` = `current` + 1",
+		(key,),
+	)
+	row = frappe.db.sql("select `current` from `tabSeries` where `name` = %s for update", (key,))
+	return cint(row[0][0])
 
 
 def create_queue_entry(patient, service_unit, queue_date=None, priority=None, internal_orientation=None):
