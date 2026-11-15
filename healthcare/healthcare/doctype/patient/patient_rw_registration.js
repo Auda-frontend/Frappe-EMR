@@ -258,19 +258,24 @@ function rw_patient_setup_registration_desk(frm) {
 		rw_patient_workflow_buttons(frm);
 	}
 
-	if (frm.doc.rw_patient_insured === "Yes" && !frm.is_new()) {
-		frm.add_custom_button(__("Check Eligibility"), () => rw_patient_check_eligibility(frm), __("Registration"));
-	}
 }
 
 function rw_patient_workflow_buttons(frm) {
 	const group = __("Workflow");
-	frm.add_custom_button(__("Record triage"), () => {
-		frappe.route_options = { patient: frm.doc.name };
-		frappe.new_doc("Triage Assessment");
+	// Reception orients the patient to the next service. The starting point is the first service
+	// unit (not a group) whose type is "Reception".
+	frm.add_custom_button(__("Orient patient"), () => {
+	    frappe.db
+	        .get_value("Healthcare Service Unit", { service_unit_type: "Reception", is_group: 0 }, "name")
+	        .then((res) => {
+	            const values = { patient: frm.doc.name };
+	            if (res.message && res.message.name) {
+	                values.orientation_from = res.message.name;
+	            }
+	            frappe.new_doc("Internal Orientation", values);
+	        });
 	}, group);
-	frm.add_custom_button(__("Patient orientation"), () => frappe.set_route("patient-orientation"), group);
-	frm.add_custom_button(__("Department queue"), () => frappe.set_route("department-queue"), group);
+	frm.add_custom_button(__("Queue"), () => frappe.set_route("List", "Queue"), group);
 }
 
 function rw_patient_setup_insurance_visibility(frm) {
