@@ -12,6 +12,19 @@ frappe.listview_settings["Vital Signs"] = {
 		return [__("Triage"), "blue"];
 	},
 	onload(listview) {
+		rw_hide_add_button(listview);
 		listview.page.add_inner_button(__("Orientation desk"), () => frappe.set_route("List", "Internal Orientation"));
 	},
+	refresh(listview) {
+		rw_hide_add_button(listview);
+	},
 };
+
+function rw_hide_add_button(listview) {
+	if (listview.page.clear_primary_action) {
+		listview.page.clear_primary_action();
+	}
+	if (listview.page.btn_primary) {
+		listview.page.btn_primary.hide();
+	}
+}

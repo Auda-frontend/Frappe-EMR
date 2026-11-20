@@ -83,6 +83,14 @@ function rw_triage_apply_color_lock(frm) {
 		if (frm.fields_dict[f]) frm.set_df_property(f, "read_only", 1);
 	});
 
+	// Copied from the Triage Assessment: corrections are made there, not on this copy.
+	const locked_from_assessment = ["bp_diastolic", "height", "weight", "bmi"];
+	if (frm.doc.rw_triage_assessment) {
+		locked_from_assessment.forEach((f) => {
+			if (frm.fields_dict[f]) frm.set_df_property(f, "read_only", 1);
+		});
+	}
+
 	const nurse_doctor_fields = [
 		"rw_muac",
 		"rw_triage_notes",
@@ -96,7 +104,9 @@ function rw_triage_apply_color_lock(frm) {
 		"height",
 		"weight",
 		"bmi",
-	];
+	].filter(
+		(f) => !(frm.doc.rw_triage_assessment && locked_from_assessment.includes(f))
+	);
 
 	const color = frm.doc.rw_triage_color;
 	const opd = frm.doc.rw_triage_category;
@@ -152,15 +162,8 @@ function rw_triage_setup_desk(frm) {
 		);
 	}
 
-	if (!frm.is_new() && !frm.doc.rw_oriented) {
-		frm.add_custom_button(__("Orient to service"), () => rw_triage_open_orientation(frm), __("Workflow"));
-		frm.add_custom_button(
-			__("Open orientation desk"),
-			() => frappe.set_route("patient-orientation"),
-			__("Workflow")
-		);
-	} else if (frm.doc.rw_oriented) {
-		frm.set_intro(__("Patient oriented — visit created. Use Department Queue to call patient."), "green");
+	if (frm.doc.rw_oriented) {
+		frm.set_intro(__("Patient oriented — visit created. Use the Queue to call the patient."), "green");
 	}
 }
 
@@ -179,13 +182,4 @@ function rw_triage_recompute(frm) {
 			frm.set_value("rw_triage_alerts", (r.message.alerts || []).join("\n"));
 		},
 	});
-}
-
-function rw_triage_open_orientation(frm) {
-	if (!frm.doc.name) {
-		frappe.msgprint(__("Save triage before orienting the patient."));
-		return;
-	}
-	frappe.route_options = { triage: frm.doc.name };
-	frappe.set_route("patient-orientation");
 }

@@ -17,6 +17,7 @@ def install_rwanda_triage_system():
 	generate_all_doctype_json(app_path)
 	_import_all_triage_doctypes(app_path)
 	create_custom_fields(get_rwanda_triage_custom_fields(), update=True)
+	_lock_vital_signs_creation()
 	_ensure_workspace_links()
 	frappe.db.commit()
 	frappe.clear_cache()
@@ -107,6 +108,13 @@ def get_rwanda_triage_custom_fields():
 			},
 		],
 	}
+
+
+def _lock_vital_signs_creation():
+	"""Vital Signs are generated from the Triage Assessment, not created by hand."""
+	from frappe.custom.doctype.property_setter.property_setter import make_property_setter
+
+	make_property_setter("Vital Signs", None, "in_create", "1", "Check", for_doctype=True)
 
 
 def _ensure_workspace_links():

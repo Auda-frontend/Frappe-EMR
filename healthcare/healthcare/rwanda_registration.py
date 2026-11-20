@@ -352,33 +352,16 @@ def extend_patient_list_filters():
 
 
 def apply_triage_labels():
-	"""__('Vital Signs') and similar resolve to Triage in the default language."""
-	ensure_translation_vital_signs_to_triage()
+	"""Vital Signs keeps its own name; Triage Assessment is the triage screen."""
+	remove_vital_signs_triage_translation()
 
 
-def ensure_translation_vital_signs_to_triage():
-	lang = frappe.db.get_single_value("System Settings", "language")
-	if not lang or not frappe.db.exists("Language", lang):
-		lang = frappe.db.get_value("Language", {}, "name") or "en"
-	source = "Vital Signs"
-	target = "Triage"
-	names = frappe.get_all(
-		"Translation",
-		filters={"language": lang, "source_text": source},
-		pluck="name",
-		limit=1,
-	)
-	if names:
-		frappe.db.set_value("Translation", names[0], "translated_text", target)
-	else:
-		frappe.get_doc(
-			{
-				"doctype": "Translation",
-				"language": lang,
-				"source_text": source,
-				"translated_text": target,
-			}
-		).insert(ignore_permissions=True)
+def remove_vital_signs_triage_translation():
+	"""Earlier versions renamed Vital Signs to Triage in the default language. Undo that (idempotent)."""
+	filters = {"source_text": "Vital Signs", "translated_text": "Triage"}
+	if frappe.db.exists("Translation", filters):
+		frappe.db.delete("Translation", filters)
+		frappe.clear_cache()
 
 
 def ensure_rwanda_mpi_role():
