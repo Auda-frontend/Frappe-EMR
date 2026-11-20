@@ -5,46 +5,178 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "sb_patient",
   "naming_series",
   "patient",
   "patient_name",
+  "patient_gender",
+  "cb_patient_2",
   "date_of_birth",
   "patient_age",
   "patient_age_months",
-  "patient_gender",
   "medical_record_number",
+  "cb_patient_3",
   "is_maternity",
-  "chief_complaint",
+  "form_type",
   "arrival_date",
   "arrival_time",
+  "sb_visit",
+  "chief_complaint",
+  "cb_visit_2",
   "company",
-  "sb_routing",
-  "form_type",
-  "adult_triage_form",
-  "child_triage_form",
-  "infant_triage_form",
-  "maternity_triage_form",
+  "nurse_name",
+  "sb_emergency",
+  "alarm_not_breathing",
+  "alarm_obstructed_breathing",
+  "alarm_severe_resp_distress",
+  "alarm_cardiac_arrest",
+  "alarm_hemorrhage_uncontrolled",
+  "alarm_stab_gunshot",
+  "cb_emergency_2",
+  "alarm_lethargic",
+  "alarm_weak_fast_pulse",
+  "alarm_cap_refill_3sec",
+  "alarm_cold_hands",
+  "alarm_purpuric_rash",
+  "alarm_burn_face_inhalation",
+  "cb_emergency_3",
+  "alarm_convulsion",
+  "convulsion_glucose",
+  "alarm_coma",
+  "coma_glucose",
+  "alarm_hypoglycemia",
+  "sb_emergency_child",
+  "alarm_not_breathing_weak",
+  "alarm_central_cyanosis",
+  "alarm_pulse_low_absent",
+  "sb_emergency_maternity",
+  "alarm_prolapsed_cord",
+  "alarm_no_fetal_movement",
+  "alarm_bandel_ring",
+  "cb_emergency_mat_2",
+  "alarm_abnormal_ctg",
+  "alarm_stab_gunshot_maternity",
+  "alarm_imminent_birth",
+  "sb_dehydration",
+  "dehydration_skin_pinch",
+  "dehydration_lethargy",
+  "dehydration_sunken_eyes",
+  "sb_vitals",
+  "rr",
+  "hr",
+  "sbp",
+  "temperature",
+  "spo2",
+  "cb_vitals_2",
+  "rr_score",
+  "hr_score",
+  "sbp_score",
+  "temp_score",
+  "cb_vitals_3",
+  "mobility",
+  "avpu",
+  "trauma",
+  "pain_score",
+  "muac",
+  "cb_vitals_4",
+  "mobility_score",
+  "avpu_score",
+  "trauma_score",
+  "sb_very_urgent",
+  "yellow_focal_neuro",
+  "yellow_focal_neuro_glucose",
+  "yellow_altered_mental",
+  "yellow_chest_pain",
+  "yellow_acute_sob",
+  "yellow_coughing_blood",
+  "yellow_poisoning",
+  "yellow_diabetic_high",
+  "yellow_aggression",
+  "yellow_severe_pain",
+  "cb_very_urgent_2",
+  "yellow_burn_20_urgent",
+  "yellow_fracture_open",
+  "yellow_threatened_limb",
+  "yellow_eye_injury",
+  "yellow_large_joint_disloc",
+  "yellow_severe_mechanism",
+  "yellow_abdominal_trauma",
+  "sb_very_urgent_infant",
+  "yellow_more_sleep",
+  "yellow_sleep_glucose",
+  "yellow_inconsolable_cry",
+  "yellow_floppy_irritable",
+  "cb_very_urgent_inf_2",
+  "yellow_tiny_baby",
+  "yellow_burn_10_urgent",
+  "sb_very_urgent_maternity",
+  "yellow_multipara_active_labour",
+  "yellow_uterine_contraction",
+  "yellow_rom",
+  "yellow_decreased_fetal_movements",
+  "yellow_bleeding_spotting",
+  "cb_very_urgent_mat_2",
+  "yellow_preterm_labour",
+  "yellow_contraction_planned_cs",
+  "yellow_preeclampsia",
+  "yellow_major_trauma",
+  "yellow_abdominal_trauma_severe_pain",
+  "sb_urgent",
+  "green_cant_drink",
+  "green_cant_drink_glucose",
+  "green_very_pale",
+  "green_resp_distress",
+  "green_diabetic_high",
+  "green_known_diabetes",
+  "green_diabetes_glucose",
+  "green_malnutrition",
+  "cb_urgent_2",
+  "green_moderate_pain",
+  "green_burn_no_urgency",
+  "green_fracture_closed",
+  "green_disloc_finger_toe",
+  "sb_urgent_infant",
+  "green_pitting_oedema",
+  "green_severe_pallor",
+  "green_diarrhea_vomiting",
+  "cb_urgent_inf_2",
+  "green_dv_sunken_eyes",
+  "green_dv_dry_mouth",
+  "green_dv_decreased_urine",
+  "green_dv_skin_pinch_slow",
+  "sb_urgent_maternity",
+  "green_active_labor",
+  "green_miscarriage",
+  "green_malpresentation",
+  "cb_urgent_mat_2",
+  "green_planned_cs_multiple",
+  "green_rom_above_6hr",
+  "green_fracture_closed_moderate_pain",
   "sb_result",
   "triage_color",
   "tews_score",
-  "spo2",
-  "pain_score",
+  "cb_result_2",
   "manual_priority_override",
   "override_reason",
   "sb_notification",
   "notified_color",
   "notified_at",
-  "nurse_name",
-  "triage_finish_time",
+  "cb_notification_2",
   "doctor_name",
   "doctor_attended_at",
+  "triage_finish_time",
   "sb_outcome",
-  "vital_signs_record",
-  "muac",
   "triage_notes",
+  "cb_outcome_2",
+  "vital_signs_record",
   "patient_oriented"
  ],
  "fields": [
+  {
+   "fieldname": "sb_patient",
+   "fieldtype": "Section Break",
+   "label": "Patient"
+  },
   {
    "fieldname": "naming_series",
    "fieldtype": "Select",
@@ -55,17 +187,27 @@
   {
    "fieldname": "patient",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Patient",
    "options": "Patient",
-   "reqd": 1,
-   "in_list_view": 1
+   "reqd": 1
   },
   {
    "fieldname": "patient_name",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Patient Name",
-   "read_only": 1,
-   "in_list_view": 1
+   "read_only": 1
+  },
+  {
+   "fieldname": "patient_gender",
+   "fieldtype": "Data",
+   "label": "Patient Gender",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_patient_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "date_of_birth",
@@ -86,22 +228,46 @@
    "read_only": 1
   },
   {
-   "fieldname": "patient_gender",
-   "fieldtype": "Data",
-   "label": "Patient Gender",
-   "read_only": 1
-  },
-  {
    "fieldname": "medical_record_number",
    "fieldtype": "Data",
    "label": "Medical Record Number",
    "read_only": 1
   },
   {
+   "fieldname": "cb_patient_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
    "fieldname": "is_maternity",
    "fieldtype": "Check",
-   "label": "Is Maternity Patient",
-   "default": "0"
+   "label": "Is Maternity Patient"
+  },
+  {
+   "fieldname": "form_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Detected Form Type",
+   "options": "\nAdult\nChild\nInfant\nMaternity",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "arrival_date",
+   "fieldtype": "Date",
+   "label": "Arrival Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "arrival_time",
+   "fieldtype": "Time",
+   "label": "Arrival Time",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_visit",
+   "fieldtype": "Section Break",
+   "label": "Visit"
   },
   {
    "fieldname": "chief_complaint",
@@ -110,17 +276,8 @@
    "reqd": 1
   },
   {
-   "fieldname": "arrival_date",
-   "fieldtype": "Date",
-   "label": "Arrival Date",
-   "reqd": 1,
-   "default": "Today"
-  },
-  {
-   "fieldname": "arrival_time",
-   "fieldtype": "Time",
-   "label": "Arrival Time",
-   "reqd": 1
+   "fieldname": "cb_visit_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "company",
@@ -130,45 +287,711 @@
    "reqd": 1
   },
   {
-   "fieldname": "sb_routing",
+   "fieldname": "nurse_name",
+   "fieldtype": "Link",
+   "label": "Nurse Name",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "sb_emergency",
    "fieldtype": "Section Break",
-   "label": "Form routing"
+   "label": "Emergency signs - tick any that apply"
   },
   {
-   "fieldname": "form_type",
+   "fieldname": "alarm_not_breathing",
+   "fieldtype": "Check",
+   "label": "Airway \u2014 Not Breathing"
+  },
+  {
+   "fieldname": "alarm_obstructed_breathing",
+   "fieldtype": "Check",
+   "label": "Airway \u2014 Obstructed Breathing"
+  },
+  {
+   "fieldname": "alarm_severe_resp_distress",
+   "fieldtype": "Check",
+   "label": "Airway \u2014 Severe Respiratory Distress"
+  },
+  {
+   "fieldname": "alarm_cardiac_arrest",
+   "fieldtype": "Check",
+   "label": "Circulation \u2014 Cardiac Arrest"
+  },
+  {
+   "fieldname": "alarm_hemorrhage_uncontrolled",
+   "fieldtype": "Check",
+   "label": "Circulation \u2014 Hemorrhage Uncontrolled"
+  },
+  {
+   "fieldname": "alarm_stab_gunshot",
+   "fieldtype": "Check",
+   "label": "Circulation \u2014 Stab/Gunshot Wound to Neck or Chest"
+  },
+  {
+   "fieldname": "cb_emergency_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "alarm_lethargic",
+   "fieldtype": "Check",
+   "label": "Lethargic"
+  },
+  {
+   "fieldname": "alarm_weak_fast_pulse",
+   "fieldtype": "Check",
+   "label": "Pulse Weak and Fast"
+  },
+  {
+   "fieldname": "alarm_cap_refill_3sec",
+   "fieldtype": "Check",
+   "label": "Capillary Refill \u2265 3 seconds"
+  },
+  {
+   "fieldname": "alarm_cold_hands",
+   "fieldtype": "Check",
+   "label": "Cold Hands"
+  },
+  {
+   "fieldname": "alarm_purpuric_rash",
+   "fieldtype": "Check",
+   "label": "Purpuric Rash"
+  },
+  {
+   "fieldname": "alarm_burn_face_inhalation",
+   "fieldtype": "Check",
+   "label": "Burn \u2014 Face or Inhalation"
+  },
+  {
+   "fieldname": "cb_emergency_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "alarm_convulsion",
+   "fieldtype": "Check",
+   "label": "Convulsion \u2014 Current Seizure or Post-ictal (not alert)"
+  },
+  {
+   "fieldname": "convulsion_glucose",
+   "fieldtype": "Float",
+   "label": "Convulsion Glucose Reading"
+  },
+  {
+   "fieldname": "alarm_coma",
+   "fieldtype": "Check",
+   "label": "Coma \u2014 Unresponsive or Responsive Only to Pain"
+  },
+  {
+   "fieldname": "coma_glucose",
+   "fieldtype": "Float",
+   "label": "Coma Glucose Reading"
+  },
+  {
+   "fieldname": "alarm_hypoglycemia",
+   "fieldtype": "Check",
+   "label": "Hypoglycemia \u2014 Glucose < 3 mmol/L or < 60 mg/dL"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "sb_emergency_child",
+   "fieldtype": "Section Break",
+   "label": "Emergency signs - child and infant"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "alarm_not_breathing_weak",
+   "fieldtype": "Check",
+   "label": "Not Breathing or Weak Breathing"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "alarm_central_cyanosis",
+   "fieldtype": "Check",
+   "label": "Central Cyanosis"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "alarm_pulse_low_absent",
+   "fieldtype": "Check",
+   "label": "Pulse Low or Absent"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "sb_emergency_maternity",
+   "fieldtype": "Section Break",
+   "label": "Emergency signs - maternity"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "alarm_prolapsed_cord",
+   "fieldtype": "Check",
+   "label": "Prolapsed Cord"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "alarm_no_fetal_movement",
+   "fieldtype": "Check",
+   "label": "No Fetal Movement"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "alarm_bandel_ring",
+   "fieldtype": "Check",
+   "label": "Bandel Ring"
+  },
+  {
+   "fieldname": "cb_emergency_mat_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "alarm_abnormal_ctg",
+   "fieldtype": "Check",
+   "label": "Abnormal CTG"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "alarm_stab_gunshot_maternity",
+   "fieldtype": "Check",
+   "label": "Stab / Gunshot Wound"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "alarm_imminent_birth",
+   "fieldtype": "Check",
+   "label": "Imminent Birth"
+  },
+  {
+   "fieldname": "sb_dehydration",
+   "fieldtype": "Section Break",
+   "label": "Severe dehydration signs"
+  },
+  {
+   "fieldname": "dehydration_skin_pinch",
+   "fieldtype": "Check",
+   "label": "Severe Dehydration \u2014 Skin Pinch \u2265 2 sec"
+  },
+  {
+   "fieldname": "dehydration_lethargy",
+   "fieldtype": "Check",
+   "label": "Severe Dehydration \u2014 Lethargy"
+  },
+  {
+   "fieldname": "dehydration_sunken_eyes",
+   "fieldtype": "Check",
+   "label": "Severe Dehydration \u2014 Sunken Eyes"
+  },
+  {
+   "fieldname": "sb_vitals",
+   "fieldtype": "Section Break",
+   "label": "Vital signs and TEWS (scores update when you save)"
+  },
+  {
+   "fieldname": "rr",
+   "fieldtype": "Int",
+   "label": "Respiratory Rate (breaths/min)"
+  },
+  {
+   "fieldname": "hr",
+   "fieldtype": "Int",
+   "label": "Heart Rate / Pulse (bpm)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Maternity\"",
+   "fieldname": "sbp",
+   "fieldtype": "Int",
+   "label": "Blood Pressure Systolic (mmHg)"
+  },
+  {
+   "fieldname": "temperature",
+   "fieldtype": "Float",
+   "label": "Body Temperature (\u00b0C)"
+  },
+  {
+   "fieldname": "spo2",
+   "fieldtype": "Float",
+   "label": "SpO2 (%)"
+  },
+  {
+   "fieldname": "cb_vitals_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rr_score",
+   "fieldtype": "Int",
+   "label": "RR Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "hr_score",
+   "fieldtype": "Int",
+   "label": "HR Score",
+   "read_only": 1
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Maternity\"",
+   "fieldname": "sbp_score",
+   "fieldtype": "Int",
+   "label": "SBP Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "temp_score",
+   "fieldtype": "Int",
+   "label": "Temperature Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cb_vitals_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobility",
    "fieldtype": "Select",
-   "label": "Detected Form Type",
-   "options": "Adult\nChild\nInfant\nMaternity",
-   "read_only": 1,
-   "in_list_view": 1
+   "label": "Mobility",
+   "options": "\n0\n1\n2"
   },
   {
-   "fieldname": "adult_triage_form",
-   "fieldtype": "Link",
-   "label": "Adult Triage Form",
-   "options": "Adult Triage Form",
-   "depends_on": "eval:doc.form_type==\"Adult\""
+   "fieldname": "avpu",
+   "fieldtype": "Select",
+   "label": "AVUP",
+   "options": "\nAlert\nConfused\nVoice\nPain\nUnresponsive"
   },
   {
-   "fieldname": "child_triage_form",
-   "fieldtype": "Link",
-   "label": "Child Triage Form",
-   "options": "Child Triage Form",
-   "depends_on": "eval:doc.form_type==\"Child\""
+   "fieldname": "trauma",
+   "fieldtype": "Check",
+   "label": "Trauma"
   },
   {
-   "fieldname": "infant_triage_form",
-   "fieldtype": "Link",
-   "label": "Infant Triage Form",
-   "options": "Infant Triage Form",
-   "depends_on": "eval:doc.form_type==\"Infant\""
+   "fieldname": "pain_score",
+   "fieldtype": "Int",
+   "label": "Pain Score (0\u201310)"
   },
   {
-   "fieldname": "maternity_triage_form",
-   "fieldtype": "Link",
-   "label": "Maternity Triage Form",
-   "options": "Maternity Triage Form",
-   "depends_on": "eval:doc.form_type==\"Maternity\""
+   "fieldname": "muac",
+   "fieldtype": "Float",
+   "label": "MUAC (cm)"
+  },
+  {
+   "fieldname": "cb_vitals_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "mobility_score",
+   "fieldtype": "Int",
+   "label": "Mobility Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "avpu_score",
+   "fieldtype": "Int",
+   "label": "AVPU Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trauma_score",
+   "fieldtype": "Int",
+   "label": "Trauma Score",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sb_very_urgent",
+   "fieldtype": "Section Break",
+   "label": "Very urgent signs (Orange)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "yellow_focal_neuro",
+   "fieldtype": "Check",
+   "label": "Focal Neurological Deficit \u2014 Acute (< 1 day)"
+  },
+  {
+   "fieldname": "yellow_focal_neuro_glucose",
+   "fieldtype": "Float",
+   "label": "Focal Neuro Glucose Reading"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_altered_mental",
+   "fieldtype": "Check",
+   "label": "Altered Mental Status \u2014 Acute (< 1 day)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "yellow_chest_pain",
+   "fieldtype": "Check",
+   "label": "Chest Pain"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\"",
+   "fieldname": "yellow_acute_sob",
+   "fieldtype": "Check",
+   "label": "Shortness of Breath \u2014 Acute (< 1 day)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_coughing_blood",
+   "fieldtype": "Check",
+   "label": "Coughing or Vomiting Blood"
+  },
+  {
+   "fieldname": "yellow_poisoning",
+   "fieldtype": "Check",
+   "label": "Poisoning / Overdose"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\"",
+   "fieldname": "yellow_diabetic_high",
+   "fieldtype": "Check",
+   "label": "Unwell with Diabetes \u2014 Glucose > 200 mg/dL or > 11 mmol/L"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\"",
+   "fieldname": "yellow_aggression",
+   "fieldtype": "Check",
+   "label": "Aggression"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\"",
+   "fieldname": "yellow_severe_pain",
+   "fieldtype": "Check",
+   "label": "Very Severe Pain (\u2265 7)"
+  },
+  {
+   "fieldname": "cb_very_urgent_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_burn_20_urgent",
+   "fieldtype": "Check",
+   "label": "Burn > 20% or with Urgent Signs"
+  },
+  {
+   "fieldname": "yellow_fracture_open",
+   "fieldtype": "Check",
+   "label": "Fracture Open (with skin break)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "yellow_threatened_limb",
+   "fieldtype": "Check",
+   "label": "Threatened Limb \u2014 No Pulse or Pale"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "yellow_eye_injury",
+   "fieldtype": "Check",
+   "label": "Eye Injury"
+  },
+  {
+   "fieldname": "yellow_large_joint_disloc",
+   "fieldtype": "Check",
+   "label": "Dislocation of Large Joint (not finger/toe)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "yellow_severe_mechanism",
+   "fieldtype": "Check",
+   "label": "Severe Mechanism of Injury \u2014 Fall > 1 m, RTA, or Other Significant Trauma"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\"",
+   "fieldname": "yellow_abdominal_trauma",
+   "fieldtype": "Check",
+   "label": "Abdominal Trauma"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "sb_very_urgent_infant",
+   "fieldtype": "Section Break",
+   "label": "Very urgent signs - infant (Orange)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "yellow_more_sleep",
+   "fieldtype": "Check",
+   "label": "More Sleep Than Normal"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "yellow_sleep_glucose",
+   "fieldtype": "Float",
+   "label": "Glucose Reading (sleep complaint)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "yellow_inconsolable_cry",
+   "fieldtype": "Check",
+   "label": "Inconsolable Crying / Severe Pain (> 7)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "yellow_floppy_irritable",
+   "fieldtype": "Check",
+   "label": "Floppy, Irritable, or Restless"
+  },
+  {
+   "fieldname": "cb_very_urgent_inf_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "yellow_tiny_baby",
+   "fieldtype": "Check",
+   "label": "Tiny Baby (younger than 2 months)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "yellow_burn_10_urgent",
+   "fieldtype": "Check",
+   "label": "Burn > 10% or with Urgent Signs"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "sb_very_urgent_maternity",
+   "fieldtype": "Section Break",
+   "label": "Very urgent signs - maternity (Orange)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_multipara_active_labour",
+   "fieldtype": "Check",
+   "label": "Multipara in Active Labour"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_uterine_contraction",
+   "fieldtype": "Check",
+   "label": "Detectable Uterine Contraction"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_rom",
+   "fieldtype": "Check",
+   "label": "Rupture of Membranes (ROM)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_decreased_fetal_movements",
+   "fieldtype": "Check",
+   "label": "Decreased Fetal Movements"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_bleeding_spotting",
+   "fieldtype": "Check",
+   "label": "Bleeding More Than Spotting"
+  },
+  {
+   "fieldname": "cb_very_urgent_mat_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_preterm_labour",
+   "fieldtype": "Check",
+   "label": "Preterm Labour < 37 Weeks"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_contraction_planned_cs",
+   "fieldtype": "Check",
+   "label": "Active Contraction on Planned C-Section"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_preeclampsia",
+   "fieldtype": "Check",
+   "label": "Signs of Pre-Eclampsia"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_major_trauma",
+   "fieldtype": "Check",
+   "label": "Major Trauma"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "yellow_abdominal_trauma_severe_pain",
+   "fieldtype": "Check",
+   "label": "Abdominal Trauma / Severe Pain (> 7)"
+  },
+  {
+   "fieldname": "sb_urgent",
+   "fieldtype": "Section Break",
+   "label": "Urgent signs (Yellow)"
+  },
+  {
+   "fieldname": "green_cant_drink",
+   "fieldtype": "Check",
+   "label": "Unable to Drink or Vomits Everything"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_cant_drink_glucose",
+   "fieldtype": "Float",
+   "label": "Glucose Reading (unable to drink)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\"",
+   "fieldname": "green_very_pale",
+   "fieldtype": "Check",
+   "label": "Very Pale"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "green_resp_distress",
+   "fieldtype": "Check",
+   "label": "Respiratory Distress (less urgent)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\"",
+   "fieldname": "green_diabetic_high",
+   "fieldtype": "Check",
+   "label": "Diabetic (not unwell) \u2014 Glucose > 300 mg/dL or > 17 mmol/L"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\" || doc.form_type==\"Maternity\"",
+   "fieldname": "green_known_diabetes",
+   "fieldtype": "Check",
+   "label": "Unwell with Known Diabetes"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_diabetes_glucose",
+   "fieldtype": "Float",
+   "label": "Glucose Reading (diabetes)"
+  },
+  {
+   "fieldname": "green_malnutrition",
+   "fieldtype": "Check",
+   "label": "Severe Malnutrition / Wasting"
+  },
+  {
+   "fieldname": "cb_urgent_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "green_moderate_pain",
+   "fieldtype": "Check",
+   "label": "Moderate Pain (5\u20136)"
+  },
+  {
+   "fieldname": "green_burn_no_urgency",
+   "fieldtype": "Check",
+   "label": "Burn without Urgent Signs"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "green_fracture_closed",
+   "fieldtype": "Check",
+   "label": "Fracture Closed"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Child\" || doc.form_type==\"Infant\"",
+   "fieldname": "green_disloc_finger_toe",
+   "fieldtype": "Check",
+   "label": "Dislocation \u2014 Finger or Toe"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "sb_urgent_infant",
+   "fieldtype": "Section Break",
+   "label": "Urgent signs - infant (Yellow)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_pitting_oedema",
+   "fieldtype": "Check",
+   "label": "Pitting Oedema of Both Feet or Face"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_severe_pallor",
+   "fieldtype": "Check",
+   "label": "Severe Pallor"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_diarrhea_vomiting",
+   "fieldtype": "Check",
+   "label": "Diarrhoea and/or Vomiting"
+  },
+  {
+   "fieldname": "cb_urgent_inf_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_dv_sunken_eyes",
+   "fieldtype": "Check",
+   "label": "\u2014 Sunken Eyes"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_dv_dry_mouth",
+   "fieldtype": "Check",
+   "label": "\u2014 Dry Mouth"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_dv_decreased_urine",
+   "fieldtype": "Check",
+   "label": "\u2014 Decreased Urine Output"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Infant\"",
+   "fieldname": "green_dv_skin_pinch_slow",
+   "fieldtype": "Check",
+   "label": "\u2014 Skin Pinch Slow (< 2 seconds)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "sb_urgent_maternity",
+   "fieldtype": "Section Break",
+   "label": "Urgent signs - maternity (Yellow)"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "green_active_labor",
+   "fieldtype": "Check",
+   "label": "Active Labor"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "green_miscarriage",
+   "fieldtype": "Check",
+   "label": "Miscarriage"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "green_malpresentation",
+   "fieldtype": "Check",
+   "label": "Malpresentation"
+  },
+  {
+   "fieldname": "cb_urgent_mat_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "green_planned_cs_multiple",
+   "fieldtype": "Check",
+   "label": "Planned C-Section / Multiple Gestation"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "green_rom_above_6hr",
+   "fieldtype": "Check",
+   "label": "Rupture of Membranes > 6 Hours"
+  },
+  {
+   "depends_on": "eval:doc.form_type==\"Maternity\"",
+   "fieldname": "green_fracture_closed_moderate_pain",
+   "fieldtype": "Check",
+   "label": "Fracture Closed / Moderate Pain (5\u20136)"
   },
   {
    "fieldname": "sb_result",
@@ -178,10 +1001,10 @@
   {
    "fieldname": "triage_color",
    "fieldtype": "Select",
+   "in_list_view": 1,
    "label": "Triage Color",
-   "options": "RED\nORANGE\nYELLOW\nGREEN",
-   "read_only": 1,
-   "in_list_view": 1
+   "options": "\nRED\nORANGE\nYELLOW\nGREEN",
+   "read_only": 1
   },
   {
    "fieldname": "tews_score",
@@ -190,53 +1013,57 @@
    "read_only": 1
   },
   {
-   "fieldname": "spo2",
-   "fieldtype": "Float",
-   "label": "SpO2 (%)",
-   "read_only": 1
+   "fieldname": "cb_result_2",
+   "fieldtype": "Column Break"
   },
   {
-   "fieldname": "pain_score",
-   "fieldtype": "Int",
-   "label": "Pain Score (0\u201310)",
-   "read_only": 1
-  },
-  {
+   "default": "0",
    "fieldname": "manual_priority_override",
    "fieldtype": "Check",
-   "label": "Manual Priority Override",
-   "default": "0"
+   "label": "Manual Priority Override"
   },
   {
+   "depends_on": "eval:doc.manual_priority_override==1",
    "fieldname": "override_reason",
    "fieldtype": "Small Text",
-   "label": "Override Reason",
-   "depends_on": "eval:doc.manual_priority_override==1"
+   "label": "Override Reason"
   },
   {
+   "collapsible": 1,
+   "collapsible_depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
    "fieldname": "sb_notification",
    "fieldtype": "Section Break",
-   "label": "Notification"
+   "label": "Emergency notification"
   },
   {
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
    "fieldname": "notified_color",
    "fieldtype": "Select",
    "label": "Notified Color",
-   "options": "RED\nORANGE",
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+   "options": "\nRED\nORANGE"
   },
   {
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
    "fieldname": "notified_at",
    "fieldtype": "Datetime",
-   "label": "Notified At",
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
+   "label": "Notified At"
   },
   {
-   "fieldname": "nurse_name",
+   "fieldname": "cb_notification_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
+   "fieldname": "doctor_name",
    "fieldtype": "Link",
-   "label": "Nurse Name",
-   "options": "User",
-   "reqd": 1
+   "label": "Doctor Name",
+   "options": "User"
+  },
+  {
+   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)",
+   "fieldname": "doctor_attended_at",
+   "fieldtype": "Datetime",
+   "label": "Doctor Attended At"
   },
   {
    "fieldname": "triage_finish_time",
@@ -244,22 +1071,18 @@
    "label": "Triage Finish Time"
   },
   {
-   "fieldname": "doctor_name",
-   "fieldtype": "Link",
-   "label": "Doctor Name",
-   "options": "User",
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
-  },
-  {
-   "fieldname": "doctor_attended_at",
-   "fieldtype": "Datetime",
-   "label": "Doctor Attended At",
-   "depends_on": "eval:[\"RED\",\"ORANGE\"].includes(doc.triage_color)"
-  },
-  {
    "fieldname": "sb_outcome",
    "fieldtype": "Section Break",
-   "label": "Outcome"
+   "label": "Notes and outcome"
+  },
+  {
+   "fieldname": "triage_notes",
+   "fieldtype": "Text Editor",
+   "label": "Triage Notes"
+  },
+  {
+   "fieldname": "cb_outcome_2",
+   "fieldtype": "Column Break"
   },
   {
    "fieldname": "vital_signs_record",
@@ -269,16 +1092,6 @@
    "read_only": 1
   },
   {
-   "fieldname": "muac",
-   "fieldtype": "Float",
-   "label": "MUAC (cm)"
-  },
-  {
-   "fieldname": "triage_notes",
-   "fieldtype": "Text Editor",
-   "label": "Triage Notes"
-  },
-  {
    "fieldname": "patient_oriented",
    "fieldtype": "Small Text",
    "label": "Patient Oriented To"
@@ -286,7 +1099,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-06-09 12:00:00.000000",
+ "modified": "2026-11-20 09:07:14.466580",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Triage Assessment",
@@ -294,43 +1107,43 @@
  "owner": "Administrator",
  "permissions": [
   {
-   "role": "Nursing User",
-   "read": 1,
-   "write": 1,
    "create": 1,
    "delete": 1,
-   "submit": 0,
-   "print": 1,
    "email": 1,
    "export": 1,
+   "print": 1,
+   "read": 1,
    "report": 1,
-   "share": 1
+   "role": "Nursing User",
+   "share": 1,
+   "submit": 0,
+   "write": 1
   },
   {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
    "role": "Physician",
-   "read": 1,
-   "write": 1,
-   "create": 1,
-   "delete": 0,
+   "share": 1,
    "submit": 1,
-   "print": 1,
-   "email": 1,
-   "export": 1,
-   "report": 1,
-   "share": 1
+   "write": 1
   },
   {
-   "role": "System Manager",
-   "read": 1,
-   "write": 1,
    "create": 1,
    "delete": 0,
-   "submit": 0,
-   "print": 1,
    "email": 1,
    "export": 1,
+   "print": 1,
+   "read": 1,
    "report": 1,
-   "share": 1
+   "role": "System Manager",
+   "share": 1,
+   "submit": 0,
+   "write": 1
   }
  ],
  "sort_field": "modified",

@@ -60,10 +60,8 @@ def generate_all_doctype_json(app_path=None):
 		app_path = frappe.get_app_path("healthcare")
 
 	written = []
-	# Triage Assessment
-	ta_fields = list(TRIAGE_ASSESSMENT_FIELDS)
-	ta_doc = _build_doctype("Triage Assessment", ta_fields, "TRIAGE-.YYYY.-")
-	written.append(write_doctype_json(app_path, "triage_assessment", ta_doc))
+	# Triage Assessment is now defined by its own JSON file
+	# (doctype/triage_assessment/triage_assessment.json). Do not regenerate it here.
 
 	for name, meta in FORM_META.items():
 		fields = build_form_fields(meta["form_type"])
