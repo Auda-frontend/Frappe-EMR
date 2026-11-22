@@ -36,9 +36,28 @@ class TriageAssessment(Document):
         self.enforce_maternity_for_females_only()
         self.set_authoritative_form_type()
         self.clear_signs_for_other_groups()
+        self.validate_queue_link()
         self.validate_body_measurements()
         self.calculate_and_set_triage_result()
 
+
+    def validate_queue_link(self):
+        """An assessment opened from the Queue belongs to that patient, and each entry has only one."""
+        if not self.queue:
+            return
+        patient = frappe.db.get_value("Queue", self.queue, "patient")
+        if patient and patient != self.patient:
+            frappe.throw(frappe._("This Queue entry belongs to another patient."), title=frappe._("Queue"))
+        other = frappe.db.get_value(
+            "Triage Assessment",
+            {"queue": self.queue, "docstatus": ["<", 2], "name": ["!=", self.name or ""]},
+            "name",
+        )
+        if other:
+            frappe.throw(
+                frappe._("This Queue entry already has a Triage Assessment ({0}). Open that one.").format(other),
+                title=frappe._("Queue"),
+            )
 
     def enforce_maternity_for_females_only(self):
         """A maternity assessment is only valid for a female patient."""
@@ -157,18 +176,23 @@ class TriageAssessment(Document):
             self.triage_color = colour
 
     def before_submit(self):
-        if not self.triage_color:
-            details = []
+        """A colour is needed to submit. Emergency signs, SpO2 under 92 and a documented
+        manual override already give one; otherwise every required observation must be entered."""
+        if self.triage_color:
+            return
 
-            if self.get("missing_fields"):
-                details.extend(self.get("missing_fields"))
-
+        missing = calculate_tews(self.form_type, self).get("missing_fields", [])
+        if missing:
+            meta = frappe.get_meta(self.doctype)
+            labels = [meta.get_label(fieldname) or fieldname for fieldname in missing]
             frappe.throw(
-                frappe._(
-                    "This assessment cannot be submitted because no triage colour "
-                    "could be determined. Complete the required observations first."
-                )
+                frappe._("Missing fields: {0}. Complete them before submitting.").format(", ".join(labels)),
+                title=frappe._("Missing Fields"),
             )
+
+        frappe.throw(
+            frappe._("This assessment cannot be submitted because no triage colour could be determined.")
+        )
 
     def on_submit(self):
         self.create_vital_signs_from_assessment()
@@ -271,6 +295,19 @@ class TriageAssessment(Document):
         )
 
     def update_patient_triage_state(self):
+        """The patient carries the colour of their newest submitted assessment only."""
+        newer = frappe.db.exists(
+            "Triage Assessment",
+            {
+                "patient": self.patient,
+                "docstatus": 1,
+                "creation": [">", self.creation],
+                "name": ["!=", self.name],
+            },
+        )
+        if newer:
+            return
+
         frappe.db.set_value(
             "Patient",
             self.patient,

@@ -19,15 +19,18 @@ const QUEUE_UNIT_ROUTES = {
 				}),
 	},
 	Triage: {
-		open: (entry, reopen) => {
-			if (reopen) {
-				// Nothing is linked to this entry, so a second click must not create another document.
-				frappe.show_alert({ message: __("This patient is already in service."), indicator: "orange" });
-			} else {
-				frappe.new_doc("Triage Assessment", { patient: entry.patient });
-			}
-			return Promise.resolve(true);
-		},
+		// The assessment is linked to its Queue entry. Proceed opens a new one; Open goes back to the saved one.
+		open: (entry) =>
+			frappe
+				.xcall("healthcare.healthcare.queue_api.get_triage_assessment", { queue: entry.name })
+				.then((assessment) => {
+					if (assessment) {
+						frappe.set_route("Form", "Triage Assessment", assessment);
+					} else {
+						frappe.new_doc("Triage Assessment", { patient: entry.patient, queue: entry.name });
+					}
+					return true;
+				}),
 	},
 };
 
@@ -67,6 +70,11 @@ frappe.listview_settings["Queue"] = {
 	],
 
 	get_indicator(doc) {
+		// A waiting Emergency or Urgent patient is marked. The order stays first come, first listed.
+		const mark = { Emergency: "red", Urgent: "orange" }[doc.priority];
+		if (doc.status === "Waiting" && mark) {
+			return [__("Waiting - {0}", [__(doc.priority)]), mark, "status,=,Waiting"];
+		}
 		return [__(doc.status), QUEUE_STATUS_COLORS[doc.status] || "grey", "status,=," + doc.status];
 	},
 

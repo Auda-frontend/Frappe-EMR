@@ -200,6 +200,42 @@ def complete_for_encounter(encounter):
 
 
 @frappe.whitelist()
+def get_triage_assessment(queue):
+	"""The Triage Assessment opened from a Queue entry, or None if the nurse has not saved one yet."""
+	frappe.has_permission("Queue", "read", doc=queue, throw=True)
+	rows = frappe.get_all(
+		"Triage Assessment",
+		filters={"queue": queue, "docstatus": ["<", 2]},
+		pluck="name",
+		order_by="creation desc",
+		limit=1,
+	)
+	if rows:
+		return rows[0]
+
+	# An entry opened before the link existed: reuse the patient's unlinked assessment from today
+	# instead of starting a second one.
+	entry = frappe.db.get_value("Queue", queue, ["patient", "status"], as_dict=True)
+	if entry and entry.status == "In Service" and frappe.has_permission("Queue", "write", doc=queue):
+		legacy = frappe.get_all(
+			"Triage Assessment",
+			filters={
+				"patient": entry.patient,
+				"docstatus": ["<", 2],
+				"queue": ["is", "not set"],
+				"creation": [">=", getdate(today())],
+			},
+			pluck="name",
+			order_by="creation desc",
+			limit=1,
+		)
+		if legacy:
+			frappe.db.set_value("Triage Assessment", legacy[0], "queue", queue, update_modified=False)
+			return legacy[0]
+	return None
+
+
+@frappe.whitelist()
 def mark_no_show(queue):
 	frappe.has_permission("Queue", "write", doc=queue, throw=True)
 	status = _locked_status(queue)

@@ -129,6 +129,10 @@ frappe.ui.form.on("Triage Assessment", {
         rw_update_bmi(frm);
     },
 
+    before_submit(frm) {
+        rw_check_required_before_submit(frm);
+    },
+
     triage_color(frm) {
         toggle_notification_fields(frm);
         update_triage_priority_alert(frm);
@@ -272,7 +276,7 @@ function update_triage_indicator(frm) {
 function rw_triage_open_orientation(frm) {
     // Orient from the triage nursing station, with the priority set from the triage colour.
     const priorities = { RED: "Emergency", ORANGE: "Urgent", YELLOW: "Non-urgent", GREEN: "Routine" };
-    const values = { patient: frm.doc.patient };
+    const values = { patient: frm.doc.patient, triage_assessment: frm.doc.name };
     const priority = priorities[frm.doc.triage_color];
     if (priority) {
         values["priority"] = priority;
@@ -305,3 +309,73 @@ function rw_update_bmi(frm) {
     const bmi = weight > 0 && height > 0 ? flt(weight / Math.pow(height / 100, 2), 1) : null;
     frm.set_value("bmi", bmi);
 }
+
+
+// Observations that must be entered before an assessment can be submitted.
+// The server enforces the same rule (tews.py); this only highlights the gaps early.
+// Not required: SpO2, diastolic BP, trauma (a tick box). SBP is scored on adult and maternity only.
+const RW_REQUIRED_ALWAYS = ["mobility", "rr", "hr", "temperature", "avpu"];
+const RW_REQUIRED_ALL = RW_REQUIRED_ALWAYS.concat(["sbp"]);
+const RW_NUMERIC_REQUIRED = ["rr", "hr", "temperature", "sbp"];
+const RW_SPO2_RED_BELOW = 92; // same value as SPO2_RED_BELOW in tews.py
+
+
+function rw_missing_required(frm) {
+    // An emergency sign, SpO2 under 92 or a documented override already gives a colour.
+    const emergency = Object.keys(frm.fields_dict).some((name) => {
+        const field = frm.fields_dict[name];
+        return name.startsWith("alarm_") && field.df.fieldtype === "Check"
+            && field.disp_status !== "None" && frm.doc[name];
+    });
+    const low_spo2 = flt(frm.doc.spo2) > 0 && flt(frm.doc.spo2) < RW_SPO2_RED_BELOW;
+    if (emergency || low_spo2 || frm.doc.manual_priority_override) {
+        return [];
+    }
+
+    const adult_like = ["Adult", "Maternity"].includes(frm.doc.form_type);
+    const required = RW_REQUIRED_ALWAYS.concat(adult_like ? ["sbp"] : []);
+    return required.filter((name) => {
+        const value = frm.doc[name];
+        if (RW_NUMERIC_REQUIRED.includes(name)) {
+            return !(flt(value) > 0);
+        }
+        return value === undefined || value === null || String(value).trim() === "";
+    });
+}
+
+
+function rw_mark_missing(frm, missing) {
+    RW_REQUIRED_ALL.forEach((name) => {
+        const field = frm.fields_dict[name];
+        if (field && field.$wrapper) {
+            field.$wrapper.toggleClass("has-error", missing.includes(name));
+        }
+    });
+}
+
+
+function rw_check_required_before_submit(frm) {
+    const missing = rw_missing_required(frm);
+    rw_mark_missing(frm, missing);
+    if (!missing.length) return;
+
+    frappe.validated = false;
+    const labels = missing.map((name) => __(frm.fields_dict[name].df.label || name));
+    frappe.msgprint({
+        title: __("Missing Fields"),
+        indicator: "red",
+        message: __("Missing fields: {0}. Complete them before submitting.", [labels.join(", ")]),
+    });
+    frm.scroll_to_field(missing[0]);
+}
+
+
+// A field loses its red mark as soon as it is filled in.
+RW_REQUIRED_ALL.forEach((name) => {
+    frappe.ui.form.on("Triage Assessment", name, (frm) => {
+        const field = frm.fields_dict[name];
+        if (field && field.$wrapper) {
+            field.$wrapper.removeClass("has-error");
+        }
+    });
+});

@@ -25,6 +25,7 @@
   "cb_visit_2",
   "company",
   "nurse_name",
+  "queue",
   "sb_emergency",
   "alarm_not_breathing",
   "alarm_obstructed_breathing",
@@ -161,6 +162,7 @@
   "sb_result",
   "triage_color",
   "tews_score",
+  "calculated_triage_color",
   "cb_result_2",
   "manual_priority_override",
   "override_reason",
@@ -299,6 +301,15 @@
    "label": "Nurse Name",
    "options": "User",
    "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.queue",
+   "fieldname": "queue",
+   "fieldtype": "Link",
+   "label": "Queue entry",
+   "no_copy": 1,
+   "options": "Queue",
+   "read_only": 1
   },
   {
    "fieldname": "sb_emergency",
@@ -1052,6 +1063,15 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.manual_priority_override==1",
+   "fieldname": "calculated_triage_color",
+   "fieldtype": "Select",
+   "label": "Calculated Colour (before override)",
+   "no_copy": 1,
+   "options": "\nRED\nORANGE\nYELLOW\nGREEN",
+   "read_only": 1
+  },
+  {
    "fieldname": "cb_result_2",
    "fieldtype": "Column Break"
   },
@@ -1138,7 +1158,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-20 09:07:14.466580",
+ "modified": "2026-11-22 08:45:07.022993",
  "modified_by": "Administrator",
  "module": "Healthcare",
  "name": "Triage Assessment",
