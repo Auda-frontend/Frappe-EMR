@@ -65,6 +65,7 @@
   "rr",
   "hr",
   "sbp",
+  "bp_diastolic",
   "temperature",
   "spo2",
   "cb_vitals_2",
@@ -82,6 +83,11 @@
   "mobility_score",
   "avpu_score",
   "trauma_score",
+  "sb_body",
+  "weight",
+  "height",
+  "cb_body_2",
+  "bmi",
   "sb_very_urgent",
   "yellow_focal_neuro",
   "yellow_focal_neuro_glucose",
@@ -241,7 +247,8 @@
    "default": "0",
    "fieldname": "is_maternity",
    "fieldtype": "Check",
-   "label": "Is Maternity Patient"
+   "label": "Is Maternity Patient",
+   "depends_on": "eval:(doc.patient_gender || \"\").toLowerCase() === \"female\""
   },
   {
    "fieldname": "form_type",
@@ -503,6 +510,12 @@
    "label": "Blood Pressure Systolic (mmHg)"
   },
   {
+   "fieldname": "bp_diastolic",
+   "fieldtype": "Int",
+   "label": "Blood Pressure Diastolic (mmHg)",
+   "depends_on": "eval:doc.form_type==\"Adult\" || doc.form_type==\"Maternity\""
+  },
+  {
    "fieldname": "temperature",
    "fieldtype": "Float",
    "label": "Body Temperature (\u00b0C)"
@@ -593,6 +606,32 @@
    "fieldtype": "Int",
    "label": "Trauma Score",
    "read_only": 1
+  },
+  {
+   "fieldname": "sb_body",
+   "fieldtype": "Section Break",
+   "label": "Body measurements"
+  },
+  {
+   "fieldname": "weight",
+   "fieldtype": "Float",
+   "label": "Weight (kg)"
+  },
+  {
+   "fieldname": "height",
+   "fieldtype": "Float",
+   "label": "Height (cm)"
+  },
+  {
+   "fieldname": "cb_body_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "bmi",
+   "fieldtype": "Float",
+   "label": "BMI (kg/m2)",
+   "read_only": 1,
+   "precision": "1"
   },
   {
    "fieldname": "sb_very_urgent",

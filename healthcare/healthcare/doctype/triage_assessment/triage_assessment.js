@@ -65,7 +65,7 @@ frappe.ui.form.on("Triage Assessment", {
                     ["patient_name", p.patient_name],
                     ["patient_gender", p.sex],
                     ["medical_record_number", p.name],
-                    ["is_maternity", p.rw_is_maternity || 0]
+                    ["is_maternity", (p.sex || "").toLowerCase() === "female" ? (p.rw_is_maternity || 0) : 0]
                 ];
 
                 if (p.dob) {
@@ -119,6 +119,14 @@ frappe.ui.form.on("Triage Assessment", {
 
     form_type(frm) {
         set_mobility_options(frm);
+    },
+
+    weight(frm) {
+        rw_update_bmi(frm);
+    },
+
+    height(frm) {
+        rw_update_bmi(frm);
     },
 
     triage_color(frm) {
@@ -287,4 +295,13 @@ function rw_triage_open_orientation(frm) {
         }
         frappe.new_doc("Internal Orientation", values);
     });
+}
+
+
+function rw_update_bmi(frm) {
+    // Preview only. The server recalculates BMI on every save.
+    const weight = flt(frm.doc.weight);
+    const height = flt(frm.doc.height);
+    const bmi = weight > 0 && height > 0 ? flt(weight / Math.pow(height / 100, 2), 1) : null;
+    frm.set_value("bmi", bmi);
 }
