@@ -32,6 +32,9 @@ def ensure_queue_encounter_field():
 		update=True,
 	)
 	allow_visit_completion_after_submit()
+	from healthcare.healthcare.rwanda_lab import install_rwanda_lab
+
+	install_rwanda_lab()
 
 
 def allow_visit_completion_after_submit():

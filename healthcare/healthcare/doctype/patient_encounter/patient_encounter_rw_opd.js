@@ -24,6 +24,7 @@ const RW_CLINICAL_FIELDS = [
 frappe.ui.form.on("Patient Encounter", {
 	refresh(frm) {
 		rw_consultation_setup_desk(frm);
+		rw_lab_load_results(frm);
 	},
 
 	onload(frm) {
@@ -100,6 +101,10 @@ function rw_consultation_setup_desk(frm) {
 			},
 			group
 		);
+	}
+
+	if (in_consultation && frm.doc.docstatus === 0) {
+		frm.add_custom_button(__("Send to lab"), () => rw_lab_send(frm), group);
 	}
 
 	if (in_consultation && frm.doc.docstatus === 1 && status !== "Completed") {
@@ -187,4 +192,46 @@ function rw_consultation_load_triage_summary(frm) {
 			}
 		},
 	});
+}
+
+
+function rw_lab_load_results(frm) {
+	if (!frm.fields_dict.rw_lab_results_html || frm.is_new()) return;
+	frappe.xcall("healthcare.healthcare.rwanda_lab.get_lab_results", { encounter: frm.doc.name }).then((r) => {
+		frm.fields_dict.rw_lab_results_html.$wrapper.html(r && r.html ? r.html : "");
+	});
+}
+
+function rw_lab_send(frm) {
+	const send = () =>
+		frappe.xcall("healthcare.healthcare.rwanda_lab.send_to_lab", { encounter: frm.doc.name }).then((r) => {
+			const count = (r.created || []).length;
+			frappe.show_alert({
+				message: count ? __("{0} lab test(s) sent to the lab.", [count]) : __("These tests were already sent."),
+				indicator: "green",
+			});
+			rw_lab_load_results(frm);
+
+			// Orient the patient to the Laboratory unit, from the unit of this consultation.
+			const priorities = ["Emergency", "Urgent", "Non-urgent", "Routine"];
+			const open_orientation = (from_unit) => {
+				const values = { patient: frm.doc.patient, orientation_to: r.lab_unit };
+				if (from_unit) values.orientation_from = from_unit;
+				if (priorities.includes(frm.doc.rw_triage_category)) values.priority = frm.doc.rw_triage_category;
+				frappe.new_doc("Internal Orientation", values);
+			};
+			if (frm.doc.rw_queue) {
+				frappe.db.get_value("Queue", frm.doc.rw_queue, "service_unit").then((res) => {
+					open_orientation(res.message && res.message.service_unit);
+				});
+			} else {
+				open_orientation(null);
+			}
+		});
+
+	if (frm.is_dirty()) {
+		frm.save().then(send);
+	} else {
+		send();
+	}
 }

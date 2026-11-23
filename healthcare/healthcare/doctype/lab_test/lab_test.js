@@ -321,3 +321,16 @@ var calculate_age = function (dob) {
 	var years = age.getFullYear() - 1970;
 	return `${years} ${__('Years(s)')} ${age.getMonth()} ${__('Month(s)')} ${age.getDate()} ${__('Day(s)')}`;
 };
+
+
+// A lab test ordered from an encounter shows who ordered it. Opening a pending one starts the patient's queue entry.
+frappe.ui.form.on("Lab Test", {
+	refresh(frm) {
+		if (!frm.doc.rw_encounter) return;
+		const doctor = frm.doc.practitioner_name || frm.doc.practitioner || "";
+		frm.set_intro(__("Ordered by {0} from consultation {1}.", [doctor, frm.doc.rw_encounter]), "blue");
+		if (frm.doc.docstatus === 0 && !frm.is_new()) {
+			frappe.xcall("healthcare.healthcare.rwanda_lab.mark_lab_in_service", { lab_test: frm.doc.name });
+		}
+	},
+});

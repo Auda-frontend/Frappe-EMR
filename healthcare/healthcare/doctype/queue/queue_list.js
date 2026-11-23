@@ -32,6 +32,25 @@ const QUEUE_UNIT_ROUTES = {
 					return true;
 				}),
 	},
+	Laboratory: {
+		// Tests are ordered from the encounter. Proceed opens the patient's pending tests; Open comes back to them.
+		open: (entry) =>
+			frappe
+				.xcall("healthcare.healthcare.rwanda_lab.get_pending_lab_tests", { queue: entry.name })
+				.then((tests) => {
+					if (tests.length === 1) {
+						frappe.set_route("Form", "Lab Test", tests[0]);
+					} else if (tests.length > 1) {
+						frappe.route_options = { patient: entry.patient, docstatus: 0 };
+						frappe.set_route("List", "Lab Test");
+					} else {
+						frappe.show_alert({ message: __("No pending lab tests for this patient."), indicator: "orange" });
+						frappe.route_options = { patient: entry.patient };
+						frappe.set_route("List", "Lab Test");
+					}
+					return true;
+				}),
+	},
 };
 
 const QUEUE_STATUS_COLORS = {

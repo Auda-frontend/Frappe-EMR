@@ -41,6 +41,14 @@ class TriageAssessment(Document):
         self.calculate_and_set_triage_result()
 
 
+    def after_insert(self):
+        """Creating the assessment, from the Queue or not, puts the patient In Service at the nursing station."""
+        from healthcare.healthcare.queue_api import start_entry_for_patient
+
+        queue = start_entry_for_patient(self.patient, "Triage")
+        if queue and not self.queue:
+            self.db_set("queue", queue, update_modified=False)
+
     def validate_queue_link(self):
         """An assessment opened from the Queue belongs to that patient, and each entry has only one."""
         if not self.queue:

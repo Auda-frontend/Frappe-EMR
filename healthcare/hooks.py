@@ -137,6 +137,10 @@ doc_events = {
 		"on_cancel": "healthcare.healthcare.doctype.patient_history_settings.patient_history_settings.delete_medical_record",
 		"on_update_after_submit": "healthcare.healthcare.doctype.patient_history_settings.patient_history_settings.update_medical_record",
 	},
+	"Lab Test": {
+		"before_insert": "healthcare.healthcare.rwanda_lab.block_manual_lab_tests",
+		"on_submit": "healthcare.healthcare.rwanda_lab.notify_doctor",
+	},
 	"Sales Invoice": {
 		"on_submit": "healthcare.healthcare.utils.manage_invoice_submit_cancel",
 		"on_cancel": "healthcare.healthcare.utils.manage_invoice_submit_cancel",

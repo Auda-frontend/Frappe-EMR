@@ -151,6 +151,20 @@ def get_or_create_encounter(queue):
 	if existing:
 		return existing[0][0]
 
+	# Back from the lab or another unit: the consultation that is still open is reused, never duplicated.
+	# Only when the entry it was opened from is already closed, so an active visit is never taken over.
+	open_encounter = frappe.db.sql(
+		"select e.`name` from `tabPatient Encounter` e "
+		"where e.`patient` = %s and e.`docstatus` = 0 and e.`rw_opd_visit_status` = 'In Consultation' "
+		"and e.`encounter_date` = %s and exists (select 1 from `tabQueue` q "
+		"where q.`name` = e.`rw_queue` and q.`status` = 'Completed') "
+		"order by e.`creation` desc limit 1 for update",
+		(entry.patient, entry.queue_date),
+	)
+	if open_encounter:
+		frappe.db.set_value("Patient Encounter", open_encounter[0][0], "rw_queue", queue)
+		return open_encounter[0][0]
+
 	practitioner = frappe.db.get_value(
 		"Healthcare Practitioner", {"user_id": frappe.session.user, "status": "Active"}, "name"
 	)
@@ -242,3 +256,38 @@ def mark_no_show(queue):
 	if status != "Waiting":
 		frappe.throw(_("Only a waiting patient can be marked as no-show."), title=_("Queue"))
 	frappe.db.set_value("Queue", queue, {"status": "No Show", "completed_at": now_datetime()})
+
+
+def _entry_names(patient, unit_type, statuses, queue_date=None):
+	"""The patient's queue entries of one service unit type for the day, locked for update."""
+	marks = ", ".join(["%s"] * len(statuses))
+	rows = frappe.db.sql(
+		f"""
+		select q.`name` from `tabQueue` q
+		join `tabHealthcare Service Unit` u on u.`name` = q.`service_unit`
+		where q.`patient` = %s and q.`queue_date` = %s and u.`service_unit_type` = %s
+			and q.`status` in ({marks})
+		order by q.`counter` for update
+		""",
+		(patient, getdate(queue_date or today()), unit_type, *statuses),
+	)
+	return [r[0] for r in rows]
+
+
+def start_entry_for_patient(patient, unit_type, queue_date=None):
+	"""Waiting -> In Service because the work on the patient has begun, however it was opened."""
+	names = _entry_names(patient, unit_type, ("Waiting",), queue_date)
+	if not names:
+		return None
+	frappe.db.set_value(
+		"Queue",
+		names[0],
+		{"status": "In Service", "called_at": now_datetime(), "called_by": frappe.session.user},
+	)
+	return names[0]
+
+
+def complete_entry_for_patient(patient, unit_type, queue_date=None):
+	"""Close the patient's open entries at that kind of unit because the work there is done."""
+	for name in _entry_names(patient, unit_type, OPEN_STATUSES, queue_date):
+		frappe.db.set_value("Queue", name, {"status": "Completed", "completed_at": now_datetime()})
